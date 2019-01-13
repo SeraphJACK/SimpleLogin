@@ -20,6 +20,7 @@ public class PlayerLoginHandler {
     private boolean alive;
     private ConcurrentLinkedQueue<Runnable> tasks = new ConcurrentLinkedQueue<>();
     private ConcurrentLinkedQueue<Login> loginList = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<String> resetPasswordList = new ConcurrentLinkedQueue<>();
 
     public PlayerLoginHandler() {
         PLAYER_HANDLER_THREAD = new Thread(() -> {
@@ -65,10 +66,11 @@ public class PlayerLoginHandler {
 
         if (pwd.length() >= 100) {
             player.connection.disconnect(new TextComponentTranslation("Password too long."));
-        } else if (capability.isFirst()) {
+        } else if (capability.isFirst() || resetPasswordList.contains(id)) {
             capability.setFirst(false);
             capability.setPassword(pwd);
             setPlayerToSurvivalMode(player);
+            resetPasswordList.remove(id);
             System.out.println("Player " + id + " has registered.");
         } else if (capability.getPassword().equals(pwd)) {
             setPlayerToSurvivalMode(player);
@@ -85,6 +87,15 @@ public class PlayerLoginHandler {
     public void addPlayerToLoginList(EntityPlayerMP player) {
         loginList.add(new Login(player.getGameProfile().getName()));
         player.setGameType(GameType.SPECTATOR);
+    }
+
+    public void resetPassword(String id){
+        if(!resetPasswordList.contains(id)){
+            resetPasswordList.add(id);
+        }
+    }
+    public String getResetPasswordUsers(){
+        return resetPasswordList.toString();
     }
 
     private static class Login {

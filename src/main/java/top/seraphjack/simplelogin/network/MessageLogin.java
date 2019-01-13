@@ -33,7 +33,6 @@ public class MessageLogin implements IMessage {
         @Override
         public IMessage onMessage(MessageLogin message, MessageContext ctx) {
             PlayerLoginHandler.instance().login(ctx.getServerHandler().player.getGameProfile().getName(), message.pwd);
-            ctx.getServerHandler().player.getGameProfile().getName();
             return null;
         }
     }
