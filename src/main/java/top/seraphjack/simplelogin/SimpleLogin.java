@@ -13,7 +13,7 @@ public class SimpleLogin {
     public static final String MODID = "simplelogin";
 
     @SidedProxy(serverSide = "top.seraphjack.simplelogin.server.ServerProxy", clientSide = "top.seraphjack.simplelogin.client.ClientProxy")
-    public static CommonProxy proxy;
+    private static CommonProxy proxy;
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
