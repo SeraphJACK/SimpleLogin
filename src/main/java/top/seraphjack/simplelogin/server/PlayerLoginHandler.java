@@ -98,6 +98,13 @@ public class PlayerLoginHandler {
         player.setGameType(GameType.SPECTATOR);
     }
 
+    boolean isPlayerInLoginList(String id) {
+        for (Login login : loginList) {
+            if (login.name.equals(id)) return true;
+        }
+        return false;
+    }
+
     void resetPassword(String id) {
         resetPasswordUsers.add(id);
     }
