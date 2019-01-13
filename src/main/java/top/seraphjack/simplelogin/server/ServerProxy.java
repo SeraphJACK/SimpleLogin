@@ -16,6 +16,7 @@ public class ServerProxy extends CommonProxy {
     @Override
     public void serverStarting(FMLServerStartingEvent e) {
         super.serverStarting(e);
+        e.registerServerCommand(new SLCommand());
         PlayerLoginHandler.instance();
     }
 

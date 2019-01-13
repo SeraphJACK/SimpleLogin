@@ -19,7 +19,7 @@ public abstract class CommonProxy {
 
     @OverridingMethodsMustInvokeSuper
     public void serverStarting(FMLServerStartingEvent e) {
-        e.registerServerCommand(new SLCommand());
+
     }
 
     @OverridingMethodsMustInvokeSuper

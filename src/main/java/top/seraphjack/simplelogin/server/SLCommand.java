@@ -1,4 +1,4 @@
-package top.seraphjack.simplelogin;
+package top.seraphjack.simplelogin.server;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;

@@ -10,6 +10,8 @@ import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
 import top.seraphjack.simplelogin.server.capability.IPassword;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @SideOnly(Side.SERVER)
@@ -20,9 +22,9 @@ public class PlayerLoginHandler {
     private boolean alive;
     private ConcurrentLinkedQueue<Runnable> tasks = new ConcurrentLinkedQueue<>();
     private ConcurrentLinkedQueue<Login> loginList = new ConcurrentLinkedQueue<>();
-    private ConcurrentLinkedQueue<String> resetPasswordList = new ConcurrentLinkedQueue<>();
+    private Set<String> resetPasswordUsers = new HashSet<>();
 
-    public PlayerLoginHandler() {
+    private PlayerLoginHandler() {
         PLAYER_HANDLER_THREAD = new Thread(() -> {
             while (alive) {
                 while (!tasks.isEmpty()) {
@@ -60,7 +62,7 @@ public class PlayerLoginHandler {
     public void login(String id, String pwd) {
         loginList.removeIf((l) -> l.name.equals(id));
         EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(id);
-        if (player == null){
+        if (player == null) {
             System.out.println("Player " + id + " is null!");
             return;
         }
@@ -73,12 +75,12 @@ public class PlayerLoginHandler {
 
         if (pwd.length() >= 100) {
             player.connection.disconnect(new TextComponentTranslation("Password too long."));
-        } else if (capability.isFirst() || resetPasswordList.contains(id)) {
+        } else if (capability.isFirst() || resetPasswordUsers.contains(id)) {
             capability.setFirst(false);
             capability.setPassword(pwd);
             setPlayerToSurvivalMode(player);
-            resetPasswordList.remove(id);
-            System.out.println("Player " + id + " has registered.");
+            resetPasswordUsers.remove(id);
+            System.out.println("Player " + id + " has successfully registered.");
         } else if (capability.getPassword().equals(pwd)) {
             setPlayerToSurvivalMode(player);
             System.out.println("Player " + id + " has successfully logged in.");
@@ -91,31 +93,32 @@ public class PlayerLoginHandler {
         FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> player.setGameType(GameType.SURVIVAL));
     }
 
-    public void addPlayerToLoginList(EntityPlayerMP player) {
+    void addPlayerToLoginList(EntityPlayerMP player) {
         loginList.add(new Login(player.getGameProfile().getName()));
         player.setGameType(GameType.SPECTATOR);
     }
 
-    public void resetPassword(String id){
-        if(!resetPasswordList.contains(id)){
-            resetPasswordList.add(id);
-        }
+    void resetPassword(String id) {
+        resetPasswordUsers.add(id);
     }
-    public String getResetPasswordUsers(){
-        return resetPasswordList.toString();
+
+    String getResetPasswordUsers() {
+        StringBuilder ret = new StringBuilder();
+        resetPasswordUsers.stream().map(i -> i + "\n").forEach(ret::append);
+        return ret.toString();
     }
 
     private static class Login {
         String name;
         long time;
 
-        public Login(String name) {
+        Login(String name) {
             this.name = name;
             this.time = System.currentTimeMillis();
         }
     }
 
-    public void stop() {
+    void stop() {
         alive = false;
         try {
             PLAYER_HANDLER_THREAD.join();
@@ -123,5 +126,4 @@ public class PlayerLoginHandler {
             e.printStackTrace();
         }
     }
-
 }
