@@ -7,6 +7,8 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -43,6 +45,15 @@ public class ServerSideEventHandler {
         if (event.getOriginal().hasCapability(capability, null) && event.getEntityPlayer().hasCapability(capability, null)) {
             NBTBase nbt = storage.writeNBT(capability, event.getOriginal().getCapability(capability, null), null);
             storage.readNBT(capability, event.getEntityPlayer().getCapability(capability, null), null, nbt);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onCommand(CommandEvent event) {
+        EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(event.getSender().getName());
+        if (player != null && player.isSpectator()) {
+            event.setCanceled(true);
+            System.out.println("Player " + event.getSender().getName() + " tried to use command before login.");
         }
     }
 }
