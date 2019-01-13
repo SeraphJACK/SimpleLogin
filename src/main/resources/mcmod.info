@@ -1,0 +1,14 @@
+[
+  {
+    "modid": "simplelogin",
+    "name": "SimpleLogin",
+    "description": "Simple Login",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url" : "",
+    "updateUrl": "",
+    "authorList": ["Seraph_JACK"],
+    "credits": "Yesterday_17",
+    "screenshots": []
+  }
+]
