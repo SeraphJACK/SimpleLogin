@@ -60,9 +60,16 @@ public class PlayerLoginHandler {
     public void login(String id, String pwd) {
         loginList.removeIf((l) -> l.name.equals(id));
         EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(id);
-        if (player == null) return;
+        if (player == null){
+            System.out.println("Player " + id + " is null!");
+            return;
+        }
+
         IPassword capability = player.getCapability(CapabilityLoader.CAPABILITY_PASSWORD, null);
-        if (capability == null) return;
+        if (capability == null) {
+            System.out.println("Player " + id + "'s capability is null!");
+            return;
+        }
 
         if (pwd.length() >= 100) {
             player.connection.disconnect(new TextComponentTranslation("Password too long."));
