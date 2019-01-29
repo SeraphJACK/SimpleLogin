@@ -36,6 +36,10 @@ version = "0.2.5"
 group = "top.seraphjack"
 archivesBaseName = "simplelogin"
 
+if (System.getenv().BUILD_NUMBER != null) {
+    version += "-build${System.getenv().BUILD_NUMBER}"
+}
+
 minecraft {
     version = "${minecraft_version}-${forge_version}"
     runDir = "run"
