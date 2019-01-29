@@ -18,12 +18,12 @@ public class SLConfig {
     public static Client client = new Client();
 
     public static class Server {
-        @Config.Name("超时时间(秒)")
+        @Config.Name("Login Timeout(s)")
         public int secs = 60;
     }
 
     public static class Client {
-        @Config.Name("密码")
+        @Config.Name("Password")
         public String password = UUID.randomUUID().toString();
     }
 
