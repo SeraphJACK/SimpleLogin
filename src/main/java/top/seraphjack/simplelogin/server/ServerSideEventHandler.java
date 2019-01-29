@@ -1,10 +1,15 @@
 package top.seraphjack.simplelogin.server;
 
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandSenderWrapper;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.CommandEvent;
@@ -51,6 +56,10 @@ public class ServerSideEventHandler {
     public static void onCommand(CommandEvent event) {
         if (PlayerLoginHandler.instance().isPlayerInLoginList(event.getSender().getName())) {
             event.setCanceled(true);
+            try {
+                CommandBase.getCommandSenderAsPlayer(event.getSender()).sendMessage(new TextComponentTranslation("You should login first."));
+            } catch (PlayerNotFoundException ignore) {
+            }
             System.out.println("Player " + event.getSender().getName() + " tried to use command before login.");
         }
     }
