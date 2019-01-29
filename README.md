@@ -1,4 +1,4 @@
-# SimleLogin
+# SimpleLogin
 
 A simple login mod.
 
