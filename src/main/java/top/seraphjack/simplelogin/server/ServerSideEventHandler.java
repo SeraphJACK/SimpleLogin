@@ -60,7 +60,7 @@ public class ServerSideEventHandler {
                 CommandBase.getCommandSenderAsPlayer(event.getSender()).sendMessage(new TextComponentTranslation("You should login first."));
             } catch (PlayerNotFoundException ignore) {
             }
-            System.out.println("Player " + event.getSender().getName() + " tried to use command before login.");
+            SimpleLogin.logger.warn("Player " + event.getSender().getName() + " tried to use command before login.");
         }
     }
 }

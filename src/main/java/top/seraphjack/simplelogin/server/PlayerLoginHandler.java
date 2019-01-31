@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import top.seraphjack.simplelogin.SLConfig;
+import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
 import top.seraphjack.simplelogin.server.capability.IPassword;
 
@@ -63,13 +64,12 @@ public class PlayerLoginHandler {
         loginList.removeIf((l) -> l.name.equals(id));
         EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(id);
         if (player == null) {
-            System.out.println("Player " + id + " is null!");
             return;
         }
 
         IPassword capability = player.getCapability(CapabilityLoader.CAPABILITY_PASSWORD, null);
         if (capability == null) {
-            System.out.println("Player " + id + "'s capability is null!");
+            SimpleLogin.logger.warn("Fail to load capability for player " + id + ". Ignoring...");
             return;
         }
 
@@ -80,10 +80,10 @@ public class PlayerLoginHandler {
             capability.setPassword(pwd);
             setPlayerToSurvivalMode(player);
             resetPasswordUsers.remove(id);
-            System.out.println("Player " + id + " has successfully registered.");
+            SimpleLogin.logger.info("Player " + id + " has successfully registered.");
         } else if (capability.getPassword().equals(pwd)) {
             setPlayerToSurvivalMode(player);
-            System.out.println("Player " + id + " has successfully logged in.");
+            SimpleLogin.logger.info("Player " + id + " has successfully logged in.");
         } else {
             player.connection.disconnect(new TextComponentTranslation("Wrong Password."));
         }
@@ -99,10 +99,7 @@ public class PlayerLoginHandler {
     }
 
     boolean isPlayerInLoginList(String id) {
-        for (Login login : loginList) {
-            if (login.name.equals(id)) return true;
-        }
-        return false;
+        return loginList.stream().anyMatch(e -> e.name.equals(id));
     }
 
     void resetPassword(String id) {
@@ -130,7 +127,7 @@ public class PlayerLoginHandler {
         try {
             PLAYER_HANDLER_THREAD.join();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            SimpleLogin.logger.warn("Fail to shutdown login handler. ", e);
         }
     }
 }
