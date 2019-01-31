@@ -21,7 +21,8 @@ public class SLCommand extends CommandBase {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "/simplelogin reset <PlayerName>";
+        return "/simplelogin reset <PlayerName>\n" +
+                "/simplelogin list";
     }
 
     @Override
