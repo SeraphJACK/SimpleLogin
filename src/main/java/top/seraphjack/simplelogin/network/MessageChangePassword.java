@@ -42,7 +42,9 @@ public class MessageChangePassword implements IMessage {
             EntityPlayerMP player = ctx.getServerHandler().player;
             IPassword cap = player.getCapability(CapabilityLoader.CAPABILITY_PASSWORD, null);
             if (cap != null) {
-                if (cap.getPassword().equals(message.oldPassword)) {
+                if (message.newPassword.length() >= 100) {
+                    player.sendMessage(new TextComponentTranslation("Password too long."));
+                } else if (cap.getPassword().equals(message.oldPassword)) {
                     cap.setPassword(message.newPassword);
                     player.sendMessage(new TextComponentTranslation("Password Changed."));
                 } else {
