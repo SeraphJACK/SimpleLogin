@@ -9,7 +9,7 @@ import top.seraphjack.simplelogin.server.PlayerLoginHandler;
 import top.seraphjack.simplelogin.utils.SHA256;
 
 public class MessageLogin implements IMessage {
-    public String pwd;
+    private String pwd;
 
     public MessageLogin() {
 
