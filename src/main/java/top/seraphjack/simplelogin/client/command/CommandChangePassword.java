@@ -28,7 +28,8 @@ public class CommandChangePassword extends CommandBase {
         if (args.length == 2) {
             MessageChangePassword msg = new MessageChangePassword(args[0], args[1]);
             NetworkLoader.INSTANCE.sendToServer(msg);
+        } else {
+            throw new CommandException("Invalid arguments.");
         }
-        throw new CommandException("Invalid arguments.");
     }
 }

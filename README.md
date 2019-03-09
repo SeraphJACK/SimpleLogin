@@ -6,4 +6,6 @@ Client should set password on configuration GUI(Choose Options -> Mod Options ->
 
 Server side can reset player's password via command (`/simplelogin reset <PlayerName>`).
 
+Player can change their password via command `/sl_changepassword <Old Password> <New Password>`
+
 Code can be find at GitHub
