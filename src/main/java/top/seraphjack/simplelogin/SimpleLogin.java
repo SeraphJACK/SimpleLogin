@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = SimpleLogin.MODID, acceptableRemoteVersions = "*")
+@Mod(modid = SimpleLogin.MODID, acceptableRemoteVersions = "*", acceptedMinecraftVersions="*")
 public class SimpleLogin {
 
     public static final String MODID = "simplelogin";
