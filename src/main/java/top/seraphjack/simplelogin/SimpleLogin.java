@@ -8,10 +8,11 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = SimpleLogin.MODID, acceptableRemoteVersions = "*", acceptedMinecraftVersions="*")
+@Mod(modid = SimpleLogin.MODID, version = SimpleLogin.VERSION)
 public class SimpleLogin {
 
     public static final String MODID = "simplelogin";
+    public static final String VERSION = "@VERSION_INJECT@";
     public static Logger logger;
 
     @SidedProxy(serverSide = "top.seraphjack.simplelogin.server.ServerProxy", clientSide = "top.seraphjack.simplelogin.client.ClientProxy")
