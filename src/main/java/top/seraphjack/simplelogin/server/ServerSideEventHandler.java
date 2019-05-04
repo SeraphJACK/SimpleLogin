@@ -17,12 +17,15 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.network.MessageRequestLogin;
 import top.seraphjack.simplelogin.network.NetworkLoader;
 import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
 import top.seraphjack.simplelogin.server.capability.CapabilityPassword;
 import top.seraphjack.simplelogin.server.capability.IPassword;
+
+import java.util.Arrays;
 
 @Mod.EventBusSubscriber(value = Side.SERVER)
 public class ServerSideEventHandler {
@@ -54,6 +57,9 @@ public class ServerSideEventHandler {
 
     @SubscribeEvent
     public static void onCommand(CommandEvent event) {
+        if (Arrays.asList(SLConfig.server.commandNames).contains(event.getCommand().getName())) {
+            return;
+        }
         if (PlayerLoginHandler.instance().isPlayerInLoginList(event.getSender().getName())) {
             event.setCanceled(true);
             try {

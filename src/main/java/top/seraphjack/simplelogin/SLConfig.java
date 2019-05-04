@@ -1,5 +1,6 @@
 package top.seraphjack.simplelogin;
 
+import com.sun.org.glassfish.gmbal.Description;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -20,6 +21,10 @@ public class SLConfig {
     public static class Server {
         @Config.Name("Login Timeout(s)")
         public int secs = 60;
+
+        @Config.Name("Whitelisted commands")
+        @Description("Commands in whitelist can be executed before player login.")
+        public String[] commandNames = {};
     }
 
     public static class Client {
