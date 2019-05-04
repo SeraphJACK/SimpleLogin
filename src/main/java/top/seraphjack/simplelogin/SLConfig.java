@@ -1,6 +1,5 @@
 package top.seraphjack.simplelogin;
 
-import com.sun.org.glassfish.gmbal.Description;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -23,7 +22,7 @@ public class SLConfig {
         public int secs = 60;
 
         @Config.Name("Whitelisted commands")
-        @Description("Commands in whitelist can be executed before player login.")
+        @Config.Comment("Commands in whitelist can be executed before player login.")
         public String[] commandNames = {};
     }
 
