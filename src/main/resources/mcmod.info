@@ -4,7 +4,7 @@
     "name": "SimpleLogin",
     "description": "Simple Login",
     "version": "${version}",
-    "mcversion": "*",
+    "mcversion": "[1.10.2,1.12.2]",
     "url" : "",
     "updateUrl": "",
     "authorList": ["Seraph_JACK"],
