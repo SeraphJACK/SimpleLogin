@@ -8,4 +8,4 @@ Server side can reset player's password via command (`/simplelogin reset <Player
 
 Player can change their password via command `/sl_changepassword <Old Password> <New Password>`
 
-Code can be find at GitHub
+If some modpacks need to execute some commands when player join in, which would be canceled by SimpleLogin due to player hasn't finished login during that time, operators can add the commands' name to SimpleLogin's configuration at server side to prevent that.
