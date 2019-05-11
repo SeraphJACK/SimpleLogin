@@ -36,6 +36,10 @@ public class ServerSideEventHandler {
         NetworkLoader.INSTANCE.sendTo(new MessageRequestLogin(), (EntityPlayerMP) event.player);
     }
 
+    public static void playerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        PlayerLoginHandler.instance().logout((EntityPlayerMP) event.player);
+    }
+
     @SubscribeEvent
     public static void onAttachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof EntityPlayer) {

@@ -72,7 +72,12 @@ public class PlayerLoginHandler {
     }
 
     public void login(String id, String pwd) {
-        Login login = (Login) loginList.stream().filter(l -> l.name.equals(id)).toArray()[0];
+        Login login;
+        try {
+            login = (Login) loginList.stream().filter(l -> l.name.equals(id)).toArray()[0];
+        } catch (Exception e) {
+            return;
+        }
         loginList.removeIf((l) -> l.name.equals(id));
         EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(id);
         if (player == null) {
@@ -99,6 +104,20 @@ public class PlayerLoginHandler {
         } else {
             player.connection.disconnect(new TextComponentTranslation("Wrong Password."));
         }
+    }
+
+    void logout(EntityPlayerMP player) {
+        Login login;
+        try {
+            login = (Login) loginList.stream().filter(l -> l.name.equals(player.getGameProfile().getName())).toArray()[0];
+        } catch (Exception e) {
+            return;
+        }
+        if (login != null) {
+            player.setGameType(login.originGameType);
+            loginList.remove(login);
+        }
+
     }
 
     private void processLogin(Login login, EntityPlayerMP player) {
