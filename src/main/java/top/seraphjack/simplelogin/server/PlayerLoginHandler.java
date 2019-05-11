@@ -1,6 +1,7 @@
 package top.seraphjack.simplelogin.server;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.GameType;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -39,13 +40,23 @@ public class PlayerLoginHandler {
                         return;
                     }
 
-                    if (System.currentTimeMillis() - login.time >= SLConfig.server.secs * 1000) {
-                        player.connection.disconnect(new TextComponentTranslation("Login timed out."));
+                    try {
+                        player.connection.setPlayerLocation((double) login.pos.getX(), (double) login.pos.getY(), (double) login.pos.getZ(), 0, 0);
+
+                        if (System.currentTimeMillis() - login.time >= SLConfig.server.secs * 1000) {
+                            player.connection.disconnect(new TextComponentTranslation("Login timed out."));
+                        }
+                    } catch (Exception ignore) {
+
                     }
                 }
 
                 try {
-                    Thread.sleep(1000);
+                    if (loginList.isEmpty()) {
+                        Thread.sleep(1000);
+                    } else {
+                        Thread.sleep(50);
+                    }
                 } catch (InterruptedException ignore) {
 
                 }
@@ -61,6 +72,7 @@ public class PlayerLoginHandler {
     }
 
     public void login(String id, String pwd) {
+        Login login = (Login) loginList.stream().filter(l -> l.name.equals(id)).toArray()[0];
         loginList.removeIf((l) -> l.name.equals(id));
         EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(id);
         if (player == null) {
@@ -78,23 +90,26 @@ public class PlayerLoginHandler {
         } else if (capability.isFirst() || resetPasswordUsers.contains(id)) {
             capability.setFirst(false);
             capability.setPassword(pwd);
-            setPlayerToSurvivalMode(player);
+            processLogin(login, player);
             resetPasswordUsers.remove(id);
             SimpleLogin.logger.info("Player " + id + " has successfully registered.");
         } else if (capability.getPassword().equals(pwd)) {
-            setPlayerToSurvivalMode(player);
+            processLogin(login, player);
             SimpleLogin.logger.info("Player " + id + " has successfully logged in.");
         } else {
             player.connection.disconnect(new TextComponentTranslation("Wrong Password."));
         }
     }
 
-    private void setPlayerToSurvivalMode(EntityPlayerMP player) {
-        FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> player.setGameType(GameType.SURVIVAL));
+    private void processLogin(Login login, EntityPlayerMP player) {
+        FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> {
+            player.setGameType(login.originGameType);
+            player.setPosition(login.pos.getX(), login.pos.getY(), login.pos.getZ());
+        });
     }
 
     void addPlayerToLoginList(EntityPlayerMP player) {
-        loginList.add(new Login(player.getGameProfile().getName()));
+        loginList.add(new Login(player));
         player.setGameType(GameType.SPECTATOR);
     }
 
@@ -115,10 +130,14 @@ public class PlayerLoginHandler {
     private static class Login {
         String name;
         long time;
+        BlockPos pos;
+        GameType originGameType;
 
-        Login(String name) {
-            this.name = name;
+        Login(EntityPlayerMP player) {
+            this.name = player.getGameProfile().getName();
             this.time = System.currentTimeMillis();
+            this.pos = new BlockPos(player.getPosition());
+            originGameType = player.interactionManager.getGameType();
         }
     }
 
