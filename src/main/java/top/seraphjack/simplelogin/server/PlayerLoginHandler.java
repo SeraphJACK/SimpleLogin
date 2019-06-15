@@ -9,6 +9,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SimpleLogin;
+import top.seraphjack.simplelogin.network.MessageRequestLogin;
+import top.seraphjack.simplelogin.network.NetworkLoader;
 import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
 import top.seraphjack.simplelogin.server.capability.IPassword;
 
@@ -41,6 +43,12 @@ public class PlayerLoginHandler {
                     }
 
                     try {
+
+                        if (System.currentTimeMillis() - login.lastRequested >- 1000) {
+                            NetworkLoader.INSTANCE.sendTo(new MessageRequestLogin(), player);
+                            login.lastRequested = System.currentTimeMillis();
+                        }
+
                         player.connection.setPlayerLocation((double) login.pos.getX(), (double) login.pos.getY(), (double) login.pos.getZ(), 0, 0);
 
                         if (System.currentTimeMillis() - login.time >= SLConfig.server.secs * 1000) {
@@ -106,23 +114,9 @@ public class PlayerLoginHandler {
         }
     }
 
-    void logout(EntityPlayerMP player) {
-        Login login;
-        try {
-            login = (Login) loginList.stream().filter(l -> l.name.equals(player.getGameProfile().getName())).toArray()[0];
-        } catch (Exception e) {
-            return;
-        }
-        if (login != null) {
-            player.setGameType(login.originGameType);
-            loginList.remove(login);
-        }
-
-    }
-
     private void processLogin(Login login, EntityPlayerMP player) {
         FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> {
-            player.setGameType(login.originGameType);
+            player.setGameType(GameType.SURVIVAL);
             player.setPosition(login.pos.getX(), login.pos.getY(), login.pos.getZ());
         });
     }
@@ -150,13 +144,12 @@ public class PlayerLoginHandler {
         String name;
         long time;
         BlockPos pos;
-        GameType originGameType;
+        long lastRequested = 0;
 
         Login(EntityPlayerMP player) {
             this.name = player.getGameProfile().getName();
             this.time = System.currentTimeMillis();
             this.pos = new BlockPos(player.getPosition());
-            originGameType = player.interactionManager.getGameType();
         }
     }
 

@@ -1,8 +1,6 @@
 package top.seraphjack.simplelogin.server;
 
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandSenderWrapper;
-import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,8 +17,6 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SimpleLogin;
-import top.seraphjack.simplelogin.network.MessageRequestLogin;
-import top.seraphjack.simplelogin.network.NetworkLoader;
 import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
 import top.seraphjack.simplelogin.server.capability.CapabilityPassword;
 import top.seraphjack.simplelogin.server.capability.IPassword;
@@ -33,11 +29,7 @@ public class ServerSideEventHandler {
     @SubscribeEvent
     public static void playerJoin(PlayerEvent.PlayerLoggedInEvent event) {
         PlayerLoginHandler.instance().addPlayerToLoginList((EntityPlayerMP) event.player);
-        NetworkLoader.INSTANCE.sendTo(new MessageRequestLogin(), (EntityPlayerMP) event.player);
-    }
-
-    public static void playerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
-        PlayerLoginHandler.instance().logout((EntityPlayerMP) event.player);
+        // NetworkLoader.INSTANCE.sendTo(new MessageRequestLogin(), (EntityPlayerMP) event.player);
     }
 
     @SubscribeEvent
