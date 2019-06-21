@@ -63,7 +63,7 @@ public class PlayerLoginHandler {
                     if (loginList.isEmpty()) {
                         Thread.sleep(1000);
                     } else {
-                        Thread.sleep(50);
+                        Thread.sleep(400);
                     }
                 } catch (InterruptedException ignore) {
 
