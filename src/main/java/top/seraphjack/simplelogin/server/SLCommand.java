@@ -28,7 +28,7 @@ public class SLCommand extends CommandBase {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (args.length == 0) {
-            throw (new WrongUsageException("/simplelogin reset <PlayerName>"));
+            throw (new WrongUsageException(getUsage(sender)));
         } else {
             switch (args[0]) {
                 case "reset": {
@@ -41,7 +41,7 @@ public class SLCommand extends CommandBase {
                     break;
                 }
                 default: {
-                    throw (new WrongUsageException("/simplelogin reset <PlayerName>"));
+                    throw (new WrongUsageException(getUsage(sender)));
                 }
             }
         }

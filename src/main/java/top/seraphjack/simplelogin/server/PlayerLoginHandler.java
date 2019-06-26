@@ -2,7 +2,7 @@ package top.seraphjack.simplelogin.server;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.GameType;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -52,7 +52,7 @@ public class PlayerLoginHandler {
                         player.connection.setPlayerLocation((double) login.pos.getX(), (double) login.pos.getY(), (double) login.pos.getZ(), 0, 0);
 
                         if (System.currentTimeMillis() - login.time >= SLConfig.server.secs * 1000) {
-                            player.connection.disconnect(new TextComponentTranslation("Login timed out."));
+                            player.connection.disconnect(new TextComponentString("Login timed out."));
                         }
                     } catch (Exception ignore) {
 
@@ -99,7 +99,7 @@ public class PlayerLoginHandler {
         }
 
         if (pwd.length() >= 100) {
-            player.connection.disconnect(new TextComponentTranslation("Password too long."));
+            player.connection.disconnect(new TextComponentString("Password too long."));
         } else if (capability.isFirst() || resetPasswordUsers.contains(id)) {
             capability.setFirst(false);
             capability.setPassword(pwd);
@@ -110,7 +110,7 @@ public class PlayerLoginHandler {
             processLogin(login, player);
             SimpleLogin.logger.info("Player " + id + " has successfully logged in.");
         } else {
-            player.connection.disconnect(new TextComponentTranslation("Wrong Password."));
+            player.connection.disconnect(new TextComponentString("Wrong Password."));
         }
     }
 

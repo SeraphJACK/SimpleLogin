@@ -7,7 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.CommandEvent;
@@ -17,6 +17,8 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SimpleLogin;
+import top.seraphjack.simplelogin.network.MessageRequestLogin;
+import top.seraphjack.simplelogin.network.NetworkLoader;
 import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
 import top.seraphjack.simplelogin.server.capability.CapabilityPassword;
 import top.seraphjack.simplelogin.server.capability.IPassword;
@@ -29,7 +31,7 @@ public class ServerSideEventHandler {
     @SubscribeEvent
     public static void playerJoin(PlayerEvent.PlayerLoggedInEvent event) {
         PlayerLoginHandler.instance().addPlayerToLoginList((EntityPlayerMP) event.player);
-        // NetworkLoader.INSTANCE.sendTo(new MessageRequestLogin(), (EntityPlayerMP) event.player);
+        NetworkLoader.INSTANCE.sendTo(new MessageRequestLogin(), (EntityPlayerMP) event.player);
     }
 
     @SubscribeEvent
@@ -59,7 +61,7 @@ public class ServerSideEventHandler {
         if (PlayerLoginHandler.instance().isPlayerInLoginList(event.getSender().getName())) {
             event.setCanceled(true);
             try {
-                CommandBase.getCommandSenderAsPlayer(event.getSender()).sendMessage(new TextComponentTranslation("You should login first."));
+                CommandBase.getCommandSenderAsPlayer(event.getSender()).sendMessage(new TextComponentString("You should login first."));
             } catch (PlayerNotFoundException ignore) {
             }
             SimpleLogin.logger.warn("Player " + event.getSender().getName() + " tried to use command " + event.getCommand().getName() + " before login.");
