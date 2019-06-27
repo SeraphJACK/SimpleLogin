@@ -24,17 +24,12 @@ public class PlayerLoginHandler {
     private static PlayerLoginHandler INSTANCE;
 
     private boolean alive;
-    private ConcurrentLinkedQueue<Runnable> tasks = new ConcurrentLinkedQueue<>();
     private ConcurrentLinkedQueue<Login> loginList = new ConcurrentLinkedQueue<>();
     private Set<String> resetPasswordUsers = new HashSet<>();
 
     private PlayerLoginHandler() {
         PLAYER_HANDLER_THREAD = new Thread(() -> {
             while (alive) {
-                while (!tasks.isEmpty()) {
-                    tasks.poll().run();
-                }
-
                 for (Login login : loginList) {
                     EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(login.name);
                     if (player == null) {
@@ -54,8 +49,8 @@ public class PlayerLoginHandler {
                         if (System.currentTimeMillis() - login.time >= SLConfig.server.secs * 1000) {
                             player.connection.disconnect(new TextComponentString("Login timed out."));
                         }
-                    } catch (Exception ignore) {
-
+                    } catch (Exception e) {
+                        SimpleLogin.logger.error("Exception caught in PlayerLoginHandler thread", e);
                     }
                 }
 
@@ -69,7 +64,7 @@ public class PlayerLoginHandler {
 
                 }
             }
-        });
+        }, "Simple-Login-Handler-Thread");
         alive = true;
         PLAYER_HANDLER_THREAD.start();
     }
@@ -79,16 +74,20 @@ public class PlayerLoginHandler {
         return INSTANCE;
     }
 
-    public void login(String id, String pwd) {
-        Login login;
-        try {
-            login = (Login) loginList.stream().filter(l -> l.name.equals(id)).toArray()[0];
-        } catch (Exception e) {
-            return;
+    private Login getLoginByName(String name) {
+        for (Login l : loginList) {
+            if (l.name.equals(name)) {
+                return l;
+            }
         }
+        return null;
+    }
+
+    public void login(String id, String pwd) {
+        Login login = getLoginByName(id);
         loginList.removeIf((l) -> l.name.equals(id));
         EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(id);
-        if (player == null) {
+        if (login == null || player == null) {
             return;
         }
 
@@ -144,12 +143,13 @@ public class PlayerLoginHandler {
         String name;
         long time;
         BlockPos pos;
-        long lastRequested = 0;
+        long lastRequested;
 
         Login(EntityPlayerMP player) {
             this.name = player.getGameProfile().getName();
             this.time = System.currentTimeMillis();
             this.pos = new BlockPos(player.getPosition());
+            this.lastRequested = System.currentTimeMillis();
         }
     }
 

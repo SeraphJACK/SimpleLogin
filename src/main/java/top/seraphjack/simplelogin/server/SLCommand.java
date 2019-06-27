@@ -7,7 +7,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
-import top.seraphjack.simplelogin.server.PlayerLoginHandler;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
