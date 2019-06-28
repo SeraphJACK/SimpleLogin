@@ -30,14 +30,13 @@ public class PlayerLoginHandler {
     private PlayerLoginHandler() {
         PLAYER_HANDLER_THREAD = new Thread(() -> {
             while (alive) {
-                for (Login login : loginList) {
-                    EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(login.name);
-                    if (player == null) {
-                        loginList.remove(login);
-                        return;
-                    }
-
-                    try {
+                try {
+                    for (Login login : loginList) {
+                        EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(login.name);
+                        if (player == null) {
+                            loginList.remove(login);
+                            return;
+                        }
 
                         if (System.currentTimeMillis() - login.lastRequested >= 1000) {
                             NetworkLoader.INSTANCE.sendTo(new MessageRequestLogin(), player);
@@ -49,21 +48,18 @@ public class PlayerLoginHandler {
                         if (System.currentTimeMillis() - login.time >= SLConfig.server.secs * 1000) {
                             player.connection.disconnect(new TextComponentString("Login timed out."));
                         }
-                    } catch (Exception e) {
-                        SimpleLogin.logger.error("Exception caught in PlayerLoginHandler thread", e);
                     }
-                }
 
-                try {
                     if (loginList.isEmpty()) {
                         Thread.sleep(1000);
                     } else {
                         Thread.sleep(400);
                     }
-                } catch (InterruptedException ignore) {
-
+                } catch (Exception e) {
+                    SimpleLogin.logger.error("Exception caught in PlayerLoginHandler thread", e);
                 }
             }
+
         }, "Simple-Login-Handler-Thread");
         alive = true;
         PLAYER_HANDLER_THREAD.start();
@@ -154,6 +150,7 @@ public class PlayerLoginHandler {
     }
 
     void stop() {
+        SimpleLogin.logger.info("Shutting down player login handler...");
         alive = false;
         try {
             PLAYER_HANDLER_THREAD.join();
