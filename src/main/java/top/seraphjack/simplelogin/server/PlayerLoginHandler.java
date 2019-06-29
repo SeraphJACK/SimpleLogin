@@ -55,7 +55,7 @@ public class PlayerLoginHandler {
                     } else {
                         Thread.sleep(400);
                     }
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     SimpleLogin.logger.error("Exception caught in PlayerLoginHandler thread", e);
                 }
             }
