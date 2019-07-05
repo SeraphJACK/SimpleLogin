@@ -62,8 +62,7 @@ public class PlayerLoginHandler {
 
         }, "Simple-Login-Handler-Thread");
         alive = true;
-        PLAYER_HANDLER_THREAD.start();
-    }
+        PLAYER_HANDLER_THREAD.start(); }
 
     public static PlayerLoginHandler instance() {
         if (INSTANCE == null) INSTANCE = new PlayerLoginHandler();
