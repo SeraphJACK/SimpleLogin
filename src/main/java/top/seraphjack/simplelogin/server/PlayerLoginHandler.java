@@ -14,6 +14,7 @@ import top.seraphjack.simplelogin.network.NetworkLoader;
 import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
 import top.seraphjack.simplelogin.server.capability.IPassword;
 
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -59,7 +60,7 @@ public class PlayerLoginHandler {
                     SimpleLogin.logger.error("Exception caught in PlayerLoginHandler thread", e);
                 }
             }
-            SimpleLogin.logger.info("Closing PlayerLoginHandler due to alive is false.");
+            SimpleLogin.logger.warn("Closing Player Login Handler...");
         }, "Simple-Login-Handler-Thread");
         alive = true;
         PLAYER_HANDLER_THREAD.start();
@@ -70,6 +71,7 @@ public class PlayerLoginHandler {
         return INSTANCE;
     }
 
+    @Nullable
     private Login getLoginByName(String name) {
         for (Login l : loginList) {
             if (l.name.equals(name)) {
@@ -84,6 +86,7 @@ public class PlayerLoginHandler {
         loginList.removeIf((l) -> l.name.equals(id));
         EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(id);
         if (login == null || player == null) {
+            SimpleLogin.logger.warn("Invalid login packet from player " + id + ".");
             return;
         }
 
@@ -95,6 +98,7 @@ public class PlayerLoginHandler {
 
         if (pwd.length() >= 100) {
             player.connection.disconnect(new TextComponentString("Password too long."));
+            SimpleLogin.logger.warn("Player " + id + " tried to login with a invalid password(too long).");
         } else if (capability.isFirst() || resetPasswordUsers.contains(id)) {
             capability.setFirst(false);
             capability.setPassword(pwd);
@@ -105,6 +109,7 @@ public class PlayerLoginHandler {
             processLogin(login, player);
             SimpleLogin.logger.info("Player " + id + " has successfully logged in.");
         } else {
+            SimpleLogin.logger.warn("Player " + id + " tried to login with a wrong password.");
             player.connection.disconnect(new TextComponentString("Wrong Password."));
         }
     }
