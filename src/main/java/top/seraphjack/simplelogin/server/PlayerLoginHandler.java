@@ -1,7 +1,6 @@
 package top.seraphjack.simplelogin.server;
 
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.GameType;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -44,7 +43,7 @@ public class PlayerLoginHandler {
                             login.lastRequested = System.currentTimeMillis();
                         }
 
-                        player.connection.setPlayerLocation((double) login.pos.getX(), (double) login.pos.getY(), (double) login.pos.getZ(), 0, 0);
+                        player.connection.setPlayerLocation(login.posX, login.posY, login.posZ, login.yaw, login.pitch);
 
                         if (System.currentTimeMillis() - login.time >= SLConfig.server.secs * 1000) {
                             player.connection.disconnect(new TextComponentString("Login timed out."));
@@ -117,7 +116,7 @@ public class PlayerLoginHandler {
     private void processLogin(Login login, EntityPlayerMP player) {
         FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> {
             player.setGameType(GameType.SURVIVAL);
-            player.setPosition(login.pos.getX(), login.pos.getY(), login.pos.getZ());
+            player.setPosition(login.posX, login.posY, login.posZ);
         });
     }
 
@@ -143,13 +142,18 @@ public class PlayerLoginHandler {
     private static class Login {
         String name;
         long time;
-        BlockPos pos;
+        double posX, posY, posZ;
+        float yaw, pitch;
         long lastRequested;
 
         Login(EntityPlayerMP player) {
             this.name = player.getGameProfile().getName();
             this.time = System.currentTimeMillis();
-            this.pos = new BlockPos(player.getPosition());
+            this.posX = player.posX;
+            this.posY = player.posY;
+            this.posZ = player.posZ;
+            this.yaw = player.rotationYaw;
+            this.pitch = player.rotationPitch;
             this.lastRequested = System.currentTimeMillis();
         }
     }
