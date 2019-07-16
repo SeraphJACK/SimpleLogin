@@ -48,6 +48,7 @@ public class PlayerLoginHandler {
 
                         if (System.currentTimeMillis() - login.time >= SLConfig.server.secs * 1000) {
                             player.connection.disconnect(new TextComponentString("Login timed out."));
+                            loginList.removeIf(i -> i.name.equals(player.getGameProfile().getName()));
                             SimpleLogin.logger.warn("Player " + login.name + " haven't login after a long time.");
                         }
                     }
