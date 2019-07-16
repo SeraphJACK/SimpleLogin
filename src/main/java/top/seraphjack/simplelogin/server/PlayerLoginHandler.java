@@ -59,10 +59,11 @@ public class PlayerLoginHandler {
                     SimpleLogin.logger.error("Exception caught in PlayerLoginHandler thread", e);
                 }
             }
-
+            SimpleLogin.logger.info("Closing PlayerLoginHandler due to alive is false.");
         }, "Simple-Login-Handler-Thread");
         alive = true;
-        PLAYER_HANDLER_THREAD.start(); }
+        PLAYER_HANDLER_THREAD.start();
+    }
 
     public static PlayerLoginHandler instance() {
         if (INSTANCE == null) INSTANCE = new PlayerLoginHandler();
