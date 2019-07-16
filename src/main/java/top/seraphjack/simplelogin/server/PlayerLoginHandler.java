@@ -34,6 +34,7 @@ public class PlayerLoginHandler {
                     for (Login login : loginList) {
                         EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(login.name);
                         if (player == null) {
+                            SimpleLogin.logger.warn("Can't find player " + login.name + ", ignoring...");
                             loginList.remove(login);
                             return;
                         }
@@ -47,6 +48,7 @@ public class PlayerLoginHandler {
 
                         if (System.currentTimeMillis() - login.time >= SLConfig.server.secs * 1000) {
                             player.connection.disconnect(new TextComponentString("Login timed out."));
+                            SimpleLogin.logger.warn("Player " + login.name + " haven't login after a long time.");
                         }
                     }
 
@@ -164,7 +166,7 @@ public class PlayerLoginHandler {
         try {
             PLAYER_HANDLER_THREAD.join();
         } catch (InterruptedException e) {
-            SimpleLogin.logger.warn("Fail to shutdown login handler. ", e);
+            SimpleLogin.logger.error("Fail to shutdown login handler. ", e);
         }
     }
 }
