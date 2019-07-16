@@ -36,7 +36,7 @@ public class PlayerLoginHandler {
                         if (player == null) {
                             SimpleLogin.logger.warn("Can't find player " + login.name + ", ignoring...");
                             loginList.remove(login);
-                            return;
+                            continue;
                         }
 
                         if (System.currentTimeMillis() - login.lastRequested >= 1000) {
