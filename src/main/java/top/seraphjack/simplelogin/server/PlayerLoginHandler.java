@@ -47,7 +47,7 @@ public class PlayerLoginHandler {
                         player.connection.setPlayerLocation(login.posX, login.posY, login.posZ, login.yaw, login.pitch);
 
                         if (System.currentTimeMillis() - login.time >= SLConfig.server.secs * 1000) {
-                            player.connection.disconnect(new TextComponentString("Login timed out."))
+                            player.connection.disconnect(new TextComponentString("Login timed out."));
                             SimpleLogin.logger.warn("Player " + login.name + " haven't login after a long time.");
                         }
                     }
