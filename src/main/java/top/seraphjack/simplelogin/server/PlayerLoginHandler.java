@@ -47,9 +47,7 @@ public class PlayerLoginHandler {
                         player.connection.setPlayerLocation(login.posX, login.posY, login.posZ, login.yaw, login.pitch);
 
                         if (System.currentTimeMillis() - login.time >= SLConfig.server.secs * 1000) {
-                            FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() ->
-                                    player.connection.disconnect(new TextComponentString("Login timed out."))
-                            );
+                            player.connection.disconnect(new TextComponentString("Login timed out."))
                             SimpleLogin.logger.warn("Player " + login.name + " haven't login after a long time.");
                         }
                     }
@@ -85,38 +83,36 @@ public class PlayerLoginHandler {
     }
 
     public void login(String id, String pwd) {
-        FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> {
-            Login login = getLoginByName(id);
-            loginList.removeIf((l) -> l.name.equals(id));
-            EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(id);
-            if (login == null || player == null) {
-                // SimpleLogin.logger.warn("Invalid login packet from player " + id + ".");
-                return;
-            }
+        Login login = getLoginByName(id);
+        loginList.removeIf((l) -> l.name.equals(id));
+        EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(id);
+        if (login == null || player == null) {
+            // SimpleLogin.logger.warn("Invalid login packet from player " + id + ".");
+            return;
+        }
 
-            IPassword capability = player.getCapability(CapabilityLoader.CAPABILITY_PASSWORD, null);
-            if (capability == null) {
-                SimpleLogin.logger.warn("Fail to load capability for player " + id + ". Ignoring...");
-                return;
-            }
+        IPassword capability = player.getCapability(CapabilityLoader.CAPABILITY_PASSWORD, null);
+        if (capability == null) {
+            SimpleLogin.logger.warn("Fail to load capability for player " + id + ". Ignoring...");
+            return;
+        }
 
-            if (pwd.length() >= 100) {
-                player.connection.disconnect(new TextComponentString("Password too long."));
-                SimpleLogin.logger.warn("Player " + id + " tried to login with a invalid password(too long).");
-            } else if (capability.isFirst() || resetPasswordUsers.contains(id)) {
-                capability.setFirst(false);
-                capability.setPassword(pwd);
-                processLogin(login, player);
-                resetPasswordUsers.remove(id);
-                SimpleLogin.logger.info("Player " + id + " has successfully registered.");
-            } else if (capability.getPassword().equals(pwd)) {
-                processLogin(login, player);
-                SimpleLogin.logger.info("Player " + id + " has successfully logged in.");
-            } else {
-                SimpleLogin.logger.warn("Player " + id + " tried to login with a wrong password.");
-                player.connection.disconnect(new TextComponentString("Wrong Password."));
-            }
-        });
+        if (pwd.length() >= 100) {
+            player.connection.disconnect(new TextComponentString("Password too long."));
+            SimpleLogin.logger.warn("Player " + id + " tried to login with a invalid password(too long).");
+        } else if (capability.isFirst() || resetPasswordUsers.contains(id)) {
+            capability.setFirst(false);
+            capability.setPassword(pwd);
+            processLogin(login, player);
+            resetPasswordUsers.remove(id);
+            SimpleLogin.logger.info("Player " + id + " has successfully registered.");
+        } else if (capability.getPassword().equals(pwd)) {
+            processLogin(login, player);
+            SimpleLogin.logger.info("Player " + id + " has successfully logged in.");
+        } else {
+            SimpleLogin.logger.warn("Player " + id + " tried to login with a wrong password.");
+            player.connection.disconnect(new TextComponentString("Wrong Password."));
+        }
     }
 
     private void processLogin(Login login, EntityPlayerMP player) {
