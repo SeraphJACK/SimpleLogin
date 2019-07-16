@@ -87,7 +87,7 @@ public class PlayerLoginHandler {
         loginList.removeIf((l) -> l.name.equals(id));
         EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(id);
         if (login == null || player == null) {
-            SimpleLogin.logger.warn("Invalid login packet from player " + id + ".");
+            // SimpleLogin.logger.warn("Invalid login packet from player " + id + ".");
             return;
         }
 
