@@ -6,12 +6,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.SERVER)
 public interface IPassword {
 
-    public String getPassword();
+    String getPassword();
 
-    public void setPassword(String password);
+    void setPassword(String password);
 
-    public boolean isFirst();
+    boolean isFirst();
 
-    public void setFirst(boolean first);
+    void setFirst(boolean first);
 
 }

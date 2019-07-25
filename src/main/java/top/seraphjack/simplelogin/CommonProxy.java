@@ -26,8 +26,4 @@ public abstract class CommonProxy {
     public void serverStopping(FMLServerStoppingEvent e) {
 
     }
-
-    public abstract boolean isPhysicalServer();
-
-    public abstract boolean isPhysicalClient();
 }

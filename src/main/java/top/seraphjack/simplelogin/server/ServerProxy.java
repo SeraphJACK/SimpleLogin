@@ -27,13 +27,4 @@ public class ServerProxy extends CommonProxy {
         PlayerLoginHandler.instance().stop();
     }
 
-    @Override
-    public boolean isPhysicalServer() {
-        return true;
-    }
-
-    @Override
-    public boolean isPhysicalClient() {
-        return false;
-    }
 }

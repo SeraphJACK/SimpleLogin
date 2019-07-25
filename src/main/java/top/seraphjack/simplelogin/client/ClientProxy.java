@@ -12,13 +12,4 @@ public class ClientProxy extends CommonProxy {
         ClientCommandHandler.instance.registerCommand(new CommandChangePassword());
     }
 
-    @Override
-    public boolean isPhysicalServer() {
-        return false;
-    }
-
-    @Override
-    public boolean isPhysicalClient() {
-        return true;
-    }
 }
