@@ -18,7 +18,7 @@ public class MessageRequestLogin implements IMessage {
 
     }
 
-    public static class MessageHandler implements IMessageHandler<MessageRequestLogin,MessageLogin> {
+    public static class MessageHandler implements IMessageHandler<MessageRequestLogin, MessageLogin> {
 
         @Override
         public MessageLogin onMessage(MessageRequestLogin message, MessageContext ctx) {
