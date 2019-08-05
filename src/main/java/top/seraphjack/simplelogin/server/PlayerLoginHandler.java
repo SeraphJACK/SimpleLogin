@@ -39,7 +39,7 @@ public class PlayerLoginHandler {
                             continue;
                         }
 
-                        if (System.currentTimeMillis() - login.lastRequested >= 1000) {
+                        if (SLConfig.server.resendCommand && System.currentTimeMillis() - login.lastRequested >= 1000) {
                             NetworkLoader.INSTANCE.sendTo(new MessageRequestLogin(), player);
                             login.lastRequested = System.currentTimeMillis();
                         }

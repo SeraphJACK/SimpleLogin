@@ -11,6 +11,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -30,8 +31,10 @@ public class ServerSideEventHandler {
 
     @SubscribeEvent
     public static void playerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        PlayerLoginHandler.instance().addPlayerToLoginList((EntityPlayerMP) event.player);
-        NetworkLoader.INSTANCE.sendTo(new MessageRequestLogin(), (EntityPlayerMP) event.player);
+        FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> {
+            PlayerLoginHandler.instance().addPlayerToLoginList((EntityPlayerMP) event.player);
+            NetworkLoader.INSTANCE.sendTo(new MessageRequestLogin(), (EntityPlayerMP) event.player);
+        });
     }
 
     @SubscribeEvent

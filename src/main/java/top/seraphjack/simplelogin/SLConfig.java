@@ -24,6 +24,10 @@ public class SLConfig {
         @Config.Name("Whitelisted commands")
         @Config.Comment("Commands in whitelist can be executed before player login.")
         public String[] commandNames = {};
+
+        @Config.Name("Resend request")
+        @Config.Comment("Whether should the server resend password request to client")
+        public boolean resendCommand = true;
     }
 
     public static class Client {
