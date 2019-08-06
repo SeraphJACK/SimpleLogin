@@ -50,6 +50,7 @@ public class PlayerLoginHandler {
                             player.connection.disconnect(new TextComponentString("Login timed out."));
                             loginList.removeIf(i -> i.name.equals(player.getGameProfile().getName()));
                             SimpleLogin.logger.warn("Player " + login.name + " haven't login after a long time.");
+                            loginList.remove(login);
                         }
                     }
 
@@ -104,11 +105,11 @@ public class PlayerLoginHandler {
         } else if (capability.isFirst() || resetPasswordUsers.contains(id)) {
             capability.setFirst(false);
             capability.setPassword(pwd);
-            processLogin(login, player);
+            afterPlayerLogin(login, player);
             resetPasswordUsers.remove(id);
             SimpleLogin.logger.info("Player " + id + " has successfully registered.");
         } else if (capability.getPassword().equals(pwd)) {
-            processLogin(login, player);
+            afterPlayerLogin(login, player);
             SimpleLogin.logger.info("Player " + id + " has successfully logged in.");
         } else {
             SimpleLogin.logger.warn("Player " + id + " tried to login with a wrong password.");
@@ -116,11 +117,9 @@ public class PlayerLoginHandler {
         }
     }
 
-    private void processLogin(Login login, EntityPlayerMP player) {
-        FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> {
-            player.setGameType(GameType.SURVIVAL);
-            player.setPosition(login.posX, login.posY, login.posZ);
-        });
+    private void afterPlayerLogin(Login login, EntityPlayerMP player) {
+        player.setGameType(GameType.SURVIVAL);
+        player.setPosition(login.posX, login.posY, login.posZ);
     }
 
     void addPlayerToLoginList(EntityPlayerMP player) {

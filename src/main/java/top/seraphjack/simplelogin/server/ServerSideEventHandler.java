@@ -26,7 +26,7 @@ import top.seraphjack.simplelogin.server.capability.IPassword;
 
 import java.util.Arrays;
 
-@Mod.EventBusSubscriber(value = Side.SERVER)
+@Mod.EventBusSubscriber(value = Side.SERVER, modid = SimpleLogin.MODID)
 public class ServerSideEventHandler {
 
     @SubscribeEvent

@@ -14,7 +14,6 @@ import javax.annotation.Nullable;
 @SideOnly(Side.SERVER)
 public class CapabilityPassword {
     public static class Storage implements Capability.IStorage<IPassword> {
-        @Nullable
         @Override
         public NBTBase writeNBT(Capability<IPassword> capability, IPassword instance, EnumFacing side) {
             NBTTagCompound nbt = new NBTTagCompound();
