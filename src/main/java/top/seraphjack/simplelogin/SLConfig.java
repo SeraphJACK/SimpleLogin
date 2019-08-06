@@ -27,7 +27,7 @@ public class SLConfig {
 
         @Config.Name("Resend request")
         @Config.Comment("Whether should the server resend password request to client")
-        public boolean resendCommand = true;
+        public boolean resendCommand = false;
     }
 
     public static class Client {
