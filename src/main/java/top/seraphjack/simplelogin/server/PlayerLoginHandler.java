@@ -63,7 +63,7 @@ public class PlayerLoginHandler {
                     SimpleLogin.logger.error("Exception caught in PlayerLoginHandler thread", e);
                 }
             }
-            SimpleLogin.logger.warn("Closing Player Login Handler...");
+            // SimpleLogin.logger.warn("Closing Player Login Handler...");
         }, "Simple-Login-Handler-Thread");
         alive = true;
         PLAYER_HANDLER_THREAD.start();
