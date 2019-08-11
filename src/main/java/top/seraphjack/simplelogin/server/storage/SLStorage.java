@@ -10,7 +10,7 @@ public class SLStorage {
         switch (method) {
             case "file": {
                 try {
-                    storageProvider = new StorageProviderFile(new File(System.getenv("runDir") + "simplelogin", "entries.json").toPath());
+                    storageProvider = new StorageProviderFile(new File("./simplelogin/storage/entries.json").toPath());
                 } catch (IOException ex) {
                     throw new RuntimeException("Unable to initialize storage provider", ex);
                 }
