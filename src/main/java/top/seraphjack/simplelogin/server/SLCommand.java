@@ -8,7 +8,9 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.GameType;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
 
 import javax.annotation.Nullable;
@@ -30,7 +32,8 @@ public class SLCommand extends CommandBase {
     @Override
     public String getUsage(ICommandSender sender) {
         return "/simplelogin unregister <PlayerName>\n" +
-                "/simplelogin save";
+                "/simplelogin save\n" +
+                "/simplelogin setDefaultGameType <PlayerName> <GameType>";
     }
 
     @Override
@@ -54,6 +57,13 @@ public class SLCommand extends CommandBase {
                 }
                 break;
             }
+            case "setDefaultGameType": {
+                if (args.length != 3) throw new WrongUsageException(getUsage(sender));
+                GameType gameType = GameType.parseGameTypeWithDefault(args[2], GameType.getByID(SLConfig.server.defaultGameType));
+                SLStorage.storageProvider.setGameType(args[1], gameType);
+                sender.sendMessage(new TextComponentString("Set player " + args[1] + "'s default GameMode to " + gameType.getName() + "."));
+                break;
+            }
             default: {
                 throw new WrongUsageException(getUsage(sender));
             }
@@ -64,8 +74,12 @@ public class SLCommand extends CommandBase {
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
         if (args[0].equals("unregister")) {
             return getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames());
+        } else if (args[0].equals("setDefaultGameType")) {
+            if (args.length == 2) return getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames());
+            else if (args.length == 3)
+                return getListOfStringsMatchingLastWord(args, Arrays.asList("survival", "creative", "adventure", "spectator"));
         } else if (args.length <= 1) {
-            return getListOfStringsMatchingLastWord(args, Arrays.asList("unregister", "save"));
+            return getListOfStringsMatchingLastWord(args, Arrays.asList("unregister", "save", "setDefaultGameType"));
         }
         return super.getTabCompletions(server, sender, args, targetPos);
     }

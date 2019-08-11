@@ -1,7 +1,9 @@
 package top.seraphjack.simplelogin.server.storage;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.world.GameType;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
 import top.seraphjack.simplelogin.server.capability.IPassword;
 
@@ -56,6 +58,21 @@ public class StorageProviderCapability implements StorageProvider {
     @Override
     public void save() {
         // NO-OP
+    }
+
+    @Override
+    public GameType gameType(String username) {
+        if (isPlayerOnline(username)) {
+            return GameType.getByID(getEntry(username).getGameType());
+        }
+        return GameType.getByID(SLConfig.server.defaultGameType);
+    }
+
+    @Override
+    public void setGameType(String username, GameType gameType) {
+        if (isPlayerOnline(username)) {
+            getEntry(username).setGameType(gameType.getID());
+        }
     }
 
     private boolean isPlayerOnline(String id) {

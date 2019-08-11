@@ -32,6 +32,10 @@ public class SLConfig {
         @Config.Name("Storage method")
         @Config.Comment("Available storage method: file(json file) / capability(save in player nbt)")
         public String storageMethod = "file";
+
+        @Config.Name("Default Game Type")
+        @Config.Comment("Default game type switched after player login")
+        public int defaultGameType = 0;
     }
 
     public static class Client {

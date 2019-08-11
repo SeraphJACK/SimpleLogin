@@ -7,6 +7,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import top.seraphjack.simplelogin.SLConfig;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,6 +20,7 @@ public class CapabilityPassword {
             NBTTagCompound nbt = new NBTTagCompound();
             nbt.setString("pwd", instance.getPassword());
             nbt.setBoolean("first", instance.isFirst());
+            nbt.setInteger("gameType", instance.getGameType());
             return nbt;
         }
 
@@ -26,12 +28,14 @@ public class CapabilityPassword {
         public void readNBT(Capability<IPassword> capability, IPassword instance, EnumFacing side, NBTBase nbt) {
             instance.setPassword(((NBTTagCompound) nbt).getString("pwd"));
             instance.setFirst(((NBTTagCompound) nbt).getBoolean("first"));
+            instance.setGameType(((NBTTagCompound) nbt).getInteger("gameType"));
         }
     }
 
     public static class Implementation implements IPassword {
         String pwd = "";
         boolean first = true;
+        int gameType = SLConfig.server.defaultGameType;
 
         @Override
         public String getPassword() {
@@ -51,6 +55,16 @@ public class CapabilityPassword {
         @Override
         public void setFirst(boolean first) {
             this.first = first;
+        }
+
+        @Override
+        public void setGameType(int gameType) {
+            this.gameType = gameType;
+        }
+
+        @Override
+        public int getGameType() {
+            return this.gameType;
         }
     }
 

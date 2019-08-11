@@ -1,5 +1,7 @@
 package top.seraphjack.simplelogin.server.storage;
 
+import net.minecraft.world.GameType;
+
 import javax.annotation.concurrent.NotThreadSafe;
 import java.io.IOException;
 
@@ -14,4 +16,8 @@ public interface StorageProvider {
     void register(String username, String password);
 
     void save() throws IOException;
+
+    GameType gameType(String username);
+
+    void setGameType(String username, GameType gameType);
 }

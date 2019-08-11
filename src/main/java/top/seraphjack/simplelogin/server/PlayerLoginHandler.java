@@ -105,7 +105,7 @@ public class PlayerLoginHandler {
     }
 
     private void afterPlayerLogin(Login login, EntityPlayerMP player) {
-        player.setGameType(GameType.SURVIVAL);
+        player.setGameType(SLStorage.storageProvider.gameType(login.name));
         player.setPosition(login.posX, login.posY, login.posZ);
     }
 
@@ -142,12 +142,12 @@ public class PlayerLoginHandler {
     }
 
     void stop() {
-        SimpleLogin.logger.info("Shutting down player login handler...");
+        SimpleLogin.logger.info("Shutting down player login handler");
         alive = false;
         try {
             PLAYER_HANDLER_THREAD.join();
         } catch (InterruptedException e) {
-            SimpleLogin.logger.error("Fail to shutdown login handler. ", e);
+            SimpleLogin.logger.error("Fail to shutdown login handler", e);
         }
     }
 }

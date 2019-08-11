@@ -14,4 +14,8 @@ public interface IPassword {
 
     void setFirst(boolean first);
 
+    void setGameType(int gameType);
+
+    int getGameType();
+
 }
