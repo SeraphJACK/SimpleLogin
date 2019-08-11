@@ -27,6 +27,7 @@ public class StorageProviderFile implements StorageProvider {
             entries = new HashMap<>(gson.fromJson(new String(Files.readAllBytes(path), StandardCharsets.UTF_8), Map.class));
         } else {
             entries = new HashMap<>();
+            Files.createFile(path);
         }
     }
 
