@@ -47,7 +47,7 @@ public class SLCommand extends CommandBase {
                 sender.sendMessage(new TextComponentString("Saving all entries..."));
                 try {
                     long start = System.currentTimeMillis();
-                    SLStorage.storageProvider.save();
+                    SLStorage.instance().storageProvider.save();
                     sender.sendMessage(new TextComponentString("Done! Took " + (System.currentTimeMillis() - start) + "ms."));
                 } catch (IOException e) {
                     sender.sendMessage(new TextComponentString("Unable to save! Check server log for details!"));
@@ -57,7 +57,7 @@ public class SLCommand extends CommandBase {
             case "setDefaultGameType": {
                 if (args.length != 3) throw new WrongUsageException(getUsage(sender));
                 GameType gameType = GameType.parseGameTypeWithDefault(args[2], GameType.getByID(SLConfig.server.defaultGameType));
-                SLStorage.storageProvider.setGameType(args[1], gameType);
+                SLStorage.instance().storageProvider.setGameType(args[1], gameType);
                 sender.sendMessage(new TextComponentString("Set player " + args[1] + "'s default GameMode to " + gameType.getName() + "."));
                 break;
             }
