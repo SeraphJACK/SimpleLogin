@@ -32,7 +32,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
-version = "0.2.11-stable"
+version = "0.2.12-stable"
 group = "top.seraphjack"
 archivesBaseName = "simplelogin"
 

@@ -1,7 +1,9 @@
 package top.seraphjack.simplelogin.server.storage;
 
+import javax.annotation.concurrent.NotThreadSafe;
 import java.io.IOException;
 
+@NotThreadSafe
 public interface StorageProvider {
     boolean checkPassword(String username, String password);
 
