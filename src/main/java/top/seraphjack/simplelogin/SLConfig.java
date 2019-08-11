@@ -27,7 +27,7 @@ public class SLConfig {
 
         @Config.Name("Resend request")
         @Config.Comment("Whether should the server resend password request to client")
-        public boolean resendCommand = false;
+        public boolean resendPacket = true;
 
         @Config.Name("Storage method")
         @Config.Comment("Available storage method: file(json file) / capability(save in player nbt)")
