@@ -2,6 +2,7 @@ package top.seraphjack.simplelogin.server.storage;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 public class SLStorage {
     public static StorageProvider storageProvider;
@@ -10,7 +11,7 @@ public class SLStorage {
         switch (method) {
             case "file": {
                 try {
-                    storageProvider = new StorageProviderFile(new File("./simplelogin/storage/entries.json").toPath());
+                    storageProvider = new StorageProviderFile(Paths.get(".", "simplelogin", "storage", "entries.json"));
                 } catch (IOException ex) {
                     throw new RuntimeException("Unable to initialize storage provider", ex);
                 }

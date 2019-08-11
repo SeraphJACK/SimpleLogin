@@ -62,10 +62,10 @@ public class SLCommand extends CommandBase {
 
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-        if (args.length == 0) {
-            return Arrays.asList("unregister", "save");
-        } else if (args[0].equals("unregister")) {
+        if (args[0].equals("unregister")) {
             return getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames());
+        } else if (args.length <= 1) {
+            return getListOfStringsMatchingLastWord(args, Arrays.asList("unregister", "save"));
         }
         return super.getTabCompletions(server, sender, args, targetPos);
     }
