@@ -75,6 +75,13 @@ public class StorageProviderCapability implements StorageProvider {
         }
     }
 
+    @Override
+    public void changePassword(String username, String newPassword) {
+        if (isPlayerOnline(username)) {
+            getEntry(username).setPassword(newPassword);
+        }
+    }
+
     private boolean isPlayerOnline(String id) {
         return Arrays.asList(FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getOnlinePlayerNames()).contains(id);
     }

@@ -82,6 +82,13 @@ public class StorageProviderFile implements StorageProvider {
         entries.get(username).gameType = gameType.getID();
     }
 
+    @Override
+    public void changePassword(String username, String newPassword) {
+        if (entries.containsKey(username)) {
+            entries.get(username).password = newPassword;
+        }
+    }
+
     private POJOUserEntry newEntry(String username, String password) {
         POJOUserEntry entry = new POJOUserEntry();
         entry.username = username;

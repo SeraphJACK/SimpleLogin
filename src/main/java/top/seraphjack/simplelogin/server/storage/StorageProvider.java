@@ -20,4 +20,6 @@ public interface StorageProvider {
     GameType gameType(String username);
 
     void setGameType(String username, GameType gameType);
+
+    void changePassword(String username, String newPassword);
 }
