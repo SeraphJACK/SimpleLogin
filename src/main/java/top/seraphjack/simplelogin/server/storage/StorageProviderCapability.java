@@ -82,6 +82,11 @@ public class StorageProviderCapability implements StorageProvider {
         }
     }
 
+    @Override
+    public boolean dirty() {
+        return false;
+    }
+
     private boolean isPlayerOnline(String id) {
         return Arrays.asList(FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getOnlinePlayerNames()).contains(id);
     }

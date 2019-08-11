@@ -22,4 +22,6 @@ public interface StorageProvider {
     void setGameType(String username, GameType gameType);
 
     void changePassword(String username, String newPassword);
+
+    boolean dirty();
 }

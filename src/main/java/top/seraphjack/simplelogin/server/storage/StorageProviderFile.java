@@ -20,6 +20,7 @@ public class StorageProviderFile implements StorageProvider {
     private Gson gson;
     private Path path;
     private Map<String, POJOUserEntry> entries;
+    private boolean dirty = false;
 
     public StorageProviderFile(Path path) throws IOException {
         this.path = path;
@@ -47,6 +48,7 @@ public class StorageProviderFile implements StorageProvider {
 
     @Override
     public void unregister(String username) {
+        dirty = true;
         entries.remove(username);
     }
 
@@ -59,6 +61,7 @@ public class StorageProviderFile implements StorageProvider {
     public void register(String username, String password) {
         if (!entries.containsKey(username)) {
             entries.put(username, newEntry(username, password));
+            dirty = true;
         }
     }
 
@@ -66,6 +69,7 @@ public class StorageProviderFile implements StorageProvider {
     public void save() throws IOException {
         try {
             Files.write(path, gson.toJson(entries.values().toArray()).getBytes(StandardCharsets.UTF_8), StandardOpenOption.TRUNCATE_EXISTING);
+            dirty = false;
         } catch (IOException ex) {
             SimpleLogin.logger.error("Unable to save entries", ex);
             throw ex;
@@ -79,14 +83,23 @@ public class StorageProviderFile implements StorageProvider {
 
     @Override
     public void setGameType(String username, GameType gameType) {
-        entries.get(username).gameType = gameType.getID();
+        if (entries.containsKey(username)) {
+            dirty = true;
+            entries.get(username).gameType = gameType.getID();
+        }
     }
 
     @Override
     public void changePassword(String username, String newPassword) {
         if (entries.containsKey(username)) {
+            dirty = true;
             entries.get(username).password = newPassword;
         }
+    }
+
+    @Override
+    public boolean dirty() {
+        return dirty;
     }
 
     private POJOUserEntry newEntry(String username, String password) {

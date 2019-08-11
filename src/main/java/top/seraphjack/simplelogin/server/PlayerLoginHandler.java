@@ -52,14 +52,16 @@ public class PlayerLoginHandler {
                         }
                     }
 
-                    if (System.currentTimeMillis() - lastEntriesSaved >= 10 * 60 * 1000) {
+                    if (System.currentTimeMillis() - lastEntriesSaved >= 5 * 60 * 1000) {
                         lastEntriesSaved = System.currentTimeMillis();
-                        SimpleLogin.logger.info("Auto saving entries");
-                        long start = System.currentTimeMillis();
-                        synchronized (SLStorage.instance().storageProvider) {
-                            SLStorage.instance().storageProvider.save();
+                        if (SLStorage.instance().storageProvider.dirty()) {
+                            SimpleLogin.logger.info("Auto saving entries");
+                            long start = System.currentTimeMillis();
+                            synchronized (SLStorage.instance().storageProvider) {
+                                SLStorage.instance().storageProvider.save();
+                            }
+                            SimpleLogin.logger.info("Done! Took " + (System.currentTimeMillis() - start) + "ms.");
                         }
-                        SimpleLogin.logger.info("Done! Took " + (System.currentTimeMillis() - start) + "ms.");
                     }
 
                     if (loginList.isEmpty()) {
