@@ -22,9 +22,11 @@ public class PlayerLoginHandler {
 
     private boolean alive;
     private ConcurrentLinkedQueue<Login> loginList = new ConcurrentLinkedQueue<>();
+    private long lastEntriesSaved;
 
     private PlayerLoginHandler() {
         PLAYER_HANDLER_THREAD = new Thread(() -> {
+            lastEntriesSaved = System.currentTimeMillis();
             while (alive) {
                 try {
                     for (Login login : loginList) {
@@ -48,6 +50,16 @@ public class PlayerLoginHandler {
                             SimpleLogin.logger.warn("Player " + login.name + " haven't login after a long time.");
                             loginList.remove(login);
                         }
+                    }
+
+                    if (System.currentTimeMillis() - lastEntriesSaved >= 10 * 60 * 1000) {
+                        lastEntriesSaved = System.currentTimeMillis();
+                        SimpleLogin.logger.info("Auto saving entries");
+                        long start = System.currentTimeMillis();
+                        synchronized (SLStorage.instance().storageProvider) {
+                            SLStorage.instance().storageProvider.save();
+                        }
+                        SimpleLogin.logger.info("Done! Took " + (System.currentTimeMillis() - start) + "ms.");
                     }
 
                     if (loginList.isEmpty()) {
@@ -91,11 +103,11 @@ public class PlayerLoginHandler {
         if (pwd.length() >= 100) {
             player.connection.disconnect(new TextComponentString("Password too long."));
             SimpleLogin.logger.warn("Player " + id + " tried to login with a invalid password(too long).");
-        } else if (!SLStorage.storageProvider.registered(id)) {
-            SLStorage.storageProvider.register(id, pwd);
+        } else if (!SLStorage.instance().storageProvider.registered(id)) {
+            SLStorage.instance().storageProvider.register(id, pwd);
             afterPlayerLogin(login, player);
             SimpleLogin.logger.info("Player " + id + " has successfully registered.");
-        } else if (SLStorage.storageProvider.checkPassword(id, pwd)) {
+        } else if (SLStorage.instance().storageProvider.checkPassword(id, pwd)) {
             afterPlayerLogin(login, player);
             SimpleLogin.logger.info("Player " + id + " has successfully logged in.");
         } else {
@@ -105,7 +117,7 @@ public class PlayerLoginHandler {
     }
 
     private void afterPlayerLogin(Login login, EntityPlayerMP player) {
-        player.setGameType(SLStorage.storageProvider.gameType(login.name));
+        player.setGameType(SLStorage.instance().storageProvider.gameType(login.name));
         player.setPosition(login.posX, login.posY, login.posZ);
     }
 
@@ -119,7 +131,7 @@ public class PlayerLoginHandler {
     }
 
     void resetPassword(String id) {
-        SLStorage.storageProvider.unregister(id);
+        SLStorage.instance().storageProvider.unregister(id);
     }
 
     private static class Login {

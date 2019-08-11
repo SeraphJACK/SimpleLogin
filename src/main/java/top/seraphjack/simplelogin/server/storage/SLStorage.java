@@ -4,9 +4,20 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 public class SLStorage {
-    public static StorageProvider storageProvider;
+    public final StorageProvider storageProvider;
+    private static SLStorage INSTANCE;
+
+    public static SLStorage instance() {
+        return INSTANCE;
+    }
 
     public static void initialize(String method) {
+        if (INSTANCE == null) {
+            INSTANCE = new SLStorage(method);
+        }
+    }
+
+    private SLStorage(String method) {
         switch (method) {
             case "file": {
                 try {
@@ -24,6 +35,5 @@ public class SLStorage {
                 throw new RuntimeException("Invalid storage method: " + method + ".");
             }
         }
-
     }
 }

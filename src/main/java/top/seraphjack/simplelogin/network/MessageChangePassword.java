@@ -2,13 +2,10 @@ package top.seraphjack.simplelogin.network;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
-import top.seraphjack.simplelogin.server.capability.IPassword;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
 import top.seraphjack.simplelogin.utils.SHA256;
 
@@ -42,9 +39,8 @@ public class MessageChangePassword implements IMessage {
         public IMessage onMessage(MessageChangePassword message, MessageContext ctx) {
             EntityPlayerMP player = ctx.getServerHandler().player;
             String username = player.getGameProfile().getName();
-            if (SLStorage.storageProvider.checkPassword(username, message.oldPassword)) {
-                SLStorage.storageProvider.unregister(username);
-                SLStorage.storageProvider.register(username, message.newPassword);
+            if (SLStorage.instance().storageProvider.checkPassword(username, message.oldPassword)) {
+                SLStorage.instance().storageProvider.changePassword(username, message.newPassword);
             }
             return null;
         }
