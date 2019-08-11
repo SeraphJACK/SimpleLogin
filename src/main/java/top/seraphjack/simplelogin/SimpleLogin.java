@@ -7,6 +7,9 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import org.apache.logging.log4j.Logger;
+import top.seraphjack.simplelogin.server.storage.SLStorage;
+
+import java.io.IOException;
 
 @Mod(modid = SimpleLogin.MODID, version = SimpleLogin.VERSION, acceptedMinecraftVersions = "[1.10.2,1.12.2]", acceptableRemoteVersions = "[0.2.9,)")
 public class SimpleLogin {
@@ -35,7 +38,7 @@ public class SimpleLogin {
     }
 
     @Mod.EventHandler
-    public void serverStopping(FMLServerStoppingEvent e) {
+    public void serverStopping(FMLServerStoppingEvent e) throws IOException {
         proxy.serverStopping(e);
     }
 
