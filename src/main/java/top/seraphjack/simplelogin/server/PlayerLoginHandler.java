@@ -91,7 +91,7 @@ public class PlayerLoginHandler {
         if (pwd.length() >= 100) {
             player.connection.disconnect(new TextComponentString("Password too long."));
             SimpleLogin.logger.warn("Player " + id + " tried to login with a invalid password(too long).");
-        } else if (SLStorage.storageProvider.registered(id)) {
+        } else if (!SLStorage.storageProvider.registered(id)) {
             SLStorage.storageProvider.register(id, pwd);
             afterPlayerLogin(login, player);
             SimpleLogin.logger.info("Player " + id + " has successfully registered.");

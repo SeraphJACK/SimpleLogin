@@ -41,9 +41,9 @@ public class StorageProviderCapability implements StorageProvider {
     @Override
     public boolean registered(String username) {
         if (isPlayerOnline(username)) {
-            return getEntry(username).isFirst() || resetPasswordList.contains(username);
+            return !(getEntry(username).isFirst() || resetPasswordList.contains(username));
         }
-        return resetPasswordList.contains(username);
+        return !resetPasswordList.contains(username);
     }
 
     @Override
