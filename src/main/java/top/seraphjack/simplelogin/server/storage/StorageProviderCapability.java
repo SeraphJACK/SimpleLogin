@@ -19,7 +19,7 @@ public class StorageProviderCapability implements StorageProvider {
 
     private List<String> resetPasswordList;
 
-    public StorageProviderCapability() {
+    StorageProviderCapability() {
         resetPasswordList = new LinkedList<>();
     }
 

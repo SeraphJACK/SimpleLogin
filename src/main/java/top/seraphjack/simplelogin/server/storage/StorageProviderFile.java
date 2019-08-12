@@ -22,7 +22,7 @@ public class StorageProviderFile implements StorageProvider {
     private Map<String, POJOUserEntry> entries;
     private boolean dirty = false;
 
-    public StorageProviderFile(Path path) throws IOException {
+    StorageProviderFile(Path path) throws IOException {
         this.path = path;
         this.gson = new Gson();
 
@@ -108,5 +108,10 @@ public class StorageProviderFile implements StorageProvider {
         entry.password = password;
         entry.gameType = SLConfig.server.defaultGameType;
         return entry;
+    }
+
+    private static class POJOUserEntry {
+        public String password, username;
+        public int gameType;
     }
 }
