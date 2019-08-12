@@ -1,6 +1,7 @@
 package top.seraphjack.simplelogin.network;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -33,7 +34,9 @@ public class MessageLogin implements IMessage {
 
         @Override
         public IMessage onMessage(MessageLogin message, MessageContext ctx) {
-            PlayerLoginHandler.instance().login(ctx.getServerHandler().player.getGameProfile().getName(), message.pwd);
+            FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() ->
+                    PlayerLoginHandler.instance().login(ctx.getServerHandler().player.getGameProfile().getName(), message.pwd)
+            );
             return null;
         }
     }
