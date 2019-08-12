@@ -22,7 +22,7 @@ public class MessageRequestLogin implements IMessage {
 
         @Override
         public MessageLogin onMessage(MessageRequestLogin message, MessageContext ctx) {
-            System.out.println("Get server password request.");
+            // System.out.println("Get server password request.");
             return new MessageLogin(SLConfig.client.password);
         }
     }
