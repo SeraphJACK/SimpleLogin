@@ -1,6 +1,6 @@
 # SimpleLogin
 
-SimpleLogin is a forge mod aimed to protect servers in off-line mode.
+SimpleLogin is a forge mod aimed to protect servers in offline-mode.
 
 ## Installation
 
@@ -12,7 +12,7 @@ Put the `simplelogin-xxx.jar` into the `mods` directory on both server side and 
 
 The player's password doesn't need to be inputed manually, instead, the client would generate a random UUID as the password and save it in the client's configuration file, sending it to the server when joining.
 
-The server would store the player's password in his player data the first time he join in, and check the password every time he join in after the "registration".
+The server would store the player's password the first time he join in, and then check the password every time he join in.
 
 ## FAQ
 
@@ -28,13 +28,17 @@ You should backup your `minecraft_folder/config/simplelogin.cfg` file and copy i
 
 ### Server
 
-- `/simplelogin reset <PlayerName>`
+- `/simplelogin unregister <PlayerName>`
 
-Overwrite the player's password the next time he join in.
+Unregister the player.
 
-- `/simplelogin list`
+- `/simplelogin save`
 
-Show the list of players whose password is being reset.
+Save all player entries.
+
+- `/simplelogin setDefaultGameType <PlayerName> <GameType>`
+
+Configure the after-login game type for the player.
 
 ### Client
 
@@ -42,7 +46,7 @@ Show the list of players whose password is being reset.
 
 Change your password.
 
-Please note that you need to change the password in your client configuration file manually, and it is suggested to change it throw the configuration GUI for you don't need to restart your client by this way.
+Please note that you need to change the password in your client configuration file manually, and it is suggested to change it via the configuration GUI for you don't need to restart your client by this way.
 
 ## Configuration
 
@@ -62,3 +66,10 @@ How many seconds to wait before a player login.
 
 Commands which are allowed to be executed by a player who haven't login.
 
+- Storage Method: String
+
+How to storage player entries. Available methods are file and capability.
+
+- Resend Packets: Boolean
+
+Whether the server should resend request password packets.
