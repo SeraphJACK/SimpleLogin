@@ -1,15 +1,15 @@
 buildscript {
     repositories {
         jcenter() {
-			url = 'http://jcenter.bintray.com/'
-		}
+            url = 'http://jcenter.bintray.com/'
+        }
         maven {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
-		maven {
-			url 'http://repository.jboss.org/nexus/content/groups/public' 
-		}
+        maven {
+            url 'http://repository.jboss.org/nexus/content/groups/public'
+        }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
@@ -18,12 +18,12 @@ buildscript {
 
 allprojects {
     repositories {
-		jcenter() {
-			url = 'http://jcenter.bintray.com/'
-		}
+        jcenter() {
+            url = 'http://jcenter.bintray.com/'
+        }
         maven {
-			url 'http://repository.jboss.org/nexus/content/groups/public' 
-		}
+            url 'http://repository.jboss.org/nexus/content/groups/public'
+        }
     }
 }
 
@@ -45,12 +45,12 @@ minecraft {
     runDir = "run"
 
     mappings = "${mapping_version}"
-    
+
     replace "@VERSION_INJECT@", project.version
 }
 
 dependencies {
-    testCompile "junit:junit:4.12"
+    compile "junit:junit:4.12"
 }
 
 processResources {
@@ -59,7 +59,7 @@ processResources {
 
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+        expand 'version': project.version, 'mcversion': project.minecraft.version
     }
 
     from(sourceSets.main.resources.srcDirs) {
