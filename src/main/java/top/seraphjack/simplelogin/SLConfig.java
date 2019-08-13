@@ -25,10 +25,6 @@ public class SLConfig {
         @Config.Comment("Commands in whitelist can be executed before player login.")
         public String[] commandNames = {};
 
-        @Config.Name("Resend request")
-        @Config.Comment("Whether should the server resend password request to client")
-        public boolean resendPacket = true;
-
         @Config.Name("Storage method")
         @Config.Comment("Available storage method: file(json file) / capability(save in player nbt)")
         public String storageMethod = "file";
