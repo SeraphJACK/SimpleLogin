@@ -39,7 +39,7 @@ public class SLCommand extends CommandBase {
         switch (args[0]) {
             case "unregister": {
                 if (args.length != 2) throw new WrongUsageException(getUsage(sender));
-                PlayerLoginHandler.instance().resetPassword(args[1]);
+                SLStorage.instance().storageProvider.unregister(args[1]);
                 sender.sendMessage(new TextComponentString("Player " + args[1] + " has been unregistered."));
                 break;
             }

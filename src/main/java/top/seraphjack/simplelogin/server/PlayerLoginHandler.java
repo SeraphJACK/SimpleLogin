@@ -93,7 +93,7 @@ public class PlayerLoginHandler {
         return null;
     }
 
-    public synchronized void login(String id, String pwd) {
+    public void login(String id, String pwd) {
         Login login = getLoginByName(id);
         loginList.remove(login);
         EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(id);
@@ -130,10 +130,6 @@ public class PlayerLoginHandler {
 
     public boolean isPlayerInLoginList(String id) {
         return loginList.stream().anyMatch(e -> e.name.equals(id));
-    }
-
-    void resetPassword(String id) {
-        SLStorage.instance().storageProvider.unregister(id);
     }
 
     private static class Login {
