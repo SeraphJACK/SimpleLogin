@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import top.seraphjack.simplelogin.SLConfig;
+import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.network.MessageRequestLogin;
 import top.seraphjack.simplelogin.network.NetworkLoader;
@@ -122,7 +123,11 @@ public class PlayerLoginHandler {
     private void afterPlayerLogin(Login login, EntityPlayerMP player) {
         player.setGameType(SLStorage.instance().storageProvider.gameType(login.name));
         Position lastPos = SLStorage.instance().storageProvider.getLastPosition(login.name);
-        player.setPosition(lastPos.getX(), lastPos.getY(), lastPos.getZ());
+        if (lastPos.equals(SLConstants.defaultPosition)) {
+            player.setPosition(login.posX, login.posY, login.posZ);
+        } else {
+            player.setPosition(lastPos.getX(), lastPos.getY(), lastPos.getZ());
+        }
     }
 
     public void addPlayerToLoginList(EntityPlayerMP player) {

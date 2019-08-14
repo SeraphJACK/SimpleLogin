@@ -5,6 +5,7 @@ import net.minecraft.world.GameType;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.mindrot.jbcrypt.BCrypt;
 import top.seraphjack.simplelogin.SLConfig;
+import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
 import top.seraphjack.simplelogin.server.capability.ISLEntry;
 
@@ -100,7 +101,7 @@ public class StorageProviderCapability implements StorageProvider {
         if (isPlayerOnline(username)) {
             return getEntry(username).getLastPosition();
         }
-        return new Position(0, 0, 255);
+        return SLConstants.defaultPosition;
     }
 
     private boolean isPlayerOnline(String id) {

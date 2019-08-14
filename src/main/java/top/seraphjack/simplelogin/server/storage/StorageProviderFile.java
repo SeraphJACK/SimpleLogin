@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import net.minecraft.world.GameType;
 import org.mindrot.jbcrypt.BCrypt;
 import top.seraphjack.simplelogin.SLConfig;
+import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.SimpleLogin;
 
 import javax.annotation.concurrent.NotThreadSafe;
@@ -122,7 +123,7 @@ public class StorageProviderFile implements StorageProvider {
             POJOUserEntry entry = entries.get(username);
             return new Position(entry.posX, entry.posY, entry.posZ);
         }
-        return new Position(0, 0, 255);
+        return SLConstants.defaultPosition;
     }
 
     private POJOUserEntry newEntry(String username, String password) {
