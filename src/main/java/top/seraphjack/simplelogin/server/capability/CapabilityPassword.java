@@ -8,6 +8,7 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import top.seraphjack.simplelogin.SLConfig;
+import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.server.storage.Position;
 
 import javax.annotation.Nonnull;
@@ -46,6 +47,10 @@ public class CapabilityPassword {
         boolean first = true;
         int gameType = SLConfig.server.defaultGameType;
         Position pos;
+
+        public Implementation() {
+            setLastPosition(SLConstants.defaultPosition);
+        }
 
         @Override
         public String getPassword() {

@@ -131,6 +131,9 @@ public class StorageProviderFile implements StorageProvider {
         entry.username = username;
         entry.password = password;
         entry.gameType = SLConfig.server.defaultGameType;
+        entry.posX = SLConstants.defaultPosition.getX();
+        entry.posY = SLConstants.defaultPosition.getY();
+        entry.posZ = SLConstants.defaultPosition.getZ();
         return entry;
     }
 
