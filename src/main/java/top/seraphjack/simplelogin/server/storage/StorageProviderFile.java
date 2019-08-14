@@ -28,7 +28,10 @@ public class StorageProviderFile implements StorageProvider {
 
         if (Files.exists(path)) {
             entries = new HashMap<>();
-            Arrays.stream(gson.fromJson(new String(Files.readAllBytes(path), StandardCharsets.UTF_8), POJOUserEntry[].class)).forEach(e -> entries.put(e.username, e));
+            POJOUserEntry[] buf = gson.fromJson(new String(Files.readAllBytes(path), StandardCharsets.UTF_8), POJOUserEntry[].class);
+            if (buf != null) {
+                Arrays.stream(buf).forEach(e -> entries.put(e.username, e));
+            }
         } else {
             if (!Files.exists(path.getParent())) {
                 Files.createDirectories(path.getParent());
