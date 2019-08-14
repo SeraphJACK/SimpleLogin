@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import top.seraphjack.simplelogin.SLConfig;
+import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.network.MessageRequestLogin;
 import top.seraphjack.simplelogin.network.NetworkLoader;
@@ -31,18 +32,15 @@ public class ServerSideEventHandler {
     }
 
     @SubscribeEvent
-    public static void playerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
+    public static synchronized void playerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
         final String username = event.player.getName();
         final Position pos = new Position(event.player.posX, event.player.posY, event.player.posZ);
+        SLStorage.instance().storageProvider.setLastPosition(username, pos);
         try {
-            event.player.setPosition(0, 0, 255);
+            event.player.setPosition(SLConstants.defaultPosition.getX(), SLConstants.defaultPosition.getY(), SLConstants.defaultPosition.getZ());
         } catch (Throwable ex) {
-            SimpleLogin.logger.error("Fail to process logout.");
-            return;
+            SimpleLogin.logger.error("Fail to process logout.", ex);
         }
-        FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() ->
-                SLStorage.instance().storageProvider.setLastPosition(username, pos)
-        );
     }
 
     @SubscribeEvent

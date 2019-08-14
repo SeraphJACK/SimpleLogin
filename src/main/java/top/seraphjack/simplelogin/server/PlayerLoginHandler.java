@@ -126,7 +126,7 @@ public class PlayerLoginHandler {
         if (lastPos.equals(SLConstants.defaultPosition)) {
             player.setPosition(login.posX, login.posY, login.posZ);
         } else {
-            player.setPosition(lastPos.getX(), lastPos.getY(), lastPos.getZ());
+            player.attemptTeleport(lastPos.getX(), lastPos.getY(), lastPos.getZ());
         }
     }
 

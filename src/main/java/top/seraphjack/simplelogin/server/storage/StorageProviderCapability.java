@@ -10,13 +10,14 @@ import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
 import top.seraphjack.simplelogin.server.capability.ISLEntry;
 
 import javax.annotation.Nonnull;
-import javax.annotation.concurrent.NotThreadSafe;
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-@NotThreadSafe
+@ThreadSafe
+@Deprecated
 public class StorageProviderCapability implements StorageProvider {
 
     private List<String> resetPasswordList;

@@ -7,7 +7,7 @@ import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.SimpleLogin;
 
-import javax.annotation.concurrent.NotThreadSafe;
+import javax.annotation.concurrent.ThreadSafe;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -16,8 +16,9 @@ import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-@NotThreadSafe
+@ThreadSafe
 public class StorageProviderFile implements StorageProvider {
     private Gson gson;
     private Path path;
@@ -29,7 +30,7 @@ public class StorageProviderFile implements StorageProvider {
         this.gson = new Gson();
 
         if (Files.exists(path)) {
-            entries = new HashMap<>();
+            entries = new ConcurrentHashMap<>();
             POJOUserEntry[] buf = gson.fromJson(new String(Files.readAllBytes(path), StandardCharsets.UTF_8), POJOUserEntry[].class);
             if (buf != null) {
                 Arrays.stream(buf).forEach(e -> entries.put(e.username, e));
