@@ -34,7 +34,7 @@ public class ServerSideEventHandler {
     public static void playerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
         final String username = event.player.getName();
         final Position pos = new Position(event.player.posX, event.player.posY, event.player.posZ);
-        event.player.setPosition(0, 0, 255);
+        event.player.setPositionAndUpdate(0,0,255);
         FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() ->
                 SLStorage.instance().storageProvider.setLastPosition(username, pos)
         );
