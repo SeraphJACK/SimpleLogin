@@ -3,6 +3,7 @@ package top.seraphjack.simplelogin.server.storage;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.GameType;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import org.mindrot.jbcrypt.BCrypt;
 import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
 import top.seraphjack.simplelogin.server.capability.IPassword;
@@ -19,14 +20,14 @@ public class StorageProviderCapability implements StorageProvider {
 
     private List<String> resetPasswordList;
 
-    StorageProviderCapability() {
+    public StorageProviderCapability() {
         resetPasswordList = new LinkedList<>();
     }
 
     @Override
     public boolean checkPassword(String username, String password) {
         if (isPlayerOnline(username)) {
-            return getEntry(username).getPassword().equals(password);
+            return BCrypt.checkpw(password, getEntry(username).getPassword());
         }
         return false;
     }
@@ -50,7 +51,7 @@ public class StorageProviderCapability implements StorageProvider {
 
     @Override
     public void register(String username, String password) {
-        getEntry(username).setPassword(password);
+        getEntry(username).setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
         getEntry(username).setFirst(false);
         resetPasswordList.remove(username);
     }

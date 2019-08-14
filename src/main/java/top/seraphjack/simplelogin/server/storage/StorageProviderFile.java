@@ -2,6 +2,7 @@ package top.seraphjack.simplelogin.server.storage;
 
 import com.google.gson.Gson;
 import net.minecraft.world.GameType;
+import org.mindrot.jbcrypt.BCrypt;
 import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SimpleLogin;
 
@@ -22,7 +23,7 @@ public class StorageProviderFile implements StorageProvider {
     private Map<String, POJOUserEntry> entries;
     private boolean dirty = false;
 
-    StorageProviderFile(Path path) throws IOException {
+    public StorageProviderFile(Path path) throws IOException {
         this.path = path;
         this.gson = new Gson();
 
@@ -41,7 +42,7 @@ public class StorageProviderFile implements StorageProvider {
     @Override
     public boolean checkPassword(String username, String password) {
         if (entries.containsKey(username)) {
-            return entries.get(username).password.equals(password);
+            return BCrypt.checkpw(password, entries.get(username).password);
         }
         return false;
     }
@@ -60,7 +61,7 @@ public class StorageProviderFile implements StorageProvider {
     @Override
     public void register(String username, String password) {
         if (!entries.containsKey(username)) {
-            entries.put(username, newEntry(username, password));
+            entries.put(username, newEntry(username, BCrypt.hashpw(password, BCrypt.gensalt())));
             dirty = true;
         }
     }

@@ -10,7 +10,6 @@ gradlew.bat
 *.iml
 *.ipr
 *.iws
-*.iml
 /bin
 .classpath
 .project
@@ -18,3 +17,4 @@ gradlew.bat
 *.launch
 src/main/java/team/covertdragon/springfestival/module/firecracker/entity/EntityAIAvoidPos.java
 libs/albedo-0.1.3.jar
+testEntries.json
