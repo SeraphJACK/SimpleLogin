@@ -18,7 +18,7 @@ The server would store the player's password the first time he joins in, and the
 
 _Is it safe to store the password in the player's data?_
 
-Sure, the password is saved as SHA256 sum.
+Sure, the password is saved using BCrypt.
 
 _What should I do if I want to change a client?_
 
