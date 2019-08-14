@@ -94,7 +94,7 @@ public class StorageProviderFile implements StorageProvider {
     public void changePassword(String username, String newPassword) {
         if (entries.containsKey(username)) {
             dirty = true;
-            entries.get(username).password = newPassword;
+            entries.get(username).password = BCrypt.hashpw(newPassword, BCrypt.gensalt());
         }
     }
 

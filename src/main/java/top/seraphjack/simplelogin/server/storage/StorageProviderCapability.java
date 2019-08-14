@@ -79,7 +79,7 @@ public class StorageProviderCapability implements StorageProvider {
     @Override
     public void changePassword(String username, String newPassword) {
         if (isPlayerOnline(username)) {
-            getEntry(username).setPassword(newPassword);
+            getEntry(username).setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
         }
     }
 
