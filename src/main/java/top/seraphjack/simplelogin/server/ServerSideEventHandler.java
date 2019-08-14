@@ -35,8 +35,9 @@ public class ServerSideEventHandler {
         final String username = event.player.getName();
         final Position pos = new Position(event.player.posX, event.player.posY, event.player.posZ);
         try {
-            event.player.setPositionAndUpdate(0, 0, 255);
+            event.player.setPosition(0, 0, 255);
         } catch (Throwable ex) {
+            SimpleLogin.logger.error("Fail to process logout.");
             return;
         }
         FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() ->

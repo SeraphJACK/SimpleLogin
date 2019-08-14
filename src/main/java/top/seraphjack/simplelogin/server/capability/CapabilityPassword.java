@@ -84,7 +84,7 @@ public class CapabilityPassword {
 
         @Override
         public Position getLastPosition() {
-            return null;
+            return pos != null ? pos : SLConstants.defaultPosition;
         }
 
         @Override
