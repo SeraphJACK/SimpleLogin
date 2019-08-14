@@ -3,6 +3,7 @@ package top.seraphjack.simplelogin.server;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -11,7 +12,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import top.seraphjack.simplelogin.SLConfig;
-import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.network.MessageRequestLogin;
 import top.seraphjack.simplelogin.network.NetworkLoader;
@@ -37,7 +37,8 @@ public class ServerSideEventHandler {
         final Position pos = new Position(event.player.posX, event.player.posY, event.player.posZ);
         SLStorage.instance().storageProvider.setLastPosition(username, pos);
         try {
-            event.player.setPosition(SLConstants.defaultPosition.getX(), SLConstants.defaultPosition.getY(), SLConstants.defaultPosition.getZ());
+            BlockPos spawnPoint = event.player.world.getSpawnPoint();
+            event.player.setPosition(spawnPoint.getX(), spawnPoint.getY(), spawnPoint.getZ());
         } catch (Throwable ex) {
             SimpleLogin.logger.error("Fail to process logout.", ex);
         }
