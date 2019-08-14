@@ -10,6 +10,7 @@ import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.network.MessageRequestLogin;
 import top.seraphjack.simplelogin.network.NetworkLoader;
+import top.seraphjack.simplelogin.server.storage.Position;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
 
 import javax.annotation.Nullable;
@@ -120,7 +121,8 @@ public class PlayerLoginHandler {
 
     private void afterPlayerLogin(Login login, EntityPlayerMP player) {
         player.setGameType(SLStorage.instance().storageProvider.gameType(login.name));
-        player.setPosition(login.posX, login.posY, login.posZ);
+        Position lastPos = SLStorage.instance().storageProvider.getLastPosition(login.name);
+        player.setPosition(lastPos.getX(), lastPos.getY(), lastPos.getZ());
     }
 
     public void addPlayerToLoginList(EntityPlayerMP player) {

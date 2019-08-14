@@ -106,6 +106,25 @@ public class StorageProviderFile implements StorageProvider {
         return dirty;
     }
 
+    @Override
+    public void setLastPosition(String username, Position pos) {
+        if (entries.containsKey(username)) {
+            POJOUserEntry entry = entries.get(username);
+            entry.posX = pos.getX();
+            entry.posY = pos.getY();
+            entry.posZ = pos.getZ();
+        }
+    }
+
+    @Override
+    public Position getLastPosition(String username) {
+        if (entries.containsKey(username)) {
+            POJOUserEntry entry = entries.get(username);
+            return new Position(entry.posX, entry.posY, entry.posZ);
+        }
+        return new Position(0, 0, 255);
+    }
+
     private POJOUserEntry newEntry(String username, String password) {
         POJOUserEntry entry = new POJOUserEntry();
         entry.username = username;
@@ -117,5 +136,6 @@ public class StorageProviderFile implements StorageProvider {
     private static class POJOUserEntry {
         public String password, username;
         public int gameType;
+        double posX, posY, posZ;
     }
 }

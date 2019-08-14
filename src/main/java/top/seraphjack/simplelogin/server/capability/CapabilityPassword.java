@@ -8,34 +8,44 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import top.seraphjack.simplelogin.SLConfig;
+import top.seraphjack.simplelogin.server.storage.Position;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 @SideOnly(Side.SERVER)
 public class CapabilityPassword {
-    public static class Storage implements Capability.IStorage<IPassword> {
+    public static class Storage implements Capability.IStorage<ISLEntry> {
         @Override
-        public NBTBase writeNBT(Capability<IPassword> capability, IPassword instance, EnumFacing side) {
+        public NBTBase writeNBT(Capability<ISLEntry> capability, ISLEntry instance, EnumFacing side) {
             NBTTagCompound nbt = new NBTTagCompound();
             nbt.setString("pwd", instance.getPassword());
             nbt.setBoolean("first", instance.isFirst());
             nbt.setInteger("gameType", instance.getGameType());
+            nbt.setDouble("posX", instance.getLastPosition().getX());
+            nbt.setDouble("posY", instance.getLastPosition().getY());
+            nbt.setDouble("posZ", instance.getLastPosition().getZ());
             return nbt;
         }
 
         @Override
-        public void readNBT(Capability<IPassword> capability, IPassword instance, EnumFacing side, NBTBase nbt) {
+        public void readNBT(Capability<ISLEntry> capability, ISLEntry instance, EnumFacing side, NBTBase nbt) {
             instance.setPassword(((NBTTagCompound) nbt).getString("pwd"));
             instance.setFirst(((NBTTagCompound) nbt).getBoolean("first"));
             instance.setGameType(((NBTTagCompound) nbt).getInteger("gameType"));
+            instance.setLastPosition(new Position(
+                    ((NBTTagCompound) nbt).getDouble("posX"),
+                    ((NBTTagCompound) nbt).getDouble("posY"),
+                    ((NBTTagCompound) nbt).getDouble("posZ")
+            ));
         }
     }
 
-    public static class Implementation implements IPassword {
+    public static class Implementation implements ISLEntry {
         String pwd = "";
         boolean first = true;
         int gameType = SLConfig.server.defaultGameType;
+        Position pos;
 
         @Override
         public String getPassword() {
@@ -66,11 +76,21 @@ public class CapabilityPassword {
         public int getGameType() {
             return this.gameType;
         }
+
+        @Override
+        public Position getLastPosition() {
+            return null;
+        }
+
+        @Override
+        public void setLastPosition(Position pos) {
+            this.pos = pos;
+        }
     }
 
     public static class PlayerProvider implements ICapabilitySerializable<NBTTagCompound> {
-        private IPassword password = new Implementation();
-        private Capability.IStorage<IPassword> storage = CapabilityLoader.CAPABILITY_PASSWORD.getStorage();
+        private ISLEntry password = new Implementation();
+        private Capability.IStorage<ISLEntry> storage = CapabilityLoader.CAPABILITY_PASSWORD.getStorage();
 
         @Override
         public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {

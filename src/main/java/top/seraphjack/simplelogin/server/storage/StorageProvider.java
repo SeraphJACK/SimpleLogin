@@ -24,4 +24,8 @@ public interface StorageProvider {
     void changePassword(String username, String newPassword);
 
     boolean dirty();
+
+    void setLastPosition(String username, Position pos);
+
+    Position getLastPosition(String username);
 }

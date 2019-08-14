@@ -14,6 +14,8 @@ import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.network.MessageRequestLogin;
 import top.seraphjack.simplelogin.network.NetworkLoader;
+import top.seraphjack.simplelogin.server.storage.Position;
+import top.seraphjack.simplelogin.server.storage.SLStorage;
 
 import java.util.Arrays;
 
@@ -26,6 +28,16 @@ public class ServerSideEventHandler {
             PlayerLoginHandler.instance().addPlayerToLoginList((EntityPlayerMP) event.player);
             NetworkLoader.INSTANCE.sendTo(new MessageRequestLogin(), (EntityPlayerMP) event.player);
         });
+    }
+
+    @SubscribeEvent
+    public static void playerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
+        final String username = event.player.getName();
+        final Position pos = new Position(event.player.posX, event.player.posY, event.player.posZ);
+        event.player.setPosition(0, 0, 255);
+        FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() ->
+                SLStorage.instance().storageProvider.setLastPosition(username, pos)
+        );
     }
 
     @SubscribeEvent
