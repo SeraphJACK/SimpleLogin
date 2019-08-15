@@ -119,13 +119,15 @@ public class PlayerLoginHandler {
     }
 
     private void afterPlayerLogin(Login login, EntityPlayerMP player) {
-        player.setGameType(SLStorage.instance().storageProvider.gameType(login.name));
-        Position lastPos = SLStorage.instance().storageProvider.getLastPosition(login.name);
-        if (lastPos.equals(SLConstants.defaultPosition)) {
-            player.setPosition(login.posX, login.posY, login.posZ);
-        } else {
-            player.attemptTeleport(lastPos.getX(), lastPos.getY(), lastPos.getZ());
-        }
+        FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> {
+            player.setGameType(SLStorage.instance().storageProvider.gameType(login.name));
+            Position lastPos = SLStorage.instance().storageProvider.getLastPosition(login.name);
+            if (lastPos.equals(SLConstants.defaultPosition)) {
+                player.setPosition(login.posX, login.posY, login.posZ);
+            } else {
+                player.attemptTeleport(lastPos.getX(), lastPos.getY(), lastPos.getZ());
+            }
+        });
     }
 
     public void addPlayerToLoginList(EntityPlayerMP player) {
