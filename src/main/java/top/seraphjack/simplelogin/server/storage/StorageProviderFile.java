@@ -1,5 +1,6 @@
 package top.seraphjack.simplelogin.server.storage;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import net.minecraft.world.GameType;
 import org.mindrot.jbcrypt.BCrypt;
@@ -14,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -125,6 +127,11 @@ public class StorageProviderFile implements StorageProvider {
             return new Position(entry.posX, entry.posY, entry.posZ);
         }
         return SLConstants.defaultPosition;
+    }
+
+    @Override
+    public Collection<String> getAllRegisteredUsername() {
+        return new ImmutableList.Builder<String>().addAll(entries.keySet()).build();
     }
 
     private POJOUserEntry newEntry(String username, String password) {

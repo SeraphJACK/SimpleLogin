@@ -11,10 +11,7 @@ import top.seraphjack.simplelogin.server.capability.ISLEntry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @ThreadSafe
 @Deprecated
@@ -103,6 +100,11 @@ public class StorageProviderCapability implements StorageProvider {
             return getEntry(username).getLastPosition();
         }
         return SLConstants.defaultPosition;
+    }
+
+    @Override
+    public Collection<String> getAllRegisteredUsername() {
+        return Arrays.asList(FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getOnlinePlayerNames());
     }
 
     private boolean isPlayerOnline(String id) {

@@ -4,6 +4,7 @@ import net.minecraft.world.GameType;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.io.IOException;
+import java.util.Collection;
 
 @ThreadSafe
 public interface StorageProvider {
@@ -28,4 +29,10 @@ public interface StorageProvider {
     void setLastPosition(String username, Position pos);
 
     Position getLastPosition(String username);
+
+    /**
+     * Should be immutable
+     * @return all registered username
+     */
+    Collection<String> getAllRegisteredUsername();
 }
