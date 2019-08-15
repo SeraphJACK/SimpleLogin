@@ -2,9 +2,10 @@ package top.seraphjack.simplelogin.server.capability;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import top.seraphjack.simplelogin.server.storage.Position;
 
 @SideOnly(Side.SERVER)
-public interface IPassword {
+public interface ISLEntry {
 
     String getPassword();
 
@@ -17,5 +18,9 @@ public interface IPassword {
     void setGameType(int gameType);
 
     int getGameType();
+
+    Position getLastPosition();
+
+    void setLastPosition(Position pos);
 
 }

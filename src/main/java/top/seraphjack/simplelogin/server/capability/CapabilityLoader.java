@@ -17,11 +17,11 @@ import top.seraphjack.simplelogin.SimpleLogin;
 @SideOnly(Side.SERVER)
 @Mod.EventBusSubscriber(value = Side.SERVER, modid = SimpleLogin.MODID)
 public class CapabilityLoader {
-    @CapabilityInject(IPassword.class)
-    public static Capability<IPassword> CAPABILITY_PASSWORD;
+    @CapabilityInject(ISLEntry.class)
+    public static Capability<ISLEntry> CAPABILITY_PASSWORD;
 
     public CapabilityLoader() {
-        CapabilityManager.INSTANCE.register(IPassword.class, new CapabilityPassword.Storage(), CapabilityPassword.Implementation::new);
+        CapabilityManager.INSTANCE.register(ISLEntry.class, new CapabilityPassword.Storage(), CapabilityPassword.Implementation::new);
     }
 
     @SubscribeEvent
@@ -34,8 +34,8 @@ public class CapabilityLoader {
 
     @SubscribeEvent
     public static void onPlayerClone(net.minecraftforge.event.entity.player.PlayerEvent.Clone event) {
-        Capability<IPassword> capability = CAPABILITY_PASSWORD;
-        Capability.IStorage<IPassword> storage = capability.getStorage();
+        Capability<ISLEntry> capability = CAPABILITY_PASSWORD;
+        Capability.IStorage<ISLEntry> storage = capability.getStorage();
 
         if (event.getOriginal().hasCapability(capability, null) && event.getEntityPlayer().hasCapability(capability, null)) {
             NBTBase nbt = storage.writeNBT(capability, event.getOriginal().getCapability(capability, null), null);

@@ -4,9 +4,10 @@ import com.google.gson.Gson;
 import net.minecraft.world.GameType;
 import org.mindrot.jbcrypt.BCrypt;
 import top.seraphjack.simplelogin.SLConfig;
+import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.SimpleLogin;
 
-import javax.annotation.concurrent.NotThreadSafe;
+import javax.annotation.concurrent.ThreadSafe;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -15,8 +16,9 @@ import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-@NotThreadSafe
+@ThreadSafe
 public class StorageProviderFile implements StorageProvider {
     private Gson gson;
     private Path path;
@@ -28,7 +30,7 @@ public class StorageProviderFile implements StorageProvider {
         this.gson = new Gson();
 
         if (Files.exists(path)) {
-            entries = new HashMap<>();
+            entries = new ConcurrentHashMap<>();
             POJOUserEntry[] buf = gson.fromJson(new String(Files.readAllBytes(path), StandardCharsets.UTF_8), POJOUserEntry[].class);
             if (buf != null) {
                 Arrays.stream(buf).forEach(e -> entries.put(e.username, e));
@@ -106,16 +108,39 @@ public class StorageProviderFile implements StorageProvider {
         return dirty;
     }
 
+    @Override
+    public void setLastPosition(String username, Position pos) {
+        if (entries.containsKey(username)) {
+            POJOUserEntry entry = entries.get(username);
+            entry.posX = pos.getX();
+            entry.posY = pos.getY();
+            entry.posZ = pos.getZ();
+        }
+    }
+
+    @Override
+    public Position getLastPosition(String username) {
+        if (entries.containsKey(username)) {
+            POJOUserEntry entry = entries.get(username);
+            return new Position(entry.posX, entry.posY, entry.posZ);
+        }
+        return SLConstants.defaultPosition;
+    }
+
     private POJOUserEntry newEntry(String username, String password) {
         POJOUserEntry entry = new POJOUserEntry();
         entry.username = username;
         entry.password = password;
         entry.gameType = SLConfig.server.defaultGameType;
+        entry.posX = SLConstants.defaultPosition.getX();
+        entry.posY = SLConstants.defaultPosition.getY();
+        entry.posZ = SLConstants.defaultPosition.getZ();
         return entry;
     }
 
     private static class POJOUserEntry {
         public String password, username;
         public int gameType;
+        double posX, posY, posZ;
     }
 }

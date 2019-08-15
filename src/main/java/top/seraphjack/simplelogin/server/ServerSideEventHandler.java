@@ -3,6 +3,7 @@ package top.seraphjack.simplelogin.server;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -14,6 +15,8 @@ import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.network.MessageRequestLogin;
 import top.seraphjack.simplelogin.network.NetworkLoader;
+import top.seraphjack.simplelogin.server.storage.Position;
+import top.seraphjack.simplelogin.server.storage.SLStorage;
 
 import java.util.Arrays;
 
@@ -26,6 +29,19 @@ public class ServerSideEventHandler {
             PlayerLoginHandler.instance().addPlayerToLoginList((EntityPlayerMP) event.player);
             NetworkLoader.INSTANCE.sendTo(new MessageRequestLogin(), (EntityPlayerMP) event.player);
         });
+    }
+
+    @SubscribeEvent
+    public static synchronized void playerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
+        final String username = event.player.getName();
+        final Position pos = new Position(event.player.posX, event.player.posY, event.player.posZ);
+        SLStorage.instance().storageProvider.setLastPosition(username, pos);
+        try {
+            BlockPos spawnPoint = event.player.world.getSpawnPoint();
+            event.player.setPosition(spawnPoint.getX(), spawnPoint.getY(), spawnPoint.getZ());
+        } catch (Exception ex) {
+            SimpleLogin.logger.error("Fail to set player position to spawn point when logging out.", ex);
+        }
     }
 
     @SubscribeEvent

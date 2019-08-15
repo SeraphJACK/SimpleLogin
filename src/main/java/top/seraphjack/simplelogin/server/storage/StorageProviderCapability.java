@@ -5,17 +5,19 @@ import net.minecraft.world.GameType;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.mindrot.jbcrypt.BCrypt;
 import top.seraphjack.simplelogin.SLConfig;
+import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
-import top.seraphjack.simplelogin.server.capability.IPassword;
+import top.seraphjack.simplelogin.server.capability.ISLEntry;
 
 import javax.annotation.Nonnull;
-import javax.annotation.concurrent.NotThreadSafe;
+import javax.annotation.concurrent.ThreadSafe;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-@NotThreadSafe
+@ThreadSafe
+@Deprecated
 public class StorageProviderCapability implements StorageProvider {
 
     private List<String> resetPasswordList;
@@ -88,12 +90,27 @@ public class StorageProviderCapability implements StorageProvider {
         return false;
     }
 
+    @Override
+    public void setLastPosition(String username, Position pos) {
+        if (isPlayerOnline(username)) {
+            getEntry(username).setLastPosition(pos);
+        }
+    }
+
+    @Override
+    public Position getLastPosition(String username) {
+        if (isPlayerOnline(username)) {
+            return getEntry(username).getLastPosition();
+        }
+        return SLConstants.defaultPosition;
+    }
+
     private boolean isPlayerOnline(String id) {
         return Arrays.asList(FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getOnlinePlayerNames()).contains(id);
     }
 
     @Nonnull
-    private IPassword getEntry(String id) {
+    private ISLEntry getEntry(String id) {
         EntityPlayer player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(id);
         assert player != null;
         return Objects.requireNonNull(player.getCapability(CapabilityLoader.CAPABILITY_PASSWORD, null));

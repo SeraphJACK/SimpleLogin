@@ -2,10 +2,10 @@ package top.seraphjack.simplelogin.server.storage;
 
 import net.minecraft.world.GameType;
 
-import javax.annotation.concurrent.NotThreadSafe;
+import javax.annotation.concurrent.ThreadSafe;
 import java.io.IOException;
 
-@NotThreadSafe
+@ThreadSafe
 public interface StorageProvider {
     boolean checkPassword(String username, String password);
 
@@ -24,4 +24,8 @@ public interface StorageProvider {
     void changePassword(String username, String newPassword);
 
     boolean dirty();
+
+    void setLastPosition(String username, Position pos);
+
+    Position getLastPosition(String username);
 }
