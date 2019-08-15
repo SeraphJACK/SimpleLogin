@@ -59,9 +59,7 @@ public class PlayerLoginHandler {
                         if (SLStorage.instance().storageProvider.dirty()) {
                             SimpleLogin.logger.info("Auto saving entries");
                             long start = System.currentTimeMillis();
-                            synchronized (SLStorage.instance().storageProvider) {
-                                SLStorage.instance().storageProvider.save();
-                            }
+                            SLStorage.instance().storageProvider.save();
                             SimpleLogin.logger.info("Done! Took " + (System.currentTimeMillis() - start) + "ms.");
                         }
                     }
