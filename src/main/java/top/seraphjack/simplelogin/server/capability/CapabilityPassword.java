@@ -46,11 +46,7 @@ public class CapabilityPassword {
         String pwd = "";
         boolean first = true;
         int gameType = SLConfig.server.defaultGameType;
-        Position pos;
-
-        public Implementation() {
-            setLastPosition(SLConstants.defaultPosition);
-        }
+        Position pos = SLConstants.defaultPosition;
 
         @Override
         public String getPassword() {
@@ -84,7 +80,7 @@ public class CapabilityPassword {
 
         @Override
         public Position getLastPosition() {
-            return pos != null ? pos : SLConstants.defaultPosition;
+            return pos;
         }
 
         @Override

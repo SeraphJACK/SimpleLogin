@@ -39,8 +39,8 @@ public class ServerSideEventHandler {
         try {
             BlockPos spawnPoint = event.player.world.getSpawnPoint();
             event.player.setPosition(spawnPoint.getX(), spawnPoint.getY(), spawnPoint.getZ());
-        } catch (Throwable ex) {
-            SimpleLogin.logger.error("Fail to process logout.", ex);
+        } catch (Exception ex) {
+            SimpleLogin.logger.error("Fail to set player position to spawn point when logging out.", ex);
         }
     }
 
