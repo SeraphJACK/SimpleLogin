@@ -35,7 +35,9 @@ public class ServerSideEventHandler {
     public static synchronized void playerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
         final String username = event.player.getName();
         final Position pos = new Position(event.player.posX, event.player.posY, event.player.posZ);
-        SLStorage.instance().storageProvider.setLastPosition(username, pos);
+        if (!PlayerLoginHandler.instance().isPlayerInLoginList(username)) {
+            SLStorage.instance().storageProvider.setLastPosition(username, pos);
+        }
         try {
             BlockPos spawnPoint = event.player.world.getSpawnPoint();
             event.player.setPosition(spawnPoint.getX(), spawnPoint.getY(), spawnPoint.getZ());
