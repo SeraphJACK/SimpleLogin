@@ -89,12 +89,7 @@ public class PlayerLoginHandler {
 
     @Nullable
     private Login getLoginByName(String name) {
-        for (Login l : loginList) {
-            if (l.name.equals(name)) {
-                return l;
-            }
-        }
-        return null;
+        return loginList.stream().filter(l -> l.name.equals(name)).findAny().orElse(null);
     }
 
     public void login(String id, String pwd) {
