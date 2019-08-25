@@ -5,6 +5,7 @@ import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.world.GameType;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -32,20 +33,27 @@ public class ServerSideEventHandler {
     }
 
     @SubscribeEvent
-    public static synchronized void playerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
+    public static void playerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
         final String username = event.player.getName();
         final Position pos = new Position(event.player.posX, event.player.posY, event.player.posZ);
+
+        // Save player position in storage
         if (!PlayerLoginHandler.instance().isPlayerInLoginList(username)) {
             SLStorage.instance().storageProvider.setLastPosition(username, pos);
         }
+
+        // Teleport player to spawn point
         try {
             BlockPos spawnPoint = event.player.world.getSpawnPoint();
             event.player.setPosition(spawnPoint.getX(), spawnPoint.getY(), spawnPoint.getZ());
         } catch (Exception ex) {
             SimpleLogin.logger.error("Fail to set player position to spawn point when logging out.", ex);
         }
+
+        event.player.setGameType(GameType.SPECTATOR);
     }
 
+    // Block command usage from unauthenticated players
     @SubscribeEvent
     public static void onCommand(CommandEvent event) {
         if (Arrays.asList(SLConfig.server.commandNames).contains(event.getCommand().getName())) {

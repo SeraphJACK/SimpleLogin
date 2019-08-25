@@ -34,18 +34,21 @@ public class PlayerLoginHandler {
                     for (Login login : loginList) {
                         EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(login.name);
                         if (player == null) {
-                            SimpleLogin.logger.warn("Can't find player " + login.name + ", ignoring...");
+                            // SimpleLogin.logger.warn("Can't find player " + login.name + ", ignoring...");
                             loginList.remove(login);
                             continue;
                         }
 
+                        // Resend request
                         if (System.currentTimeMillis() - login.lastRequested >= 1000) {
                             NetworkLoader.INSTANCE.sendTo(new MessageRequestLogin(), player);
                             login.lastRequested = System.currentTimeMillis();
                         }
 
+                        // Block players movement before authentication
                         player.connection.setPlayerLocation(login.posX, login.posY, login.posZ, login.yaw, login.pitch);
 
+                        // Kick timed out players
                         if (System.currentTimeMillis() - login.time >= SLConfig.server.secs * 1000) {
                             player.connection.disconnect(new TextComponentString("Login timed out."));
                             loginList.removeIf(i -> i.name.equals(player.getGameProfile().getName()));
@@ -54,6 +57,7 @@ public class PlayerLoginHandler {
                         }
                     }
 
+                    // Auto save entries every 5 minutes
                     if (System.currentTimeMillis() - lastEntriesSaved >= 5 * 60 * 1000) {
                         lastEntriesSaved = System.currentTimeMillis();
                         if (SLStorage.instance().storageProvider.dirty()) {
