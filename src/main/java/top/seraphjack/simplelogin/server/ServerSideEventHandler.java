@@ -50,7 +50,7 @@ public class ServerSideEventHandler {
             SimpleLogin.logger.error("Fail to set player position to spawn point when logging out.", ex);
         }
 
-        event.player.setGameType(GameType.SPECTATOR);
+        // event.player.setGameType(GameType.SPECTATOR);
     }
 
     // Block command usage from unauthenticated players
