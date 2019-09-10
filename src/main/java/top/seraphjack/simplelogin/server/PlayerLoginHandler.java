@@ -46,9 +46,7 @@ public class PlayerLoginHandler {
                         }
 
                         // Block players movement before authentication
-                        FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> {
-                                    player.connection.setPlayerLocation(login.posX, login.posY, login.posZ, login.yaw, login.pitch);
-                                }
+                        FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> player.connection.setPlayerLocation(login.posX, login.posY, login.posZ, login.yaw, login.pitch)
                         );
 
                         // Kick timed out players
