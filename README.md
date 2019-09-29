@@ -55,7 +55,7 @@ Configure the after-login game type for the player.
 
 Change your password.
 
-Please note that you need to change the password in your client configuration file manually, and it is suggested to change it via the configuration GUI for you don't need to restart your client by this way.
+Please note that you need to change the password in your client configuration file manually, and it is suggested to change it via the configuration GUI.
 
 ## Configuration
 
