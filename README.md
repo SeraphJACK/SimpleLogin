@@ -63,17 +63,17 @@ Please note that you need to change the password in your client configuration fi
 
 - Password: String
 
-Your password which will be sent to the server.
+Your password which will be sent to server.
 
 ### Server Configuration
 
 - Login Timeout: Integer
 
-How many seconds to wait before a player login.
+Player login time limit.
 
 - White-listed commands: String Array
 
-Commands which are allowed to be executed by a player who hasn't log in.
+Commands that are allowed to be executed by an unauthenticated player.
 
 - Storage Method: String
 
