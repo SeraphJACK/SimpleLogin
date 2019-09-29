@@ -4,7 +4,7 @@ SimpleLogin is a forge mod aimed to protect servers in off-line mode.
 
 ## Introduction
 
-SimpleLogin is similar to some auth plugins in bukkit like AuthMe, the mod will check player's password when they login.
+SimpleLogin is similar to some auth plugins in bukkit like AuthMe: the mod will check player's password when they login.
 
 But here's some differences: instead of ask password using command, passwords are stored in client's configuration file, so that player don't have to input them every time.
 Besides, client will generate a random password, so in most cases users won't even need to do anything.
