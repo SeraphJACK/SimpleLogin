@@ -8,15 +8,15 @@ public class SHA256 {
 
     public static String getSHA256(String str) {
         MessageDigest messageDigest;
-        String encodestr = "";
+        String encodeStr;
         try {
             messageDigest = MessageDigest.getInstance("SHA-256");
             messageDigest.update(str.getBytes(StandardCharsets.UTF_8));
-            encodestr = byte2Hex(messageDigest.digest());
+            encodeStr = byte2Hex(messageDigest.digest());
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            throw new RuntimeException("SHA256 unsupported.");
         }
-        return encodestr;
+        return encodeStr;
     }
 
     private static String byte2Hex(byte[] bytes) {
