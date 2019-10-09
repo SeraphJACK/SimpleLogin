@@ -1,7 +1,5 @@
 package top.seraphjack.simplelogin.server.storage;
 
-import top.seraphjack.simplelogin.SimpleLogin;
-
 import java.io.IOException;
 import java.nio.file.Paths;
 
@@ -31,7 +29,6 @@ public class SLStorage {
             }
             case "capability": {
                 storageProvider = new StorageProviderCapability();
-                SimpleLogin.logger.warn("Capability storage is deprecated, consider switch to file.");
                 break;
             }
             default: {
