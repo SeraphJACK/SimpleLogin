@@ -71,7 +71,7 @@ shadowJar {
 }
 
 reobf {
-    shadowJar { mappingType = 'SEARGE' as IReobfuscator }
+    shadowJar { mappingType = 'SEARGE' }
 }
 
 tasks.reobfShadowJar.mustRunAfter shadowJar
