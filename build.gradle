@@ -1,3 +1,5 @@
+import net.minecraftforge.gradle.user.IReobfuscator
+
 buildscript {
     repositories {
         jcenter() {
@@ -69,7 +71,7 @@ shadowJar {
 }
 
 reobf {
-    shadowJar { mappingType = 'SEARGE' }
+    shadowJar { mappingType = 'SEARGE' as IReobfuscator }
 }
 
 tasks.reobfShadowJar.mustRunAfter shadowJar
