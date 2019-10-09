@@ -5,7 +5,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.SERVER)
 public interface ISLEntry {
-
     String getPassword();
 
     void setPassword(String password);

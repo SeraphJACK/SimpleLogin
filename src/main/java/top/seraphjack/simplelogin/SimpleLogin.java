@@ -12,7 +12,6 @@ import java.io.IOException;
 
 @Mod(modid = SimpleLogin.MODID, version = SimpleLogin.VERSION, acceptedMinecraftVersions = "[1.10.2,1.12.2]", acceptableRemoteVersions = "[0.2.8,)")
 public class SimpleLogin {
-
     public static final String MODID = "simplelogin";
     public static final String VERSION = "@VERSION_INJECT@";
     public static Logger logger;

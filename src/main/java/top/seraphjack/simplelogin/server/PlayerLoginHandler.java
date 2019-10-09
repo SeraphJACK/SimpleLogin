@@ -1,6 +1,7 @@
 package top.seraphjack.simplelogin.server;
 
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.GameType;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -121,6 +122,34 @@ public class PlayerLoginHandler {
         }
     }
 
+    public void playerJoin(EntityPlayerMP player) {
+        loginList.add(new Login(player));
+        player.setGameType(GameType.SPECTATOR);
+    }
+
+    public void playerLeave(EntityPlayerMP player) {
+        final String username = player.getName();
+        final Position pos = new Position(player.posX, player.posY, player.posZ);
+
+        // Save player position in storage
+        if (!isPlayerInLoginList(username)) {
+            Objects.requireNonNull(player.getCapability(CapabilityLoader.CAPABILITY_LAST_POS, null))
+                    .setLastPos(pos);
+        }
+
+        // Teleport player to spawn point
+        try {
+            BlockPos spawnPoint = player.world.getSpawnPoint();
+            player.setPosition(spawnPoint.getX(), spawnPoint.getY(), spawnPoint.getZ());
+        } catch (Exception ex) {
+            SimpleLogin.logger.error("Fail to set player position to spawn point when logging out.", ex);
+        }
+    }
+
+    public boolean isPlayerInLoginList(String id) {
+        return loginList.stream().anyMatch(e -> e.name.equals(id));
+    }
+
     private void afterPlayerLogin(Login login, EntityPlayerMP player) {
         FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> {
             player.setGameType(SLStorage.instance().storageProvider.gameType(login.name));
@@ -133,15 +162,6 @@ public class PlayerLoginHandler {
                 player.setPositionAndUpdate(lastPos.getX(), lastPos.getY(), lastPos.getZ());
             }
         });
-    }
-
-    public void addPlayerToLoginList(EntityPlayerMP player) {
-        loginList.add(new Login(player));
-        player.setGameType(GameType.SPECTATOR);
-    }
-
-    public boolean isPlayerInLoginList(String id) {
-        return loginList.stream().anyMatch(e -> e.name.equals(id));
     }
 
     private static class Login {

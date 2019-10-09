@@ -10,7 +10,6 @@ import java.util.UUID;
 
 @Config(modid = SimpleLogin.MODID)
 public class SLConfig {
-
     @Config.Name("Server")
     public static Server server = new Server();
 

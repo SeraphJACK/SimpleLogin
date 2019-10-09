@@ -11,7 +11,6 @@ import top.seraphjack.simplelogin.server.storage.SLStorage;
 import java.io.IOException;
 
 public class ServerProxy extends CommonProxy {
-
     @Override
     public void preInit() {
         super.preInit();
@@ -39,5 +38,4 @@ public class ServerProxy extends CommonProxy {
         SimpleLogin.logger.info("Saving all entries");
         SLStorage.instance().storageProvider.save();
     }
-
 }

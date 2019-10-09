@@ -3,7 +3,6 @@ package top.seraphjack.simplelogin.server;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -15,43 +14,22 @@ import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.network.MessageRequestLogin;
 import top.seraphjack.simplelogin.network.NetworkLoader;
-import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
-import top.seraphjack.simplelogin.server.storage.Position;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 @Mod.EventBusSubscriber(value = Side.SERVER, modid = SimpleLogin.MODID)
 public class ServerSideEventHandler {
-
     @SubscribeEvent
     public static void playerJoin(PlayerEvent.PlayerLoggedInEvent event) {
         FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> {
-            PlayerLoginHandler.instance().addPlayerToLoginList((EntityPlayerMP) event.player);
+            PlayerLoginHandler.instance().playerJoin((EntityPlayerMP) event.player);
             NetworkLoader.INSTANCE.sendTo(new MessageRequestLogin(), (EntityPlayerMP) event.player);
         });
     }
 
     @SubscribeEvent
     public static void playerLeave(PlayerEvent.PlayerLoggedOutEvent event) {
-        final String username = event.player.getName();
-        final Position pos = new Position(event.player.posX, event.player.posY, event.player.posZ);
-
-        // Save player position in storage
-        if (!PlayerLoginHandler.instance().isPlayerInLoginList(username)) {
-            Objects.requireNonNull(event.player.getCapability(CapabilityLoader.CAPABILITY_LAST_POS, null))
-                    .setLastPos(pos);
-        }
-
-        // Teleport player to spawn point
-        try {
-            BlockPos spawnPoint = event.player.world.getSpawnPoint();
-            event.player.setPosition(spawnPoint.getX(), spawnPoint.getY(), spawnPoint.getZ());
-        } catch (Exception ex) {
-            SimpleLogin.logger.error("Fail to set player position to spawn point when logging out.", ex);
-        }
-
-        // event.player.setGameType(GameType.SPECTATOR);
+        PlayerLoginHandler.instance().playerLeave((EntityPlayerMP) event.player);
     }
 
     // Block command usage from unauthenticated players

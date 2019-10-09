@@ -12,7 +12,6 @@ public class MessageLogin implements IMessage {
     private String pwd;
 
     public MessageLogin() {
-
     }
 
     public MessageLogin(String pwd) {
