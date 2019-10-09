@@ -15,10 +15,11 @@ import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.network.MessageRequestLogin;
 import top.seraphjack.simplelogin.network.NetworkLoader;
+import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
 import top.seraphjack.simplelogin.server.storage.Position;
-import top.seraphjack.simplelogin.server.storage.SLStorage;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 @Mod.EventBusSubscriber(value = Side.SERVER, modid = SimpleLogin.MODID)
 public class ServerSideEventHandler {
@@ -38,7 +39,8 @@ public class ServerSideEventHandler {
 
         // Save player position in storage
         if (!PlayerLoginHandler.instance().isPlayerInLoginList(username)) {
-            SLStorage.instance().storageProvider.setLastPosition(username, pos);
+            Objects.requireNonNull(event.player.getCapability(CapabilityLoader.CAPABILITY_LAST_POS, null))
+                    .setLastPos(pos);
         }
 
         // Teleport player to spawn point

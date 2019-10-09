@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -18,23 +19,42 @@ import top.seraphjack.simplelogin.SimpleLogin;
 @Mod.EventBusSubscriber(value = Side.SERVER, modid = SimpleLogin.MODID)
 public class CapabilityLoader {
     @CapabilityInject(ISLEntry.class)
-    public static Capability<ISLEntry> CAPABILITY_PASSWORD;
+    public static Capability<ISLEntry> CAPABILITY_SL_ENTRY;
+
+    @CapabilityInject(ILastPos.class)
+    public static Capability<ILastPos> CAPABILITY_LAST_POS;
+
+    @CapabilityInject(IRegisteredPlayers.class)
+    public static Capability<IRegisteredPlayers> CAPABILITY_REGISTERED_PLAYERS;
 
     public CapabilityLoader() {
-        CapabilityManager.INSTANCE.register(ISLEntry.class, new CapabilityPassword.Storage(), CapabilityPassword.Implementation::new);
+        CapabilityManager.INSTANCE.register(ISLEntry.class, new CapabilitySLEntry.Storage(), CapabilitySLEntry.Implementation::new);
+        CapabilityManager.INSTANCE.register(ILastPos.class, new CapabilityLastPos.Storage(), CapabilityLastPos.Implementation::new);
+        CapabilityManager.INSTANCE.register(IRegisteredPlayers.class, new CapabilityRegisteredPlayers.Storage(), CapabilityRegisteredPlayers.Implementation::new);
     }
 
     @SubscribeEvent
     public static void onAttachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof EntityPlayer) {
             event.addCapability(new ResourceLocation(SimpleLogin.MODID, "sl_password"),
-                    new CapabilityPassword.PlayerProvider());
+                    new CapabilitySLEntry.Provider());
+
+            event.addCapability(new ResourceLocation(SimpleLogin.MODID, "sl_lastPos"),
+                    new CapabilityLastPos.Provider());
+        }
+    }
+
+    @SubscribeEvent
+    public static void onAttachCapabilitiesWorld(AttachCapabilitiesEvent<World> event) {
+        if (event.getObject().provider.getDimension() == 0) {
+            event.addCapability(new ResourceLocation(SimpleLogin.MODID, "sl_registered_players"),
+                    new CapabilityRegisteredPlayers.Provider());
         }
     }
 
     @SubscribeEvent
     public static void onPlayerClone(net.minecraftforge.event.entity.player.PlayerEvent.Clone event) {
-        Capability<ISLEntry> capability = CAPABILITY_PASSWORD;
+        Capability<ISLEntry> capability = CAPABILITY_SL_ENTRY;
         Capability.IStorage<ISLEntry> storage = capability.getStorage();
 
         if (event.getOriginal().hasCapability(capability, null) && event.getEntityPlayer().hasCapability(capability, null)) {

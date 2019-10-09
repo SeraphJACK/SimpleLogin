@@ -26,10 +26,6 @@ public interface StorageProvider {
 
     boolean dirty();
 
-    void setLastPosition(String username, Position pos);
-
-    Position getLastPosition(String username);
-
     /**
      * Should be immutable
      * @return all registered username

@@ -5,23 +5,22 @@ import net.minecraft.world.GameType;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.mindrot.jbcrypt.BCrypt;
 import top.seraphjack.simplelogin.SLConfig;
-import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
+import top.seraphjack.simplelogin.server.capability.IRegisteredPlayers;
 import top.seraphjack.simplelogin.server.capability.ISLEntry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Objects;
 
 @ThreadSafe
-@Deprecated
 public class StorageProviderCapability implements StorageProvider {
-
-    private List<String> resetPasswordList;
-
-    public StorageProviderCapability() {
-        resetPasswordList = new LinkedList<>();
-    }
+    @Nonnull
+    private IRegisteredPlayers registeredPlayers = Objects.requireNonNull(FMLCommonHandler.instance()
+            .getMinecraftServerInstance().getWorld(0)
+            .getCapability(CapabilityLoader.CAPABILITY_REGISTERED_PLAYERS, null));
 
     @Override
     public boolean checkPassword(String username, String password) {
@@ -33,26 +32,18 @@ public class StorageProviderCapability implements StorageProvider {
 
     @Override
     public void unregister(String username) {
-        if (isPlayerOnline(username)) {
-            getEntry(username).setFirst(true);
-        } else {
-            resetPasswordList.add(username);
-        }
+        registeredPlayers.remove(username);
     }
 
     @Override
     public boolean registered(String username) {
-        if (isPlayerOnline(username)) {
-            return !(getEntry(username).isFirst() || resetPasswordList.contains(username));
-        }
-        return !resetPasswordList.contains(username);
+        return registeredPlayers.getRegisteredPlayers().contains(username);
     }
 
     @Override
     public void register(String username, String password) {
         getEntry(username).setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
-        getEntry(username).setFirst(false);
-        resetPasswordList.remove(username);
+        registeredPlayers.add(username);
     }
 
     @Override
@@ -88,21 +79,6 @@ public class StorageProviderCapability implements StorageProvider {
     }
 
     @Override
-    public void setLastPosition(String username, Position pos) {
-        if (isPlayerOnline(username)) {
-            getEntry(username).setLastPosition(pos);
-        }
-    }
-
-    @Override
-    public Position getLastPosition(String username) {
-        if (isPlayerOnline(username)) {
-            return getEntry(username).getLastPosition();
-        }
-        return SLConstants.defaultPosition;
-    }
-
-    @Override
     public Collection<String> getAllRegisteredUsername() {
         return Arrays.asList(FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getOnlinePlayerNames());
     }
@@ -115,6 +91,6 @@ public class StorageProviderCapability implements StorageProvider {
     private ISLEntry getEntry(String id) {
         EntityPlayer player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(id);
         assert player != null;
-        return Objects.requireNonNull(player.getCapability(CapabilityLoader.CAPABILITY_PASSWORD, null));
+        return Objects.requireNonNull(player.getCapability(CapabilityLoader.CAPABILITY_SL_ENTRY, null));
     }
 }

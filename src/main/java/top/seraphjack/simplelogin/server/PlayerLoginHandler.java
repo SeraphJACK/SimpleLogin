@@ -11,10 +11,12 @@ import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.network.MessageRequestLogin;
 import top.seraphjack.simplelogin.network.NetworkLoader;
+import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
 import top.seraphjack.simplelogin.server.storage.Position;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @SideOnly(Side.SERVER)
@@ -122,7 +124,9 @@ public class PlayerLoginHandler {
     private void afterPlayerLogin(Login login, EntityPlayerMP player) {
         FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> {
             player.setGameType(SLStorage.instance().storageProvider.gameType(login.name));
-            Position lastPos = SLStorage.instance().storageProvider.getLastPosition(login.name);
+            Position lastPos = Objects.requireNonNull(player.getCapability(CapabilityLoader.CAPABILITY_LAST_POS, null))
+                    .getLastPos();
+
             if (lastPos.equals(SLConstants.defaultPosition)) {
                 player.setPosition(login.posX, login.posY, login.posZ);
             } else {
