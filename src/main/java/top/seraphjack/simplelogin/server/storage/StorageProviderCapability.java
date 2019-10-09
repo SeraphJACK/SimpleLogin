@@ -80,7 +80,7 @@ public class StorageProviderCapability implements StorageProvider {
 
     @Override
     public Collection<String> getAllRegisteredUsername() {
-        return Arrays.asList(FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getOnlinePlayerNames());
+        return registeredPlayers.getRegisteredPlayers();
     }
 
     private boolean isPlayerOnline(String id) {
