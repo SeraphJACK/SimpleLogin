@@ -1,11 +1,13 @@
 package top.seraphjack.simplelogin.server.capability;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface IRegisteredPlayers {
-    List<String> getRegisteredPlayers();
+    Collection<String> getRegisteredPlayers();
 
     void add(String name);
 
     void remove(String name);
+
+    boolean contains(String name);
 }

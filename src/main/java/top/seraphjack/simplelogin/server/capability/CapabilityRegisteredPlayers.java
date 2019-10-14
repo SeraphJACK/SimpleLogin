@@ -1,6 +1,6 @@
 package top.seraphjack.simplelogin.server.capability;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -10,8 +10,8 @@ import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
 
 public class CapabilityRegisteredPlayers {
     public static class Storage implements Capability.IStorage<IRegisteredPlayers> {
@@ -34,11 +34,11 @@ public class CapabilityRegisteredPlayers {
     }
 
     public static class Implementation implements IRegisteredPlayers {
-        private List<String> players = new LinkedList<>();
+        private Collection<String> players = new HashSet<>();
 
         @Override
-        public List<String> getRegisteredPlayers() {
-            return new ImmutableList.Builder<String>().addAll(players).build();
+        public Collection<String> getRegisteredPlayers() {
+            return new ImmutableSet.Builder<String>().addAll(players).build();
         }
 
         @Override
@@ -49,6 +49,11 @@ public class CapabilityRegisteredPlayers {
         @Override
         public void remove(String name) {
             players.remove(name);
+        }
+
+        @Override
+        public boolean contains(String name) {
+            return players.contains(name);
         }
     }
 

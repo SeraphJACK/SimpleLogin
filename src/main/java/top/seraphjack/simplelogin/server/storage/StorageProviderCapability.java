@@ -37,7 +37,7 @@ public class StorageProviderCapability implements StorageProvider {
 
     @Override
     public boolean registered(String username) {
-        return registeredPlayers.getRegisteredPlayers().contains(username);
+        return registeredPlayers.contains(username);
     }
 
     @Override
