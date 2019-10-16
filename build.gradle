@@ -38,7 +38,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
-version = "0.3.3-beta"
+version = "0.3.3-stable"
 group = "top.seraphjack"
 archivesBaseName = "simplelogin"
 
