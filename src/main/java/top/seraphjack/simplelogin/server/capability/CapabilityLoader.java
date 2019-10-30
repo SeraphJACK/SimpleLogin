@@ -53,13 +53,16 @@ public class CapabilityLoader {
     }
 
     @SubscribeEvent
+    @SuppressWarnings("unchecked")
     public static void onPlayerClone(net.minecraftforge.event.entity.player.PlayerEvent.Clone event) {
-        Capability<ISLEntry> capability = CAPABILITY_SL_ENTRY;
-        Capability.IStorage<ISLEntry> storage = capability.getStorage();
+        Capability[] capabilities = new Capability[]{CAPABILITY_LAST_POS, CAPABILITY_SL_ENTRY};
+        for (Capability capability : capabilities) {
+            Capability.IStorage storage = capability.getStorage();
 
-        if (event.getOriginal().hasCapability(capability, null) && event.getEntityPlayer().hasCapability(capability, null)) {
-            NBTBase nbt = storage.writeNBT(capability, event.getOriginal().getCapability(capability, null), null);
-            storage.readNBT(capability, event.getEntityPlayer().getCapability(capability, null), null, nbt);
+            if (event.getOriginal().hasCapability(capability, null) && event.getEntityPlayer().hasCapability(capability, null)) {
+                NBTBase nbt = storage.writeNBT(capability, event.getOriginal().getCapability(capability, null), null);
+                storage.readNBT(capability, event.getEntityPlayer().getCapability(capability, null), null, nbt);
+            }
         }
     }
 }
