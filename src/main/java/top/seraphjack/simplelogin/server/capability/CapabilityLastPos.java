@@ -1,10 +1,11 @@
 package top.seraphjack.simplelogin.server.capability;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.LazyOptional;
 import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.server.storage.Position;
 
@@ -15,41 +16,33 @@ public class CapabilityLastPos {
     public static class Storage implements Capability.IStorage<ILastPos> {
         @Nullable
         @Override
-        public NBTBase writeNBT(Capability<ILastPos> capability, ILastPos instance, EnumFacing side) {
+        public INBT writeNBT(Capability<ILastPos> capability, ILastPos instance, Direction side) {
             return instance.getLastPos().toNBT();
         }
 
         @Override
-        public void readNBT(Capability<ILastPos> capability, ILastPos instance, EnumFacing side, NBTBase nbt) {
-            instance.setLastPos(Position.fromNBT((NBTTagCompound) nbt));
+        public void readNBT(Capability<ILastPos> capability, ILastPos instance, Direction side, INBT nbt) {
+            instance.setLastPos(Position.fromNBT((CompoundNBT) nbt));
         }
     }
 
-    public static class Provider implements ICapabilitySerializable<NBTTagCompound> {
+    public static class Provider implements ICapabilitySerializable<INBT> {
         private ILastPos lastPos = new Implementation();
 
         @Override
-        public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-            return capability == CapabilityLoader.CAPABILITY_LAST_POS;
-        }
-
-        @Nullable
-        @Override
         @SuppressWarnings("unchecked")
-        public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-            if (hasCapability(capability, facing)) {
-                return (T) lastPos;
-            }
-            return null;
+        @Nonnull
+        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
+            return (LazyOptional<T>) LazyOptional.of(() -> lastPos);
         }
 
         @Override
-        public NBTTagCompound serializeNBT() {
-            return (NBTTagCompound) CapabilityLoader.CAPABILITY_LAST_POS.getStorage().writeNBT(CapabilityLoader.CAPABILITY_LAST_POS, lastPos, null);
+        public INBT serializeNBT() {
+            return CapabilityLoader.CAPABILITY_LAST_POS.getStorage().writeNBT(CapabilityLoader.CAPABILITY_LAST_POS, lastPos, null);
         }
 
         @Override
-        public void deserializeNBT(NBTTagCompound nbt) {
+        public void deserializeNBT(INBT nbt) {
             CapabilityLoader.CAPABILITY_LAST_POS.getStorage().readNBT(CapabilityLoader.CAPABILITY_LAST_POS, lastPos, null, nbt);
         }
     }

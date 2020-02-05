@@ -1,14 +1,17 @@
 package top.seraphjack.simplelogin.network;
 
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 import top.seraphjack.simplelogin.SimpleLogin;
 
 public class NetworkLoader {
-    public static SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(SimpleLogin.MODID);
+    public static SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
+            new ResourceLocation(SimpleLogin.MODID, "test"),
+            () -> "*",
+            (version) -> true,
+            (version) -> true
+    );
     private static int msgId = 0;
 
     public NetworkLoader() {

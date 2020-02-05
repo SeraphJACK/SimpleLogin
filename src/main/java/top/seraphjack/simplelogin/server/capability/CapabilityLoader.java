@@ -1,22 +1,21 @@
 package top.seraphjack.simplelogin.server.capability;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.INBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.OverworldDimension;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import top.seraphjack.simplelogin.SimpleLogin;
 
-@SideOnly(Side.SERVER)
-@Mod.EventBusSubscriber(value = Side.SERVER, modid = SimpleLogin.MODID)
+@Mod.EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = SimpleLogin.MODID)
 public class CapabilityLoader {
     @CapabilityInject(ISLEntry.class)
     public static Capability<ISLEntry> CAPABILITY_SL_ENTRY;
@@ -35,7 +34,7 @@ public class CapabilityLoader {
 
     @SubscribeEvent
     public static void onAttachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof EntityPlayer) {
+        if (event.getObject() instanceof PlayerEntity) {
             event.addCapability(new ResourceLocation(SimpleLogin.MODID, "sl_password"),
                     new CapabilitySLEntry.Provider());
 
@@ -46,7 +45,7 @@ public class CapabilityLoader {
 
     @SubscribeEvent
     public static void onAttachCapabilitiesWorld(AttachCapabilitiesEvent<World> event) {
-        if (event.getObject().provider.getDimension() == 0) {
+        if (event.getObject().dimension instanceof OverworldDimension) {
             event.addCapability(new ResourceLocation(SimpleLogin.MODID, "sl_registered_players"),
                     new CapabilityRegisteredPlayers.Provider());
         }
@@ -59,8 +58,8 @@ public class CapabilityLoader {
         for (Capability capability : capabilities) {
             Capability.IStorage storage = capability.getStorage();
 
-            if (event.getOriginal().hasCapability(capability, null) && event.getEntityPlayer().hasCapability(capability, null)) {
-                NBTBase nbt = storage.writeNBT(capability, event.getOriginal().getCapability(capability, null), null);
+            if (event.getOriginal().getCapability(capability, null).isPresent() && event.getPlayer().getCapability(capability, null).isPresent()) {
+                INBT nbt = storage.writeNBT(capability, event.getOriginal().getCapability(capability, null), null);
                 storage.readNBT(capability, event.getEntityPlayer().getCapability(capability, null), null, nbt);
             }
         }

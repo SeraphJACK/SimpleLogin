@@ -1,12 +1,13 @@
 package top.seraphjack.simplelogin.server.capability;
 
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -17,18 +18,18 @@ public class CapabilityRegisteredPlayers {
     public static class Storage implements Capability.IStorage<IRegisteredPlayers> {
         @Nullable
         @Override
-        public NBTBase writeNBT(Capability<IRegisteredPlayers> capability, IRegisteredPlayers instance, EnumFacing side) {
-            NBTTagList tag = new NBTTagList();
+        public INBT writeNBT(Capability<IRegisteredPlayers> capability, IRegisteredPlayers instance, Direction side) {
+            ListNBT tag = new ListNBT();
             for (String id : instance.getRegisteredPlayers()) {
-                tag.appendTag(new NBTTagString(id));
+                tag.add(new StringNBT(id));
             }
             return tag;
         }
 
         @Override
-        public void readNBT(Capability<IRegisteredPlayers> capability, IRegisteredPlayers instance, EnumFacing side, NBTBase nbt) {
-            for (NBTBase tag : (NBTTagList) nbt) {
-                instance.add(((NBTTagString) tag).getString());
+        public void readNBT(Capability<IRegisteredPlayers> capability, IRegisteredPlayers instance, Direction side, INBT nbt) {
+            for (INBT tag : (ListNBT) nbt) {
+                instance.add(((StringNBT) tag).getString());
             }
         }
     }
@@ -57,31 +58,23 @@ public class CapabilityRegisteredPlayers {
         }
     }
 
-    public static class Provider implements ICapabilitySerializable<NBTTagList> {
+    public static class Provider implements ICapabilitySerializable<ListNBT> {
         private IRegisteredPlayers registeredPlayers = new Implementation();
 
-        @Override
-        public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-            return capability == CapabilityLoader.CAPABILITY_REGISTERED_PLAYERS;
-        }
-
-        @Nullable
+        @Nonnull
         @Override
         @SuppressWarnings("unchecked")
-        public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-            if (hasCapability(capability,facing)) {
-                return (T) registeredPlayers;
-            }
-            return null;
+        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
+            return (LazyOptional<T>) LazyOptional.of(() -> registeredPlayers);
         }
 
         @Override
-        public NBTTagList serializeNBT() {
-            return (NBTTagList) CapabilityLoader.CAPABILITY_REGISTERED_PLAYERS.getStorage().writeNBT(CapabilityLoader.CAPABILITY_REGISTERED_PLAYERS,registeredPlayers,null);
+        public ListNBT serializeNBT() {
+            return (ListNBT) CapabilityLoader.CAPABILITY_REGISTERED_PLAYERS.getStorage().writeNBT(CapabilityLoader.CAPABILITY_REGISTERED_PLAYERS,registeredPlayers,null);
         }
 
         @Override
-        public void deserializeNBT(NBTTagList nbt) {
+        public void deserializeNBT(ListNBT nbt) {
             CapabilityLoader.CAPABILITY_REGISTERED_PLAYERS.getStorage().readNBT(CapabilityLoader.CAPABILITY_REGISTERED_PLAYERS,registeredPlayers,null,nbt);
         }
     }

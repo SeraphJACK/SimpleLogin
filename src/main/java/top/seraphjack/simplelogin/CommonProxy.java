@@ -1,7 +1,7 @@
 package top.seraphjack.simplelogin;
 
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import top.seraphjack.simplelogin.network.NetworkLoader;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;

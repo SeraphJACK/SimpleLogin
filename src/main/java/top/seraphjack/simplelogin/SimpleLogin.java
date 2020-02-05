@@ -1,43 +1,31 @@
 package top.seraphjack.simplelogin;
 
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 
-@Mod(modid = SimpleLogin.MODID, version = SimpleLogin.VERSION, acceptedMinecraftVersions = "[1.10.2,1.12.2]", acceptableRemoteVersions = "[0.2.8,)")
+@Mod(SimpleLogin.MODID)
 public class SimpleLogin {
     public static final String MODID = "simplelogin";
-    public static final String VERSION = "@VERSION_INJECT@";
-    public static Logger logger;
+    public static Logger logger = LogManager.getLogger(MODID);
 
-    @SidedProxy(serverSide = "top.seraphjack.simplelogin.server.ServerProxy", clientSide = "top.seraphjack.simplelogin.client.ClientProxy")
-    private static CommonProxy proxy;
-
-    @Mod.EventHandler
-    public void preInit(FMLPreInitializationEvent e) {
-        proxy.preInit();
-        logger = e.getModLog();
+    public SimpleLogin() {
+        // TODO
     }
 
-    @Mod.EventHandler
-    public void init(FMLInitializationEvent e) {
-        proxy.init();
-    }
-
-    @Mod.EventHandler
+    @SubscribeEvent
     public void serverStarting(FMLServerStartingEvent e) {
-        proxy.serverStarting(e);
+        // TODO
     }
 
-    @Mod.EventHandler
+    @SubscribeEvent
     public void serverStopping(FMLServerStoppingEvent e) throws IOException {
-        proxy.serverStopping(e);
+        // TODO
     }
 
 }

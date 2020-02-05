@@ -1,12 +1,10 @@
 package top.seraphjack.simplelogin.server;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameType;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.SimpleLogin;
@@ -17,10 +15,8 @@ import top.seraphjack.simplelogin.server.storage.Position;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-@SideOnly(Side.SERVER)
 public class PlayerLoginHandler {
     private static Thread PLAYER_HANDLER_THREAD;
     private static PlayerLoginHandler INSTANCE;
@@ -35,7 +31,7 @@ public class PlayerLoginHandler {
             while (alive) {
                 try {
                     for (Login login : loginList) {
-                        EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(login.name);
+                        ServerPlayerEntity player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(login.name);
                         if (player == null) {
                             // SimpleLogin.logger.warn("Can't find player " + login.name + ", ignoring...");
                             loginList.remove(login);
@@ -55,7 +51,7 @@ public class PlayerLoginHandler {
 
                         // Kick timed out players
                         if (System.currentTimeMillis() - login.time >= SLConfig.server.secs * 1000) {
-                            player.connection.disconnect(new TextComponentString("Login timed out."));
+                            player.connection.disconnect(new StringTextComponent("Login timed out."));
                             loginList.removeIf(i -> i.name.equals(player.getGameProfile().getName()));
                             SimpleLogin.logger.warn("Player " + login.name + " haven't login after a long time.");
                             loginList.remove(login);
@@ -100,14 +96,14 @@ public class PlayerLoginHandler {
     public void login(String id, String pwd) {
         Login login = getLoginByName(id);
         loginList.remove(login);
-        EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(id);
+        ServerPlayerEntity player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(id);
 
         if (login == null || player == null) {
             return;
         }
 
         if (pwd.length() >= 100) {
-            player.connection.disconnect(new TextComponentString("Password too long."));
+            player.connection.disconnect(new StringTextComponent("Password too long."));
             SimpleLogin.logger.warn("Player " + id + " tried to login with a invalid password(too long).");
         } else if (!SLStorage.instance().storageProvider.registered(id)) {
             SLStorage.instance().storageProvider.register(id, pwd);
@@ -118,23 +114,22 @@ public class PlayerLoginHandler {
             SimpleLogin.logger.info("Player " + id + " has successfully logged in.");
         } else {
             SimpleLogin.logger.warn("Player " + id + " tried to login with a wrong password.");
-            player.connection.disconnect(new TextComponentString("Wrong Password."));
+            player.connection.disconnect(new StringTextComponent("Wrong Password."));
         }
     }
 
-    public void playerJoin(EntityPlayerMP player) {
+    public void playerJoin(ServerPlayerEntity player) {
         loginList.add(new Login(player));
         player.setGameType(GameType.SPECTATOR);
     }
 
-    public void playerLeave(EntityPlayerMP player) {
-        final String username = player.getName();
+    public void playerLeave(ServerPlayerEntity player) {
+        final String username = player.getGameProfile().getName();
         final Position pos = new Position(player.posX, player.posY, player.posZ);
 
         // Save player position in storage
         if (!isPlayerInLoginList(username)) {
-            Objects.requireNonNull(player.getCapability(CapabilityLoader.CAPABILITY_LAST_POS, null))
-                    .setLastPos(pos);
+            player.getCapability(CapabilityLoader.CAPABILITY_LAST_POS).ifPresent(c -> c.setLastPos(pos));
         }
 
         // Teleport player to spawn point
@@ -150,11 +145,10 @@ public class PlayerLoginHandler {
         return loginList.stream().anyMatch(e -> e.name.equals(id));
     }
 
-    private void afterPlayerLogin(Login login, EntityPlayerMP player) {
+    private void afterPlayerLogin(Login login, ServerPlayerEntity player) {
         FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> {
             player.setGameType(SLStorage.instance().storageProvider.gameType(login.name));
-            Position lastPos = Objects.requireNonNull(player.getCapability(CapabilityLoader.CAPABILITY_LAST_POS, null))
-                    .getLastPos();
+            Position lastPos= player.getCapability(CapabilityLoader.CAPABILITY_LAST_POS).orElseThrow(RuntimeException::new).getLastPos();
 
             if (lastPos.equals(SLConstants.defaultPosition)) {
                 player.setPosition(login.posX, login.posY, login.posZ);
@@ -171,7 +165,7 @@ public class PlayerLoginHandler {
         float yaw, pitch;
         long lastRequested;
 
-        Login(EntityPlayerMP player) {
+        Login(ServerPlayerEntity player) {
             this.name = player.getGameProfile().getName();
             this.time = System.currentTimeMillis();
             this.posX = player.posX;

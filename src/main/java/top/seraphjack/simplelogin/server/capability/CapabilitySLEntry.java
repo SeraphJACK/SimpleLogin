@@ -1,32 +1,30 @@
 package top.seraphjack.simplelogin.server.capability;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.common.util.LazyOptional;
 import top.seraphjack.simplelogin.SLConfig;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-@SideOnly(Side.SERVER)
 public class CapabilitySLEntry {
     public static class Storage implements Capability.IStorage<ISLEntry> {
         @Override
-        public NBTBase writeNBT(Capability<ISLEntry> capability, ISLEntry instance, EnumFacing side) {
-            NBTTagCompound nbt = new NBTTagCompound();
-            nbt.setString("pwd", instance.getPassword());
-            nbt.setInteger("gameType", instance.getGameType());
+        public INBT writeNBT(Capability<ISLEntry> capability, ISLEntry instance, Direction side) {
+            CompoundNBT nbt = new CompoundNBT();
+            nbt.putString("pwd", instance.getPassword());
+            nbt.putInt("gameType", instance.getGameType());
             return nbt;
         }
 
         @Override
-        public void readNBT(Capability<ISLEntry> capability, ISLEntry instance, EnumFacing side, NBTBase nbt) {
-            instance.setPassword(((NBTTagCompound) nbt).getString("pwd"));
-            instance.setGameType(((NBTTagCompound) nbt).getInteger("gameType"));
+        public void readNBT(Capability<ISLEntry> capability, ISLEntry instance, Direction side, INBT nbt) {
+            instance.setPassword(((CompoundNBT) nbt).getString("pwd"));
+            instance.setGameType(((CompoundNBT) nbt).getInt("gameType"));
         }
     }
 
@@ -55,32 +53,24 @@ public class CapabilitySLEntry {
         }
     }
 
-    public static class Provider implements ICapabilitySerializable<NBTTagCompound> {
+    public static class Provider implements ICapabilitySerializable<CompoundNBT> {
         private ISLEntry password = new Implementation();
         private Capability.IStorage<ISLEntry> storage = CapabilityLoader.CAPABILITY_SL_ENTRY.getStorage();
 
-        @Override
-        public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
-            return capability == CapabilityLoader.CAPABILITY_SL_ENTRY;
-        }
-
-        @Nullable
+        @Nonnull
         @Override
         @SuppressWarnings("unchecked")
-        public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing) {
-            if (capability == CapabilityLoader.CAPABILITY_SL_ENTRY) {
-                return (T) password;
-            }
-            return null;
+        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
+            return (LazyOptional<T>) LazyOptional.of(() -> password);
         }
 
         @Override
-        public NBTTagCompound serializeNBT() {
-            return (NBTTagCompound) storage.writeNBT(CapabilityLoader.CAPABILITY_SL_ENTRY, password, null);
+        public CompoundNBT serializeNBT() {
+            return (CompoundNBT) storage.writeNBT(CapabilityLoader.CAPABILITY_SL_ENTRY, password, null);
         }
 
         @Override
-        public void deserializeNBT(NBTTagCompound nbt) {
+        public void deserializeNBT(CompoundNBT nbt) {
             storage.readNBT(CapabilityLoader.CAPABILITY_SL_ENTRY, password, null, nbt);
         }
     }

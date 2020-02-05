@@ -1,6 +1,6 @@
 package top.seraphjack.simplelogin.server.storage;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.GameType;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.mindrot.jbcrypt.BCrypt;
@@ -89,8 +89,8 @@ public class StorageProviderCapability implements StorageProvider {
 
     @Nonnull
     private ISLEntry getEntry(String id) {
-        EntityPlayer player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(id);
+        ServerPlayerEntity player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(id);
         assert player != null;
-        return Objects.requireNonNull(player.getCapability(CapabilityLoader.CAPABILITY_SL_ENTRY, null));
+        return player.getCapability(CapabilityLoader.CAPABILITY_SL_ENTRY, null).orElseThrow(RuntimeException::new);
     }
 }
