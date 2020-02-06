@@ -1,50 +1,90 @@
 package top.seraphjack.simplelogin;
 
-import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.config.ConfigManager;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.config.ModConfig;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.UUID;
 
-@Config(modid = SLConstants.MODID)
+import static net.minecraftforge.fml.Logging.CORE;
+import static net.minecraftforge.fml.loading.LogMarkers.FORGEMOD;
+
 public class SLConfig {
-    @Config.Name("Server")
-    public static Server server = new Server();
-
-    @Config.Name("Client")
-    public static Client client = new Client();
-
     public static class Server {
-        @Config.Name("Login Timeout(s)")
-        public int secs = 60;
+        public final ForgeConfigSpec.IntValue secs;
 
-        @Config.Name("Whitelisted commands")
-        @Config.Comment("Commands in whitelist can be executed before player login.")
-        public String[] commandNames = {};
+        public final ForgeConfigSpec.ConfigValue<String[]> commandNames;
 
-        @Config.Name("Storage method")
-        @Config.Comment("Available storage method: file(json file) / capability(save in player nbt)")
-        public String storageMethod = "file";
+        public final ForgeConfigSpec.ConfigValue<String> storageMethod;
 
-        @Config.Name("Default Game Type")
-        @Config.Comment("Default game type switched after player login")
-        public int defaultGameType = 0;
+        public final ForgeConfigSpec.IntValue defaultGameType;
+
+        Server(ForgeConfigSpec.Builder builder) {
+            builder.comment("Server settings")
+                    .push("server");
+
+            secs = builder
+                    .comment("Login Timeout(s)")
+                    .defineInRange("secs", 60, 0, 1200);
+
+            commandNames = builder
+                    .comment("Commands in whitelist can be executed before player login.")
+                    .define("commandNames", new String[0]);
+
+            storageMethod = builder
+                    .comment("Available storage method: file(json file) / capability(save in player nbt)")
+                    .define("storageMethod", "");
+
+            defaultGameType = builder
+                    .comment("Default game type switched after player login")
+                    .defineInRange("defaultGameType", 0, 0, 3);
+
+            builder.pop();
+        }
+    }
+
+    static final ForgeConfigSpec serverSpec;
+    public static final Server SERVER;
+
+    static {
+        final Pair<Server, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Server::new);
+        serverSpec = specPair.getRight();
+        SERVER = specPair.getLeft();
     }
 
     public static class Client {
-        @Config.Name("Password")
-        public String password = UUID.randomUUID().toString();
+        public final ForgeConfigSpec.ConfigValue<String> password;
+
+        Client(ForgeConfigSpec.Builder builder) {
+            builder
+                    .comment("Client settings")
+                    .push("client");
+
+            password = builder
+                    .comment("User password")
+                    .define("password", UUID.randomUUID().toString());
+
+            builder.pop();
+        }
     }
 
-    @Mod.EventBusSubscriber(modid = SLConstants.MODID)
-    public static class ConfigSyncHandler {
-        @SubscribeEvent
-        public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-            if (event.getModID().equals(SLConstants.MODID)) {
-                ConfigManager.sync(SLConstants.MODID, Config.Type.INSTANCE);
-            }
-        }
+
+    static final ForgeConfigSpec clientSpec;
+    public static final Client CLIENT;
+
+    static {
+        final Pair<Client, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Client::new);
+        clientSpec = specPair.getRight();
+        CLIENT = specPair.getLeft();
+    }
+
+    @SubscribeEvent
+    public static void onLoad(final ModConfig.Loading configEvent) {
+    }
+
+    @SubscribeEvent
+    public static void onFileChange(final ModConfig.ConfigReloading configEvent) {
     }
 }
