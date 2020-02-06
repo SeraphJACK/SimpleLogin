@@ -60,7 +60,7 @@ public class StorageProviderCapability implements StorageProvider {
         if (isPlayerOnline(username)) {
             return GameType.getByID(getEntry(username).getGameType());
         }
-        return GameType.getByID(SLConfig.server.defaultGameType);
+        return GameType.getByID(SLConfig.SERVER.defaultGameType.get());
     }
 
     @Override

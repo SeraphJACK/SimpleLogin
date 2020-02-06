@@ -32,7 +32,7 @@ public class ServerSideEventHandler {
     // Block command usage from unauthenticated players
     @SubscribeEvent
     public static void onCommand(CommandEvent event) throws Exception {
-        if (Arrays.asList(SLConfig.server.commandNames).contains(event.getParseResults().getContext().getRootNode().getName())) {
+        if (SLConfig.SERVER.commandNames.get().contains(event.getParseResults().getContext().getRootNode().getName())) {
             return;
         }
         if (PlayerLoginHandler.instance().isPlayerInLoginList(event.getParseResults().getContext().getSource().asPlayer().getGameProfile().getName())) {
