@@ -7,7 +7,13 @@ import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.network.PacketDistributor;
+import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SLConstants;
+import top.seraphjack.simplelogin.network.MessageRequestLogin;
+import top.seraphjack.simplelogin.network.NetworkLoader;
+
+import java.util.Arrays;
 
 @OnlyIn(Dist.DEDICATED_SERVER)
 @Mod.EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = SLConstants.MODID)
@@ -15,7 +21,7 @@ public class ServerSideEventHandler {
     @SubscribeEvent
     public static void playerJoin(PlayerEvent.PlayerLoggedInEvent event) {
         PlayerLoginHandler.instance().playerJoin((ServerPlayerEntity) event.getPlayer());
-        //TODO send login request packet
+        NetworkLoader.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.getPlayer()), new MessageRequestLogin());
     }
 
     @SubscribeEvent
@@ -25,8 +31,12 @@ public class ServerSideEventHandler {
 
     // Block command usage from unauthenticated players
     @SubscribeEvent
-    public static void onCommand(CommandEvent event) {
-        // TODO
-
+    public static void onCommand(CommandEvent event) throws Exception {
+        if (Arrays.asList(SLConfig.server.commandNames).contains(event.getParseResults().getContext().getRootNode().getName())) {
+            return;
+        }
+        if (PlayerLoginHandler.instance().isPlayerInLoginList(event.getParseResults().getContext().getSource().asPlayer().getGameProfile().getName())) {
+            event.setCanceled(true);
+        }
     }
 }

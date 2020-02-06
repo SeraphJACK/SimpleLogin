@@ -1,84 +1,80 @@
 package top.seraphjack.simplelogin.server;
 
-import mcp.MethodsReturnNonnullByDefault;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.WrongUsageException;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameType;
-import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
-public class SLCommand extends CommandBase {
-    @Override
-    public String getName() {
-        return "simplelogin";
+public class SLCommand {
+
+    public static void register(CommandDispatcher<CommandSource> dispatcher) {
+        dispatcher.register(
+                Commands.literal("simplelogin")
+                        .then(
+                                Commands.literal("save").requires((c) -> c.hasPermissionLevel(3)).executes((c) -> {
+                                    try {
+                                        long start = System.currentTimeMillis();
+                                        SLStorage.instance().storageProvider.save();
+                                        long cost = System.currentTimeMillis() - start;
+                                        c.getSource().sendFeedback(new StringTextComponent("Done. Took " + cost + " ms."), true);
+                                    } catch (IOException e) {
+                                        c.getSource().sendFeedback(new StringTextComponent("Error during saving entries, see log for details"), false);
+                                        return 0;
+                                    }
+                                    return 1;
+                                })
+                        )
+                        .then(
+                                Commands.literal("unregister").requires((c) -> c.hasPermissionLevel(3)).then(
+                                        Commands.argument("entry", new ArgumentTypeEntryName()).executes((c) -> {
+                                            SLStorage.instance().storageProvider.unregister(c.getArgument("entry", String.class));
+                                            c.getSource().sendFeedback(new StringTextComponent("Successfully unregistered."), false);
+                                            return 1;
+                                        })
+                                )
+                        )
+                        .then(
+                                Commands.literal("setDefaultGameType").requires((c) -> c.hasPermissionLevel(3)).then(
+                                        Commands.argument("entry", new ArgumentTypeEntryName()).then(
+                                                Commands.argument("mode", IntegerArgumentType.integer(0, 3)).executes((c) -> {
+                                                    GameType gameType = GameType.values()[c.getArgument("mode", Integer.class) - 1];
+                                                    SLStorage.instance().storageProvider.setGameType(c.getArgument("entry", String.class), gameType);
+                                                    c.getSource().sendFeedback(new StringTextComponent("Successfully set entry default game type to " + gameType.getName() + "."), true);
+                                                    return 1;
+                                                })
+                                        )
+                                )
+                        )
+        );
     }
 
-    @Override
-    public String getUsage(ICommandSender sender) {
-        return "/simplelogin unregister <PlayerName>\n" +
-                "/simplelogin save\n" +
-                "/simplelogin setDefaultGameType <PlayerName> <GameType>";
-    }
+    public static class ArgumentTypeEntryName implements ArgumentType<String> {
 
-    @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (args.length == 0) throw new WrongUsageException(getUsage(sender));
-        switch (args[0]) {
-            case "unregister": {
-                if (args.length != 2) throw new WrongUsageException(getUsage(sender));
-                SLStorage.instance().storageProvider.unregister(args[1]);
-                sender.sendMessage(new TextComponentString("Player " + args[1] + " has been unregistered."));
-                break;
+        @Override
+        public String parse(StringReader reader) throws CommandSyntaxException {
+            String name = reader.readString();
+            if (!SLStorage.instance().storageProvider.getAllRegisteredUsername().contains(name)) {
+                throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownArgument().createWithContext(new StringReader("Entry doesn't exist"));
             }
-            case "save": {
-                sender.sendMessage(new TextComponentString("Saving all entries..."));
-                try {
-                    long start = System.currentTimeMillis();
-                    SLStorage.instance().storageProvider.save();
-                    sender.sendMessage(new TextComponentString("Done! Took " + (System.currentTimeMillis() - start) + "ms."));
-                } catch (IOException e) {
-                    sender.sendMessage(new TextComponentString("Unable to save! Check server log for details!"));
-                }
-                break;
-            }
-            case "setDefaultGameType": {
-                if (args.length != 3) throw new WrongUsageException(getUsage(sender));
-                GameType gameType = GameType.parseGameTypeWithDefault(args[2], GameType.getByID(SLConfig.server.defaultGameType));
-                SLStorage.instance().storageProvider.setGameType(args[1], gameType);
-                sender.sendMessage(new TextComponentString("Set player " + args[1] + "'s default GameMode to " + gameType.getName() + "."));
-                break;
-            }
-            default: {
-                throw new WrongUsageException(getUsage(sender));
-            }
+            return name;
         }
-    }
 
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
-        if (args[0].equals("unregister") && args.length == 2) {
-            return getListOfStringsMatchingLastWord(args, SLStorage.instance().storageProvider.getAllRegisteredUsername());
-        } else if (args[0].equals("setDefaultGameType")) {
-            if (args.length == 2)
-                return getListOfStringsMatchingLastWord(args, SLStorage.instance().storageProvider.getAllRegisteredUsername());
-            else if (args.length == 3)
-                return getListOfStringsMatchingLastWord(args, Arrays.asList("survival", "creative", "adventure", "spectator"));
-        } else if (args.length <= 1) {
-            return getListOfStringsMatchingLastWord(args, Arrays.asList("unregister", "save", "setDefaultGameType"));
+        @Override
+        public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+            return ISuggestionProvider.suggest(SLStorage.instance().storageProvider.getAllRegisteredUsername().stream(), builder);
         }
-        return super.getTabCompletions(server, sender, args, targetPos);
     }
 }
