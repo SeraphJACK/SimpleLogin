@@ -33,8 +33,7 @@ public final class ServerLoader {
 
         SLStorage.initialize(SLConfig.server.storageMethod);
 
-        CommandDispatcher<CommandSource> dispatcher = e.getCommandDispatcher();
-        // TODO register commands
+        SLCommand.register(e.getCommandDispatcher());
     }
 
     @SubscribeEvent
