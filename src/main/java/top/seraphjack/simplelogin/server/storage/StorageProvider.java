@@ -1,12 +1,15 @@
 package top.seraphjack.simplelogin.server.storage;
 
 import net.minecraft.world.GameType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.io.IOException;
 import java.util.Collection;
 
 @ThreadSafe
+@OnlyIn(Dist.DEDICATED_SERVER)
 public interface StorageProvider {
     boolean checkPassword(String username, String password);
 

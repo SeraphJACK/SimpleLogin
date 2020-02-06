@@ -1,8 +1,12 @@
 package top.seraphjack.simplelogin.server.storage;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
 import java.io.IOException;
 import java.nio.file.Paths;
 
+@OnlyIn(Dist.DEDICATED_SERVER)
 public class SLStorage {
     public final StorageProvider storageProvider;
     private static SLStorage INSTANCE;

@@ -2,7 +2,10 @@ package top.seraphjack.simplelogin.server.storage;
 
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.DEDICATED_SERVER)
 public class Position {
     private final double x, y, z;
 

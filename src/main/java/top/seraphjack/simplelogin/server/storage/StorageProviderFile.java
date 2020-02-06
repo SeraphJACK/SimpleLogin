@@ -3,6 +3,8 @@ package top.seraphjack.simplelogin.server.storage;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import net.minecraft.world.GameType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.mindrot.jbcrypt.BCrypt;
 import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SimpleLogin;
@@ -20,6 +22,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @ThreadSafe
+@OnlyIn(Dist.DEDICATED_SERVER)
 public class StorageProviderFile implements StorageProvider {
     private Gson gson;
     private Path path;

@@ -2,17 +2,20 @@ package top.seraphjack.simplelogin.server;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import top.seraphjack.simplelogin.SimpleLogin;
+import top.seraphjack.simplelogin.SLConstants;
 
-@Mod.EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = SimpleLogin.MODID)
+@OnlyIn(Dist.DEDICATED_SERVER)
+@Mod.EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = SLConstants.MODID)
 public class ServerSideEventHandler {
     @SubscribeEvent
     public static void playerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        //TODO invoke player handler and send login request packet
+        PlayerLoginHandler.instance().playerJoin((ServerPlayerEntity) event.getPlayer());
+        //TODO send login request packet
     }
 
     @SubscribeEvent

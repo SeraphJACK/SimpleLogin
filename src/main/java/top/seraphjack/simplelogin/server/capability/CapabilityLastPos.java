@@ -3,6 +3,8 @@ package top.seraphjack.simplelogin.server.capability;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -12,6 +14,7 @@ import top.seraphjack.simplelogin.server.storage.Position;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+@OnlyIn(Dist.DEDICATED_SERVER)
 public class CapabilityLastPos {
     public static class Storage implements Capability.IStorage<ILastPos> {
         @Nullable

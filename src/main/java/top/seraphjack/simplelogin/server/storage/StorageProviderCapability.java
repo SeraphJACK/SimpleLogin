@@ -2,9 +2,12 @@ package top.seraphjack.simplelogin.server.storage;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.GameType;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.mindrot.jbcrypt.BCrypt;
 import top.seraphjack.simplelogin.SLConfig;
+import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
 import top.seraphjack.simplelogin.server.capability.IRegisteredPlayers;
 import top.seraphjack.simplelogin.server.capability.ISLEntry;
@@ -16,11 +19,12 @@ import java.util.Collection;
 import java.util.Objects;
 
 @ThreadSafe
+@OnlyIn(Dist.DEDICATED_SERVER)
 public class StorageProviderCapability implements StorageProvider {
     @Nonnull
-    private IRegisteredPlayers registeredPlayers = Objects.requireNonNull(FMLCommonHandler.instance()
-            .getMinecraftServerInstance().getWorld(0)
-            .getCapability(CapabilityLoader.CAPABILITY_REGISTERED_PLAYERS, null));
+    private IRegisteredPlayers registeredPlayers = Objects.requireNonNull(
+            SLConstants.server.getWorld(DimensionType.OVERWORLD)
+                    .getCapability(CapabilityLoader.CAPABILITY_REGISTERED_PLAYERS, null)).orElseThrow(RuntimeException::new);
 
     @Override
     public boolean checkPassword(String username, String password) {
@@ -84,12 +88,12 @@ public class StorageProviderCapability implements StorageProvider {
     }
 
     private boolean isPlayerOnline(String id) {
-        return Arrays.asList(FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getOnlinePlayerNames()).contains(id);
+        return Arrays.asList(SLConstants.server.getPlayerList().getOnlinePlayerNames()).contains(id);
     }
 
     @Nonnull
     private ISLEntry getEntry(String id) {
-        ServerPlayerEntity player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(id);
+        ServerPlayerEntity player = SLConstants.server.getPlayerList().getPlayerByUsername(id);
         assert player != null;
         return player.getCapability(CapabilityLoader.CAPABILITY_SL_ENTRY, null).orElseThrow(RuntimeException::new);
     }

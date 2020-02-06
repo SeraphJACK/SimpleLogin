@@ -5,6 +5,8 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.Direction;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -14,6 +16,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashSet;
 
+@OnlyIn(Dist.DEDICATED_SERVER)
 public class CapabilityRegisteredPlayers {
     public static class Storage implements Capability.IStorage<IRegisteredPlayers> {
         @Nullable

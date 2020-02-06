@@ -7,15 +7,17 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.OverworldDimension;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import top.seraphjack.simplelogin.SimpleLogin;
+import top.seraphjack.simplelogin.SLConstants;
 
-@Mod.EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = SimpleLogin.MODID)
+@OnlyIn(Dist.DEDICATED_SERVER)
+@Mod.EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = SLConstants.MODID)
 public class CapabilityLoader {
     @CapabilityInject(ISLEntry.class)
     public static Capability<ISLEntry> CAPABILITY_SL_ENTRY;
@@ -26,19 +28,24 @@ public class CapabilityLoader {
     @CapabilityInject(IRegisteredPlayers.class)
     public static Capability<IRegisteredPlayers> CAPABILITY_REGISTERED_PLAYERS;
 
-    public CapabilityLoader() {
+    private CapabilityLoader() {
+        throw new UnsupportedOperationException("No instance.");
+    }
+
+    public static void registerCapabilities() {
         CapabilityManager.INSTANCE.register(ISLEntry.class, new CapabilitySLEntry.Storage(), CapabilitySLEntry.Implementation::new);
         CapabilityManager.INSTANCE.register(ILastPos.class, new CapabilityLastPos.Storage(), CapabilityLastPos.Implementation::new);
         CapabilityManager.INSTANCE.register(IRegisteredPlayers.class, new CapabilityRegisteredPlayers.Storage(), CapabilityRegisteredPlayers.Implementation::new);
+
     }
 
     @SubscribeEvent
     public static void onAttachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof PlayerEntity) {
-            event.addCapability(new ResourceLocation(SimpleLogin.MODID, "sl_password"),
+            event.addCapability(new ResourceLocation(SLConstants.MODID, "sl_password"),
                     new CapabilitySLEntry.Provider());
 
-            event.addCapability(new ResourceLocation(SimpleLogin.MODID, "sl_lastPos"),
+            event.addCapability(new ResourceLocation(SLConstants.MODID, "sl_lastPos"),
                     new CapabilityLastPos.Provider());
         }
     }
@@ -46,13 +53,13 @@ public class CapabilityLoader {
     @SubscribeEvent
     public static void onAttachCapabilitiesWorld(AttachCapabilitiesEvent<World> event) {
         if (event.getObject().dimension instanceof OverworldDimension) {
-            event.addCapability(new ResourceLocation(SimpleLogin.MODID, "sl_registered_players"),
+            event.addCapability(new ResourceLocation(SLConstants.MODID, "sl_registered_players"),
                     new CapabilityRegisteredPlayers.Provider());
         }
     }
 
     @SubscribeEvent
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("all")
     public static void onPlayerClone(net.minecraftforge.event.entity.player.PlayerEvent.Clone event) {
         Capability[] capabilities = new Capability[]{CAPABILITY_LAST_POS, CAPABILITY_SL_ENTRY};
         for (Capability capability : capabilities) {

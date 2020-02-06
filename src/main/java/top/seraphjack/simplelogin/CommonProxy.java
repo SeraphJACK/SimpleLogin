@@ -15,7 +15,6 @@ public abstract class CommonProxy {
 
     @OverridingMethodsMustInvokeSuper
     public void init() {
-        new NetworkLoader();
     }
 
     @OverridingMethodsMustInvokeSuper

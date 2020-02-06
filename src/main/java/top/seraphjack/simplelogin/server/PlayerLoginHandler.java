@@ -4,6 +4,8 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SLConstants;
@@ -17,6 +19,7 @@ import top.seraphjack.simplelogin.server.storage.SLStorage;
 import javax.annotation.Nullable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+@OnlyIn(Dist.DEDICATED_SERVER)
 public class PlayerLoginHandler {
     private static Thread PLAYER_HANDLER_THREAD;
     private static PlayerLoginHandler INSTANCE;
@@ -31,7 +34,7 @@ public class PlayerLoginHandler {
             while (alive) {
                 try {
                     for (Login login : loginList) {
-                        ServerPlayerEntity player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(login.name);
+                        ServerPlayerEntity player = SLConstants.server.getPlayerList().getPlayerByUsername(login.name);
                         if (player == null) {
                             // SimpleLogin.logger.warn("Can't find player " + login.name + ", ignoring...");
                             loginList.remove(login);
@@ -45,7 +48,7 @@ public class PlayerLoginHandler {
                         }
 
                         // Block players movement before authentication
-                        FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() ->
+                        SLConstants.server.deferTask(() ->
                                 player.connection.setPlayerLocation(login.posX, login.posY, login.posZ, login.yaw, login.pitch)
                         );
 
@@ -96,7 +99,7 @@ public class PlayerLoginHandler {
     public void login(String id, String pwd) {
         Login login = getLoginByName(id);
         loginList.remove(login);
-        ServerPlayerEntity player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(id);
+        ServerPlayerEntity player = SLConstants.server.getPlayerList().getPlayerByUsername(id);
 
         if (login == null || player == null) {
             return;
@@ -146,7 +149,7 @@ public class PlayerLoginHandler {
     }
 
     private void afterPlayerLogin(Login login, ServerPlayerEntity player) {
-        FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> {
+        SLConstants.server.deferTask(() -> {
             player.setGameType(SLStorage.instance().storageProvider.gameType(login.name));
             Position lastPos= player.getCapability(CapabilityLoader.CAPABILITY_LAST_POS).orElseThrow(RuntimeException::new).getLastPos();
 
