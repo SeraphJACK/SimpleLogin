@@ -1,5 +1,7 @@
 package top.seraphjack.simplelogin.server;
 
+import com.mojang.brigadier.CommandDispatcher;
+import net.minecraft.command.CommandSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -31,6 +33,9 @@ public final class ServerLoader {
         PlayerLoginHandler.instance();
 
         SLStorage.initialize(SLConfig.server.storageMethod);
+
+        CommandDispatcher<CommandSource> dispatcher = e.getCommandDispatcher();
+        // TODO register commands
     }
 
     @SubscribeEvent
