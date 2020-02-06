@@ -33,7 +33,7 @@ public class CapabilitySLEntry {
 
     public static class Implementation implements ISLEntry {
         String pwd = "";
-        int gameType = SLConfig.server.defaultGameType;
+        int gameType = SLConfig.SERVER.defaultGameType.get();
 
         @Override
         public String getPassword() {

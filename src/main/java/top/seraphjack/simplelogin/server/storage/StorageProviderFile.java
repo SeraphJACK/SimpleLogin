@@ -123,7 +123,7 @@ public class StorageProviderFile implements StorageProvider {
         POJOUserEntry entry = new POJOUserEntry();
         entry.username = username;
         entry.password = password;
-        entry.gameType = SLConfig.server.defaultGameType;
+        entry.gameType = SLConfig.SERVER.defaultGameType.get();
         return entry;
     }
 

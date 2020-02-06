@@ -53,7 +53,7 @@ public class PlayerLoginHandler {
                         );
 
                         // Kick timed out players
-                        if (System.currentTimeMillis() - login.time >= SLConfig.server.secs * 1000) {
+                        if (System.currentTimeMillis() - login.time >= SLConfig.SERVER.secs.get() * 1000) {
                             player.connection.disconnect(new StringTextComponent("Login timed out."));
                             loginList.removeIf(i -> i.name.equals(player.getGameProfile().getName()));
                             SimpleLogin.logger.warn("Player " + login.name + " haven't login after a long time.");

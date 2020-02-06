@@ -28,7 +28,7 @@ public final class ServerLoader {
         // Start player login handler
         PlayerLoginHandler.instance();
 
-        SLStorage.initialize(SLConfig.server.storageMethod);
+        SLStorage.initialize(SLConfig.SERVER.storageMethod.get());
 
         SLCommand.register(e.getCommandDispatcher());
     }
