@@ -24,14 +24,16 @@ public class SLCommand {
         dispatcher.register(
                 Commands.literal("simplelogin")
                         .then(
-                                Commands.literal("save").requires((c) -> c.hasPermissionLevel(3)).executes((s) -> {
+                                Commands.literal("save").requires((c) -> c.hasPermissionLevel(3)).executes((c) -> {
                                     try {
+                                        long start = System.currentTimeMillis();
                                         SLStorage.instance().storageProvider.save();
+                                        long cost = System.currentTimeMillis() - start;
+                                        c.getSource().sendFeedback(new StringTextComponent("Done. Took " + cost + " ms."), true);
                                     } catch (IOException e) {
-                                        s.getSource().sendFeedback(new StringTextComponent("Error during saving entries, see log for details"), false);
+                                        c.getSource().sendFeedback(new StringTextComponent("Error during saving entries, see log for details"), false);
                                         return 0;
                                     }
-                                    s.getSource().sendFeedback(new StringTextComponent("Successfully saved all entries."), true);
                                     return 1;
                                 })
                         )
