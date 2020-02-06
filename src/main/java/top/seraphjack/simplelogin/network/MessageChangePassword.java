@@ -4,6 +4,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
+import top.seraphjack.simplelogin.utils.SHA256;
 
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -12,8 +13,8 @@ public class MessageChangePassword {
     private String original, to;
 
     public MessageChangePassword(String original, String to) {
-        this.original = original;
-        this.to = to;
+        this.original = SHA256.getSHA256(original);
+        this.to = SHA256.getSHA256(to);
     }
 
     public static void encode(MessageChangePassword msg, PacketBuffer buf) {
