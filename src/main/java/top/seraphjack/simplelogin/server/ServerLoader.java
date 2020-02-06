@@ -17,7 +17,6 @@ import top.seraphjack.simplelogin.server.storage.SLStorage;
 
 import java.io.IOException;
 
-@OnlyIn(Dist.DEDICATED_SERVER)
 @Mod.EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = SLConstants.MODID)
 public final class ServerLoader {
 
