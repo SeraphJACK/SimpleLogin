@@ -6,7 +6,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.network.PacketDistributor;
 import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.SimpleLogin;
@@ -43,7 +43,7 @@ public class PlayerLoginHandler {
 
                         // Resend request
                         if (System.currentTimeMillis() - login.lastRequested >= 1000) {
-                            NetworkLoader.INSTANCE.sendTo(new MessageRequestLogin(), player);
+                            NetworkLoader.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new MessageRequestLogin());
                             login.lastRequested = System.currentTimeMillis();
                         }
 
@@ -151,7 +151,7 @@ public class PlayerLoginHandler {
     private void afterPlayerLogin(Login login, ServerPlayerEntity player) {
         SLConstants.server.deferTask(() -> {
             player.setGameType(SLStorage.instance().storageProvider.gameType(login.name));
-            Position lastPos= player.getCapability(CapabilityLoader.CAPABILITY_LAST_POS).orElseThrow(RuntimeException::new).getLastPos();
+            Position lastPos = player.getCapability(CapabilityLoader.CAPABILITY_LAST_POS).orElseThrow(RuntimeException::new).getLastPos();
 
             if (lastPos.equals(SLConstants.defaultPosition)) {
                 player.setPosition(login.posX, login.posY, login.posZ);

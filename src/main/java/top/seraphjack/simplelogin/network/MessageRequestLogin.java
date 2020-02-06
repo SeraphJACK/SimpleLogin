@@ -1,29 +1,25 @@
 package top.seraphjack.simplelogin.network;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 import top.seraphjack.simplelogin.SLConfig;
 
-public class MessageRequestLogin implements IMessage {
+import java.util.function.Supplier;
 
-    @Override
-    public void fromBytes(ByteBuf buf) {
+public class MessageRequestLogin {
 
+    public MessageRequestLogin() {
     }
 
-    @Override
-    public void toBytes(ByteBuf buf) {
-
+    public static void encode(MessageRequestLogin msg, PacketBuffer buffer) {
+        // NO-OP
     }
 
-    public static class MessageHandler implements IMessageHandler<MessageRequestLogin, MessageLogin> {
+    public static MessageRequestLogin decode(PacketBuffer buffer) {
+        return new MessageRequestLogin();
+    }
 
-        @Override
-        public MessageLogin onMessage(MessageRequestLogin message, MessageContext ctx) {
-            // System.out.println("Get server password request.");
-            return new MessageLogin(SLConfig.client.password);
-        }
+    public static void handle(MessageRequestLogin message, Supplier<NetworkEvent.Context> ctx) {
+        NetworkLoader.INSTANCE.sendToServer(new MessageLogin(SLConfig.client.password));
     }
 }

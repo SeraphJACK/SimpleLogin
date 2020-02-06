@@ -1,39 +1,29 @@
 package top.seraphjack.simplelogin.network;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 import top.seraphjack.simplelogin.server.PlayerLoginHandler;
 import top.seraphjack.simplelogin.utils.SHA256;
 
-public class MessageLogin implements IMessage {
-    private String pwd;
+import java.util.Objects;
+import java.util.function.Supplier;
 
-    public MessageLogin() {
-    }
+public class MessageLogin {
+    private String pwd;
 
     public MessageLogin(String pwd) {
         this.pwd = SHA256.getSHA256(pwd);
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf) {
-        pwd = ByteBufUtils.readUTF8String(buf);
+    public static void encode(MessageLogin packet, PacketBuffer buf) {
+        buf.writeString(packet.pwd);
     }
 
-    @Override
-    public void toBytes(ByteBuf buf) {
-        ByteBufUtils.writeUTF8String(buf, pwd);
+    public static MessageLogin decode(PacketBuffer buffer) {
+        return new MessageLogin(buffer.readString());
     }
 
-    public static class MessageHandler implements IMessageHandler<MessageLogin, IMessage> {
-
-        @Override
-        public IMessage onMessage(MessageLogin message, MessageContext ctx) {
-            PlayerLoginHandler.instance().login(ctx.getServerHandler().player.getGameProfile().getName(), message.pwd);
-            return null;
-        }
+    public static void handle(MessageLogin message, Supplier<NetworkEvent.Context> ctx) {
+        PlayerLoginHandler.instance().login(Objects.requireNonNull(ctx.get().getSender()).getGameProfile().getName(), message.pwd);
     }
 }
