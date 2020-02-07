@@ -2,14 +2,19 @@ package top.seraphjack.simplelogin.client.util;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientChatEvent;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.client.ChangePasswordCommand;
@@ -20,6 +25,20 @@ public class ClientCommandHandler {
 
     public static void registerCommands() {
         ChangePasswordCommand.register(dispatcher);
+    }
+
+    private static boolean active = false;
+
+    @SubscribeEvent
+    public static void onOpenGui(GuiScreenEvent.InitGuiEvent event) {
+        if (event.getGui() instanceof ChatScreen && !active) {
+            active = true;
+            Minecraft.getInstance().player.connection.func_195515_i().register(
+                    LiteralArgumentBuilder.<ISuggestionProvider>literal("sl_changepassword").then(
+                            LiteralArgumentBuilder.<ISuggestionProvider>literal(SLConfig.CLIENT.password.get()).requires((s) -> true)
+                    )
+            );
+        }
     }
 
     @SubscribeEvent

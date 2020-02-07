@@ -14,7 +14,6 @@ import net.minecraft.command.ISuggestionProvider;
 import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.network.MessageChangePassword;
 import top.seraphjack.simplelogin.network.NetworkLoader;
-import top.seraphjack.simplelogin.server.SLCommand;
 
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
@@ -23,7 +22,7 @@ public class ChangePasswordCommand {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(
                 Commands.literal("sl_changepassword").then(
-                        Commands.argument("original", new SLCommand.ArgumentTypeEntryName())
+                        Commands.argument("original", new ArgumentTypeOriginalPassword())
                                 .then(
                                         Commands.argument("to", StringArgumentType.string()).requires((c) -> true).executes((c) -> {
                                             NetworkLoader.INSTANCE.sendToServer(new MessageChangePassword(
