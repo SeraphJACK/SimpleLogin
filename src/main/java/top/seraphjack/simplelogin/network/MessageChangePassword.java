@@ -1,6 +1,7 @@
 package top.seraphjack.simplelogin.network;
 
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
@@ -30,7 +31,9 @@ public class MessageChangePassword {
         String username = Objects.requireNonNull(ctx.get().getSender()).getGameProfile().getName();
         if (SLStorage.instance().storageProvider.checkPassword(username, msg.original)) {
             SLStorage.instance().storageProvider.changePassword(username, msg.to);
+            Objects.requireNonNull(ctx.get().getSender()).sendMessage(new StringTextComponent("Password changed successfully."));
         } else {
+            Objects.requireNonNull(ctx.get().getSender()).sendMessage(new StringTextComponent("Wrong original password."));
             SimpleLogin.logger.warn("Player " + username + " tried to change password with a wrong password.");
         }
     }
