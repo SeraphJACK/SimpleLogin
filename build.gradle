@@ -85,6 +85,19 @@ allprojects {
     }
 }
 
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        include 'META-INF/mods.toml'
+        expand 'version': project.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'META-INF/mods.toml'
+    }
+}
+
+tasks.jar.mustRunAfter(processResources)
+
 jar {
     manifest {
         attributes([
