@@ -87,7 +87,6 @@ public class SLCommand {
 
         @Override
         public String parse(StringReader reader) throws CommandSyntaxException {
-            Collection<String> entries = isClient ? SLEntriesBuf.entries : SLStorage.instance().storageProvider.getAllRegisteredUsername();
             String name = reader.readString();
 
             if (isClient) {
@@ -95,7 +94,7 @@ public class SLCommand {
                 return name;
             }
 
-            if (!entries.contains(name)) {
+            if (!SLStorage.instance().storageProvider.registered(name)) {
                 throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownArgument().createWithContext(new StringReader(name));
             }
             return name;
