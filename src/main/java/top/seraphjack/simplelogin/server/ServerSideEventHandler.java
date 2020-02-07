@@ -35,7 +35,7 @@ public class ServerSideEventHandler {
         if (SLConfig.SERVER.commandNames.get().contains(event.getParseResults().getContext().getRootNode().getName())) {
             return;
         }
-        if (event.getParseResults().getContext().getSource().getEntity() == null) {
+        if (!(event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity)) {
             return;
         }
         if (PlayerLoginHandler.instance().isPlayerInLoginList(event.getParseResults().getContext().getSource().asPlayer().getGameProfile().getName())) {
