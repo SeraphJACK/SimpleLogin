@@ -42,10 +42,10 @@ public class CapabilityLoader {
     @SubscribeEvent
     public static void onAttachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof PlayerEntity) {
-            event.addCapability(new ResourceLocation(SLConstants.MODID, "sl_password"),
+            event.addCapability(new ResourceLocation("sl_password"),
                     new CapabilitySLEntry.Provider());
 
-            event.addCapability(new ResourceLocation(SLConstants.MODID, "sl_lastPos"),
+            event.addCapability(new ResourceLocation("sl_lastPos"),
                     new CapabilityLastPos.Provider());
         }
     }
@@ -53,7 +53,7 @@ public class CapabilityLoader {
     @SubscribeEvent
     public static void onAttachCapabilitiesWorld(AttachCapabilitiesEvent<World> event) {
         if (event.getObject().dimension instanceof OverworldDimension) {
-            event.addCapability(new ResourceLocation(SLConstants.MODID, "sl_registered_players"),
+            event.addCapability(new ResourceLocation("sl_registered_players"),
                     new CapabilityRegisteredPlayers.Provider());
         }
     }
