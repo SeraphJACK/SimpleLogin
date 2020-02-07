@@ -50,7 +50,7 @@ public class SLCommand {
                                 Commands.literal("setDefaultGameType").requires((c) -> c.hasPermissionLevel(3)).then(
                                         Commands.argument("entry", new ArgumentTypeEntryName()).then(
                                                 Commands.argument("mode", IntegerArgumentType.integer(0, 3)).executes((c) -> {
-                                                    GameType gameType = GameType.values()[c.getArgument("mode", Integer.class) - 1];
+                                                    GameType gameType = GameType.values()[c.getArgument("mode", Integer.class) + 1];
                                                     SLStorage.instance().storageProvider.setGameType(c.getArgument("entry", String.class), gameType);
                                                     c.getSource().sendFeedback(new StringTextComponent("Successfully set entry default game type to " + gameType.getName() + "."), true);
                                                     return 1;
