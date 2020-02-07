@@ -60,14 +60,14 @@ public class CapabilityLoader {
 
     @SubscribeEvent
     @SuppressWarnings("all")
-    public static void onPlayerClone(net.minecraftforge.event.entity.player.PlayerEvent.Clone event) {
+    public static void onPlayerClone(net.minecraftforge.event.entity.player.PlayerEvent.Clone event) throws Throwable {
         Capability[] capabilities = new Capability[]{CAPABILITY_LAST_POS, CAPABILITY_SL_ENTRY};
         for (Capability capability : capabilities) {
             Capability.IStorage storage = capability.getStorage();
 
             if (event.getOriginal().getCapability(capability, null).isPresent() && event.getPlayer().getCapability(capability, null).isPresent()) {
-                INBT nbt = storage.writeNBT(capability, event.getOriginal().getCapability(capability, null), null);
-                storage.readNBT(capability, event.getEntityPlayer().getCapability(capability, null), null, nbt);
+                INBT nbt = storage.writeNBT(capability, event.getOriginal().getCapability(capability, null).orElseThrow(RuntimeException::new), null);
+                storage.readNBT(capability, event.getEntityPlayer().getCapability(capability, null).orElseThrow(RuntimeException::new), null, nbt);
             }
         }
     }
