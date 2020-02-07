@@ -20,8 +20,10 @@ import net.minecraft.world.GameType;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -98,28 +100,20 @@ public class SLCommand {
             return ISuggestionProvider.suggest(suggestions, builder);
         }
 
+        @ParametersAreNonnullByDefault
         public static class Serializer implements IArgumentSerializer<ArgumentTypeEntryName> {
             @Override
             public void write(SLCommand.ArgumentTypeEntryName argument, PacketBuffer buffer) {
-                buffer.writeInt(argument.getSuggestions().size());
-                argument.getSuggestions().forEach(s -> buffer.writeString(s, 20));
             }
 
             @Override
             @Nonnull
             public SLCommand.ArgumentTypeEntryName read(PacketBuffer buffer) {
-                List<String> suggestions = new LinkedList<>();
-                for (int i = 0; i < buffer.readInt(); i++) {
-                    suggestions.add(buffer.readString(20));
-                }
-                return new SLCommand.ArgumentTypeEntryName(suggestions);
+                return new SLCommand.ArgumentTypeEntryName(Collections.emptySet());
             }
 
             @Override
             public void write(SLCommand.ArgumentTypeEntryName argument, JsonObject json) {
-                JsonArray array = new JsonArray();
-                argument.getSuggestions().forEach(array::add);
-                json.add("suggestions", array);
             }
         }
     }
