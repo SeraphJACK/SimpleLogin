@@ -1,6 +1,5 @@
 package top.seraphjack.simplelogin.server;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.StringReader;
@@ -22,10 +21,6 @@ import top.seraphjack.simplelogin.server.storage.SLStorage;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class SLCommand {
@@ -72,19 +67,6 @@ public class SLCommand {
     }
 
     public static final class ArgumentTypeEntryName implements ArgumentType<String> {
-        private final Collection<String> suggestions;
-
-        public ArgumentTypeEntryName() {
-            suggestions = SLStorage.instance().storageProvider.getAllRegisteredUsername();
-        }
-
-        public ArgumentTypeEntryName(Collection<String> suggestions) {
-            this.suggestions = suggestions;
-        }
-
-        public Collection<String> getSuggestions() {
-            return suggestions;
-        }
 
         @Override
         public String parse(StringReader reader) throws CommandSyntaxException {
@@ -97,7 +79,7 @@ public class SLCommand {
 
         @Override
         public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-            return ISuggestionProvider.suggest(suggestions, builder);
+            return ISuggestionProvider.suggest(SLStorage.instance().storageProvider.getAllRegisteredUsername(), builder);
         }
 
         @ParametersAreNonnullByDefault
@@ -109,7 +91,7 @@ public class SLCommand {
             @Override
             @Nonnull
             public SLCommand.ArgumentTypeEntryName read(PacketBuffer buffer) {
-                return new SLCommand.ArgumentTypeEntryName(Collections.emptySet());
+                return new SLCommand.ArgumentTypeEntryName();
             }
 
             @Override
