@@ -21,6 +21,8 @@ import top.seraphjack.simplelogin.server.storage.SLStorage;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 
 public class SLCommand {
@@ -44,7 +46,7 @@ public class SLCommand {
                         )
                         .then(
                                 Commands.literal("unregister").requires((c) -> c.hasPermissionLevel(3)).then(
-                                        Commands.argument("entry", new ArgumentTypeEntryName()).executes((c) -> {
+                                        Commands.argument("entry", ArgumentTypeEntryName.server()).executes((c) -> {
                                             SLStorage.instance().storageProvider.unregister(c.getArgument("entry", String.class));
                                             c.getSource().sendFeedback(new StringTextComponent("Successfully unregistered."), false);
                                             return 1;
@@ -53,7 +55,7 @@ public class SLCommand {
                         )
                         .then(
                                 Commands.literal("setDefaultGameType").requires((c) -> c.hasPermissionLevel(3)).then(
-                                        Commands.argument("entry", new ArgumentTypeEntryName()).then(
+                                        Commands.argument("entry", ArgumentTypeEntryName.server()).then(
                                                 Commands.argument("mode", IntegerArgumentType.integer(0, 3)).executes((c) -> {
                                                     GameType gameType = GameType.values()[c.getArgument("mode", Integer.class) + 1];
                                                     SLStorage.instance().storageProvider.setGameType(c.getArgument("entry", String.class), gameType);
@@ -67,6 +69,19 @@ public class SLCommand {
     }
 
     public static final class ArgumentTypeEntryName implements ArgumentType<String> {
+        private Collection<String> suggests;
+
+        private ArgumentTypeEntryName(Collection<String> suggests) {
+            this.suggests = suggests;
+        }
+
+        public static ArgumentTypeEntryName server() {
+            return new ArgumentTypeEntryName(SLStorage.instance().storageProvider.getAllRegisteredUsername());
+        }
+
+        public static ArgumentTypeEntryName client() {
+            return new ArgumentTypeEntryName(Collections.emptySet());
+        }
 
         @Override
         public String parse(StringReader reader) throws CommandSyntaxException {
@@ -79,7 +94,7 @@ public class SLCommand {
 
         @Override
         public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-            return ISuggestionProvider.suggest(SLStorage.instance().storageProvider.getAllRegisteredUsername(), builder);
+            return ISuggestionProvider.suggest(suggests, builder);
         }
 
         @ParametersAreNonnullByDefault
@@ -91,7 +106,7 @@ public class SLCommand {
             @Override
             @Nonnull
             public SLCommand.ArgumentTypeEntryName read(PacketBuffer buffer) {
-                return new SLCommand.ArgumentTypeEntryName();
+                return ArgumentTypeEntryName.client();
             }
 
             @Override
