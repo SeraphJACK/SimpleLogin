@@ -97,6 +97,7 @@ public class SLCommand {
 
         @Override
         public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+            NetworkLoader.INSTANCE.sendToServer(new MessageRequestEntries());
             return ISuggestionProvider.suggest(entries, builder);
         }
 
