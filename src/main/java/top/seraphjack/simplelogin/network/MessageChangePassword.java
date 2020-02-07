@@ -19,12 +19,12 @@ public class MessageChangePassword {
     }
 
     public static void encode(MessageChangePassword msg, PacketBuffer buf) {
-        buf.writeString(msg.original);
-        buf.writeString(msg.to);
+        buf.writeString(msg.original, 200);
+        buf.writeString(msg.to, 200);
     }
 
     public static MessageChangePassword decode(PacketBuffer buf) {
-        return new MessageChangePassword(buf.readString(), buf.readString());
+        return new MessageChangePassword(buf.readString(200), buf.readString(200));
     }
 
     public static void handle(MessageChangePassword msg, Supplier<NetworkEvent.Context> ctx) {

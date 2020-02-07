@@ -16,11 +16,11 @@ public class MessageLogin {
     }
 
     public static void encode(MessageLogin packet, PacketBuffer buf) {
-        buf.writeString(packet.pwd);
+        buf.writeString(packet.pwd, 200);
     }
 
     public static MessageLogin decode(PacketBuffer buffer) {
-        return new MessageLogin(buffer.readString());
+        return new MessageLogin(buffer.readString(200));
     }
 
     public static void handle(MessageLogin message, Supplier<NetworkEvent.Context> ctx) {
