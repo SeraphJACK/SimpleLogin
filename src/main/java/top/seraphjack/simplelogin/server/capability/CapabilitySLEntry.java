@@ -64,7 +64,9 @@ public class CapabilitySLEntry {
         @Override
         @SuppressWarnings("unchecked")
         public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
-            return (LazyOptional<T>) LazyOptional.of(() -> password);
+            if (capability == CapabilityLoader.CAPABILITY_SL_ENTRY)
+                return (LazyOptional<T>) LazyOptional.of(() -> password);
+            return LazyOptional.empty();
         }
 
         @Override

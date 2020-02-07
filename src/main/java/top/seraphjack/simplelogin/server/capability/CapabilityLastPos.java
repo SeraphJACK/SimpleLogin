@@ -36,7 +36,9 @@ public class CapabilityLastPos {
         @SuppressWarnings("unchecked")
         @Nonnull
         public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
-            return (LazyOptional<T>) LazyOptional.of(() -> lastPos);
+            if (capability == CapabilityLoader.CAPABILITY_LAST_POS)
+                return (LazyOptional<T>) LazyOptional.of(() -> lastPos);
+            return LazyOptional.empty();
         }
 
         @Override

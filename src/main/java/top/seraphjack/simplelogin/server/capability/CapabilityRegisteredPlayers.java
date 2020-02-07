@@ -32,7 +32,7 @@ public class CapabilityRegisteredPlayers {
         @Override
         public void readNBT(Capability<IRegisteredPlayers> capability, IRegisteredPlayers instance, Direction side, INBT nbt) {
             for (INBT tag : (ListNBT) nbt) {
-                instance.add(((StringNBT) tag).getString());
+                instance.add(tag.getString());
             }
         }
     }
@@ -68,17 +68,19 @@ public class CapabilityRegisteredPlayers {
         @Override
         @SuppressWarnings("unchecked")
         public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing) {
-            return (LazyOptional<T>) LazyOptional.of(() -> registeredPlayers);
+            if (capability == CapabilityLoader.CAPABILITY_REGISTERED_PLAYERS)
+                return (LazyOptional<T>) LazyOptional.of(() -> registeredPlayers);
+            return LazyOptional.empty();
         }
 
         @Override
         public ListNBT serializeNBT() {
-            return (ListNBT) CapabilityLoader.CAPABILITY_REGISTERED_PLAYERS.getStorage().writeNBT(CapabilityLoader.CAPABILITY_REGISTERED_PLAYERS,registeredPlayers,null);
+            return (ListNBT) CapabilityLoader.CAPABILITY_REGISTERED_PLAYERS.getStorage().writeNBT(CapabilityLoader.CAPABILITY_REGISTERED_PLAYERS, registeredPlayers, null);
         }
 
         @Override
         public void deserializeNBT(ListNBT nbt) {
-            CapabilityLoader.CAPABILITY_REGISTERED_PLAYERS.getStorage().readNBT(CapabilityLoader.CAPABILITY_REGISTERED_PLAYERS,registeredPlayers,null,nbt);
+            CapabilityLoader.CAPABILITY_REGISTERED_PLAYERS.getStorage().readNBT(CapabilityLoader.CAPABILITY_REGISTERED_PLAYERS, registeredPlayers, null, nbt);
         }
     }
 }
