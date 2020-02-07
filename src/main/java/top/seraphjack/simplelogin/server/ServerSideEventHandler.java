@@ -35,6 +35,9 @@ public class ServerSideEventHandler {
         if (SLConfig.SERVER.commandNames.get().contains(event.getParseResults().getContext().getRootNode().getName())) {
             return;
         }
+        if (event.getParseResults().getContext().getSource().getEntity() == null) {
+            return;
+        }
         if (PlayerLoginHandler.instance().isPlayerInLoginList(event.getParseResults().getContext().getSource().asPlayer().getGameProfile().getName())) {
             event.setCanceled(true);
         }
