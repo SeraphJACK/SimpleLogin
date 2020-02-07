@@ -71,29 +71,27 @@ public class SLCommand {
     }
 
     public static final class ArgumentTypeEntryName implements ArgumentType<String> {
-        private Collection<String> entries;
         private boolean isClient;
 
-        private ArgumentTypeEntryName(Collection<String> entries, boolean isClient) {
-            this.entries = entries;
+        private ArgumentTypeEntryName(boolean isClient) {
             this.isClient = isClient;
         }
 
         public static ArgumentTypeEntryName server() {
-            return new ArgumentTypeEntryName(SLStorage.instance().storageProvider.getAllRegisteredUsername(), false);
+            return new ArgumentTypeEntryName(false);
         }
 
         public static ArgumentTypeEntryName client() {
-            return new ArgumentTypeEntryName(SLEntriesBuf.entries, true);
+            return new ArgumentTypeEntryName(true);
         }
 
         @Override
         public String parse(StringReader reader) throws CommandSyntaxException {
+            Collection<String> entries = isClient ? SLEntriesBuf.entries : SLStorage.instance().storageProvider.getAllRegisteredUsername();
             String name = reader.readString();
 
             if (isClient) {
                 NetworkLoader.INSTANCE.sendToServer(new MessageRequestEntries());
-                entries = SLEntriesBuf.entries;
                 return name;
             }
 
@@ -105,9 +103,9 @@ public class SLCommand {
 
         @Override
         public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+            Collection<String> entries = isClient ? SLEntriesBuf.entries : SLStorage.instance().storageProvider.getAllRegisteredUsername();
             if (isClient) {
                 NetworkLoader.INSTANCE.sendToServer(new MessageRequestEntries());
-                entries = SLEntriesBuf.entries;
             }
             return ISuggestionProvider.suggest(entries, builder);
         }
