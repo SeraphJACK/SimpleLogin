@@ -16,6 +16,10 @@ archivesBaseName = 'simplelogin'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
+if (System.getenv().BUILD_NUMBER != null) {
+    version += "-build${System.getenv().BUILD_NUMBER}"
+}
+
 minecraft {
     mappings channel: 'snapshot', version: '20190719-1.14.3'
     runs {
