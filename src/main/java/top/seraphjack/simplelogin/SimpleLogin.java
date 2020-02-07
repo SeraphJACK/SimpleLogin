@@ -10,7 +10,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import top.seraphjack.simplelogin.client.ClientLoader;
 import top.seraphjack.simplelogin.network.NetworkLoader;
-import top.seraphjack.simplelogin.server.SLCommand;
 import top.seraphjack.simplelogin.server.ServerLoader;
 
 import javax.annotation.ParametersAreNonnullByDefault;

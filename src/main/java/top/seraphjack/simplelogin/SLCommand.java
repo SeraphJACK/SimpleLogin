@@ -1,4 +1,4 @@
-package top.seraphjack.simplelogin.server;
+package top.seraphjack.simplelogin;
 
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
@@ -16,13 +16,15 @@ import net.minecraft.command.arguments.IArgumentSerializer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameType;
+import top.seraphjack.simplelogin.client.SLEntriesBuf;
+import top.seraphjack.simplelogin.network.MessageRequestEntries;
+import top.seraphjack.simplelogin.network.NetworkLoader;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 
 public class SLCommand {
@@ -69,28 +71,25 @@ public class SLCommand {
     }
 
     public static final class ArgumentTypeEntryName implements ArgumentType<String> {
-        private Collection<String> suggests;
-        private boolean isClient;
+        private Collection<String> entries;
 
-        private ArgumentTypeEntryName(Collection<String> suggests, boolean isClient) {
-            this.suggests = suggests;
-            this.isClient = isClient;
+        private ArgumentTypeEntryName(Collection<String> entries) {
+            this.entries = entries;
         }
 
         public static ArgumentTypeEntryName server() {
-            return new ArgumentTypeEntryName(SLStorage.instance().storageProvider.getAllRegisteredUsername(), false);
+            return new ArgumentTypeEntryName(SLStorage.instance().storageProvider.getAllRegisteredUsername());
         }
 
         public static ArgumentTypeEntryName client() {
-            return new ArgumentTypeEntryName(Collections.emptySet(), true);
+            NetworkLoader.INSTANCE.sendToServer(new MessageRequestEntries());
+            return new ArgumentTypeEntryName(SLEntriesBuf.entries);
         }
 
         @Override
         public String parse(StringReader reader) throws CommandSyntaxException {
             String name = reader.readString();
-            if (isClient) {
-                return name;
-            } else if (!SLStorage.instance().storageProvider.getAllRegisteredUsername().contains(name)) {
+            if (!entries.contains(name)) {
                 throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownArgument().createWithContext(new StringReader("Entry doesn't exist"));
             }
             return name;
@@ -98,7 +97,7 @@ public class SLCommand {
 
         @Override
         public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-            return ISuggestionProvider.suggest(suggests, builder);
+            return ISuggestionProvider.suggest(entries, builder);
         }
 
         @ParametersAreNonnullByDefault
