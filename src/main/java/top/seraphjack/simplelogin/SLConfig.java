@@ -30,7 +30,7 @@ public class SLConfig {
 
             storageMethod = builder
                     .comment("Available storage method: file(json file) / capability(save in player nbt)")
-                    .define("storageMethod", "");
+                    .define("storageMethod", "file");
 
             defaultGameType = builder
                     .comment("Default game type switched after player login")
