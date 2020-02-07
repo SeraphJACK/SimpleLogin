@@ -1,5 +1,7 @@
 package top.seraphjack.simplelogin.server;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -11,11 +13,17 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.command.arguments.IArgumentSerializer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameType;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class SLCommand {
@@ -61,7 +69,20 @@ public class SLCommand {
         );
     }
 
-    public static class ArgumentTypeEntryName implements ArgumentType<String> {
+    public static final class ArgumentTypeEntryName implements ArgumentType<String> {
+        private final Collection<String> suggestions;
+
+        public ArgumentTypeEntryName() {
+            suggestions = SLStorage.instance().storageProvider.getAllRegisteredUsername();
+        }
+
+        public ArgumentTypeEntryName(Collection<String> suggestions) {
+            this.suggestions = suggestions;
+        }
+
+        public Collection<String> getSuggestions() {
+            return suggestions;
+        }
 
         @Override
         public String parse(StringReader reader) throws CommandSyntaxException {
@@ -74,7 +95,32 @@ public class SLCommand {
 
         @Override
         public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-            return ISuggestionProvider.suggest(SLStorage.instance().storageProvider.getAllRegisteredUsername().stream(), builder);
+            return ISuggestionProvider.suggest(suggestions, builder);
+        }
+
+        public static class Serializer implements IArgumentSerializer<ArgumentTypeEntryName> {
+            @Override
+            public void write(SLCommand.ArgumentTypeEntryName argument, PacketBuffer buffer) {
+                buffer.writeInt(argument.getSuggestions().size());
+                argument.getSuggestions().forEach(s -> buffer.writeString(s, 20));
+            }
+
+            @Override
+            @Nonnull
+            public SLCommand.ArgumentTypeEntryName read(PacketBuffer buffer) {
+                List<String> suggestions = new LinkedList<>();
+                for (int i = 0; i < buffer.readInt(); i++) {
+                    suggestions.add(buffer.readString(20));
+                }
+                return new SLCommand.ArgumentTypeEntryName(suggestions);
+            }
+
+            @Override
+            public void write(SLCommand.ArgumentTypeEntryName argument, JsonObject json) {
+                JsonArray array = new JsonArray();
+                argument.getSuggestions().forEach(array::add);
+                json.add("suggestions", array);
+            }
         }
     }
 }
