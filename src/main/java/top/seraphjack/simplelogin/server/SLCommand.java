@@ -70,23 +70,27 @@ public class SLCommand {
 
     public static final class ArgumentTypeEntryName implements ArgumentType<String> {
         private Collection<String> suggests;
+        private boolean isClient;
 
-        private ArgumentTypeEntryName(Collection<String> suggests) {
+        private ArgumentTypeEntryName(Collection<String> suggests, boolean isClient) {
             this.suggests = suggests;
+            this.isClient = isClient;
         }
 
         public static ArgumentTypeEntryName server() {
-            return new ArgumentTypeEntryName(SLStorage.instance().storageProvider.getAllRegisteredUsername());
+            return new ArgumentTypeEntryName(SLStorage.instance().storageProvider.getAllRegisteredUsername(), false);
         }
 
         public static ArgumentTypeEntryName client() {
-            return new ArgumentTypeEntryName(Collections.emptySet());
+            return new ArgumentTypeEntryName(Collections.emptySet(), true);
         }
 
         @Override
         public String parse(StringReader reader) throws CommandSyntaxException {
             String name = reader.readString();
-            if (!SLStorage.instance().storageProvider.getAllRegisteredUsername().contains(name)) {
+            if (isClient) {
+                return name;
+            } else if (!SLStorage.instance().storageProvider.getAllRegisteredUsername().contains(name)) {
                 throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownArgument().createWithContext(new StringReader("Entry doesn't exist"));
             }
             return name;
