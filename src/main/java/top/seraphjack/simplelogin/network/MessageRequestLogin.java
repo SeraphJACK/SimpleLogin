@@ -21,5 +21,6 @@ public class MessageRequestLogin {
 
     public static void handle(MessageRequestLogin message, Supplier<NetworkEvent.Context> ctx) {
         NetworkLoader.INSTANCE.sendToServer(new MessageLogin(SLConfig.CLIENT.password.get()));
+        NetworkLoader.INSTANCE.sendToServer(new MessageRequestEntries());
     }
 }

@@ -72,32 +72,43 @@ public class SLCommand {
 
     public static final class ArgumentTypeEntryName implements ArgumentType<String> {
         private Collection<String> entries;
+        private boolean isClient;
 
-        private ArgumentTypeEntryName(Collection<String> entries) {
+        private ArgumentTypeEntryName(Collection<String> entries, boolean isClient) {
             this.entries = entries;
+            this.isClient = isClient;
         }
 
         public static ArgumentTypeEntryName server() {
-            return new ArgumentTypeEntryName(SLStorage.instance().storageProvider.getAllRegisteredUsername());
+            return new ArgumentTypeEntryName(SLStorage.instance().storageProvider.getAllRegisteredUsername(), false);
         }
 
         public static ArgumentTypeEntryName client() {
-            NetworkLoader.INSTANCE.sendToServer(new MessageRequestEntries());
-            return new ArgumentTypeEntryName(SLEntriesBuf.entries);
+            return new ArgumentTypeEntryName(SLEntriesBuf.entries, true);
         }
 
         @Override
         public String parse(StringReader reader) throws CommandSyntaxException {
             String name = reader.readString();
+
+            if (isClient) {
+                NetworkLoader.INSTANCE.sendToServer(new MessageRequestEntries());
+                entries = SLEntriesBuf.entries;
+                return name;
+            }
+
             if (!entries.contains(name)) {
-                throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownArgument().createWithContext(new StringReader("Entry doesn't exist"));
+                throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownArgument().createWithContext(new StringReader(name));
             }
             return name;
         }
 
         @Override
         public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-            NetworkLoader.INSTANCE.sendToServer(new MessageRequestEntries());
+            if (isClient) {
+                NetworkLoader.INSTANCE.sendToServer(new MessageRequestEntries());
+                entries = SLEntriesBuf.entries;
+            }
             return ISuggestionProvider.suggest(entries, builder);
         }
 

@@ -22,7 +22,8 @@ public class MessageEntries {
 
     public static MessageEntries decode(PacketBuffer buffer) {
         Collection<String> list = new LinkedList<>();
-        for (int i = 0; i < buffer.readInt(); i++) {
+        int size = buffer.readInt();
+        for (int i = 0; i < size; i++) {
             list.add(buffer.readString(20));
         }
         return new MessageEntries(list);
