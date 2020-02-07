@@ -12,8 +12,7 @@ public class MessageRequestLogin {
     }
 
     public static void encode(MessageRequestLogin msg, PacketBuffer buffer) {
-        // Otherwise would log error "Received empty payload during handshake"
-        buffer.writeInt(114514);
+        // NO-OP
     }
 
     public static MessageRequestLogin decode(PacketBuffer buffer) {
