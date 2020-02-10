@@ -78,7 +78,7 @@ configurations {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.14.4-28.2.0'
+    minecraft 'net.minecraftforge:forge:1.15.2-31.1.1'
 
     shade 'org.mindrot:jbcrypt:0.4'
 }
@@ -107,7 +107,7 @@ jar {
         attributes([
                 "Specification-Title"     : "simplelogin",
                 "Specification-Vendor"    : "",
-                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Specification-Version"   : "1",
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : "${version}",
                 "Implementation-Vendor"   : "",

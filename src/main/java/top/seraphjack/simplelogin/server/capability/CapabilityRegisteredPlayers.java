@@ -24,7 +24,7 @@ public class CapabilityRegisteredPlayers {
         public INBT writeNBT(Capability<IRegisteredPlayers> capability, IRegisteredPlayers instance, Direction side) {
             ListNBT tag = new ListNBT();
             for (String id : instance.getRegisteredPlayers()) {
-                tag.add(new StringNBT(id));
+                tag.add(StringNBT.func_229705_a_(id));
             }
             return tag;
         }

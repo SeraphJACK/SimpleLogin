@@ -128,7 +128,7 @@ public class PlayerLoginHandler {
 
     public void playerLeave(ServerPlayerEntity player) {
         final String username = player.getGameProfile().getName();
-        final Position pos = new Position(player.posX, player.posY, player.posZ);
+        final Position pos = new Position(player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_());
 
         // Save player position in storage
         if (!isPlayerInLoginList(username)) {
@@ -171,9 +171,9 @@ public class PlayerLoginHandler {
         Login(ServerPlayerEntity player) {
             this.name = player.getGameProfile().getName();
             this.time = System.currentTimeMillis();
-            this.posX = player.posX;
-            this.posY = player.posY;
-            this.posZ = player.posZ;
+            this.posX = player.func_226277_ct_();
+            this.posY = player.func_226278_cu_();
+            this.posZ = player.func_226281_cx_();
             this.yaw = player.rotationYaw;
             this.pitch = player.rotationPitch;
             this.lastRequested = System.currentTimeMillis();

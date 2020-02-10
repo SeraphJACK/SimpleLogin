@@ -67,7 +67,7 @@ public class CapabilityLoader {
 
             if (event.getOriginal().getCapability(capability, null).isPresent() && event.getPlayer().getCapability(capability, null).isPresent()) {
                 INBT nbt = storage.writeNBT(capability, event.getOriginal().getCapability(capability, null).orElseThrow(RuntimeException::new), null);
-                storage.readNBT(capability, event.getEntityPlayer().getCapability(capability, null).orElseThrow(RuntimeException::new), null, nbt);
+                storage.readNBT(capability, event.getPlayer().getCapability(capability, null).orElseThrow(RuntimeException::new), null, nbt);
             }
         }
     }
