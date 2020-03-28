@@ -3,14 +3,14 @@ import net.minecraftforge.gradle.user.IReobfuscator
 buildscript {
     repositories {
         jcenter() {
-            url = 'http://jcenter.bintray.com/'
+            url = 'https://jcenter.bintray.com/'
         }
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://files.minecraftforge.net/maven"
         }
         maven {
-            url 'http://repository.jboss.org/nexus/content/groups/public'
+            url 'https://repository.jboss.org/nexus/content/groups/public'
         }
         mavenCentral()
     }
@@ -23,10 +23,10 @@ buildscript {
 allprojects {
     repositories {
         jcenter() {
-            url = 'http://jcenter.bintray.com/'
+            url = 'https://jcenter.bintray.com/'
         }
         maven {
-            url 'http://repository.jboss.org/nexus/content/groups/public'
+            url 'https://repository.jboss.org/nexus/content/groups/public'
         }
         mavenCentral()
     }
