@@ -25,5 +25,6 @@ public class MessageLogin {
 
     public static void handle(MessageLogin message, Supplier<NetworkEvent.Context> ctx) {
         PlayerLoginHandler.instance().login(Objects.requireNonNull(ctx.get().getSender()).getGameProfile().getName(), message.pwd);
+        ctx.get().setPacketHandled(true);
     }
 }

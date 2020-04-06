@@ -31,5 +31,6 @@ public class MessageEntries {
 
     public static void handle(MessageEntries message, Supplier<NetworkEvent.Context> ctx) {
         SLEntriesBuf.entries = message.entries;
+        ctx.get().setPacketHandled(true);
     }
 }
