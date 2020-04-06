@@ -24,7 +24,6 @@ public final class ServerLoader {
 
     @SubscribeEvent
     public static void serverStarting(FMLServerStartingEvent e) throws RuntimeException {
-        // e.registerServerCommand(new SLCommand()); TODO
         SLConstants.server = e.getServer();
         // Start player login handler
         PlayerLoginHandler.instance();

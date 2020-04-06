@@ -13,8 +13,6 @@ import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.network.MessageRequestLogin;
 import top.seraphjack.simplelogin.network.NetworkLoader;
 
-import java.util.Arrays;
-
 @OnlyIn(Dist.DEDICATED_SERVER)
 @Mod.EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = SLConstants.MODID)
 public class ServerSideEventHandler {
