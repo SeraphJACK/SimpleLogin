@@ -16,3 +16,4 @@ src/main/java/team/covertdragon/springfestival/module/firecracker/entity/EntityA
 libs/albedo-0.1.3.jar
 testEntries.json
 .idea/
+.vscode/

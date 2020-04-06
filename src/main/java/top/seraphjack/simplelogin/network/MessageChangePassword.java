@@ -36,5 +36,6 @@ public class MessageChangePassword {
             Objects.requireNonNull(ctx.get().getSender()).sendMessage(new StringTextComponent("Wrong original password."));
             SimpleLogin.logger.warn("Player " + username + " tried to change password with a wrong password.");
         }
+        ctx.get().setPacketHandled(true);
     }
 }
