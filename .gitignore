@@ -1,12 +1,9 @@
 Thumbs.db
 /run
 /out
-/gradle
 /eclipse
 /build
 /.gradle
-gradlew
-gradlew.bat
 *.iml
 *.ipr
 *.iws
