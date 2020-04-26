@@ -5,6 +5,7 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.server.PlayerLoginHandler;
 import top.seraphjack.simplelogin.utils.SHA256;
 
@@ -15,7 +16,7 @@ public class MessageLogin implements IMessage {
     }
 
     public MessageLogin(String pwd) {
-        this.pwd = SHA256.getSHA256(pwd);
+        this.pwd = SHA256.getHashWithSalt(pwd);
     }
 
     @Override
@@ -32,7 +33,7 @@ public class MessageLogin implements IMessage {
 
         @Override
         public IMessage onMessage(MessageLogin message, MessageContext ctx) {
-            PlayerLoginHandler.instance().login(ctx.getServerHandler().player.getGameProfile().getName(), message.pwd);
+            PlayerLoginHandler.instance().login(ctx.getServerHandler().player.getGameProfile().getName(), message.pwd, SLConfig.server.enableCommandLoginMode);
             return null;
         }
     }

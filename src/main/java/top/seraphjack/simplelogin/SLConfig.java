@@ -31,6 +31,10 @@ public class SLConfig {
         @Config.Name("Default Game Type")
         @Config.Comment("Default game type switched after player login")
         public int defaultGameType = 0;
+
+        @Config.Name("Enable Command Login Mode")
+        @Config.Comment("Ask players to login via command instead of password stored in configuration file")
+        public boolean enableCommandLoginMode = false;
     }
 
     public static class Client {
