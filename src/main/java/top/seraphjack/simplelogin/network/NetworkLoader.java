@@ -15,6 +15,7 @@ public class NetworkLoader {
         registerMessage(MessageLogin.MessageHandler.class, MessageLogin.class, Side.SERVER);
         registerMessage(MessageRequestLogin.MessageHandler.class, MessageRequestLogin.class, Side.CLIENT);
         registerMessage(MessageChangePassword.MessageHandler.class, MessageChangePassword.class, Side.SERVER);
+        registerMessage(MessageRequestCommandLogin.MessageHandler.class, MessageRequestCommandLogin.class, Side.CLIENT);
     }
 
     private static <REQ extends IMessage, REPLY extends IMessage> void registerMessage(Class<? extends IMessageHandler<REQ, REPLY>> messageHandler, Class<REQ> requestMessageType, Side side) {

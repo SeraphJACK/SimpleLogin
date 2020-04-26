@@ -18,8 +18,8 @@ public class MessageChangePassword implements IMessage {
     }
 
     public MessageChangePassword(String oldPassword, String newPassword) {
-        this.oldPassword = SHA256.getSHA256(oldPassword);
-        this.newPassword = SHA256.getSHA256(newPassword);
+        this.oldPassword = SHA256.getHashWithSalt(oldPassword);
+        this.newPassword = SHA256.getHashWithSalt(newPassword);
     }
 
     @Override
