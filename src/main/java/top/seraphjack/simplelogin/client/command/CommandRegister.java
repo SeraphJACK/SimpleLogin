@@ -8,7 +8,6 @@ import net.minecraft.server.MinecraftServer;
 import top.seraphjack.simplelogin.client.Notifier;
 import top.seraphjack.simplelogin.network.MessageLogin;
 import top.seraphjack.simplelogin.network.NetworkLoader;
-import top.seraphjack.simplelogin.utils.SHA256;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -33,7 +32,7 @@ public class CommandRegister extends CommandBase {
         if (!args[0].equals(args[1])) {
             throw new CommandException("Password does not match");
         }
-        NetworkLoader.INSTANCE.sendToServer(new MessageLogin(SHA256.getHashWithSalt(args[0])));
+        NetworkLoader.INSTANCE.sendToServer(new MessageLogin(args[0]));
         Notifier.instance().clearNotify();
     }
 

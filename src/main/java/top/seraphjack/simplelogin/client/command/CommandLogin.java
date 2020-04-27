@@ -8,7 +8,6 @@ import net.minecraft.server.MinecraftServer;
 import top.seraphjack.simplelogin.client.Notifier;
 import top.seraphjack.simplelogin.network.MessageLogin;
 import top.seraphjack.simplelogin.network.NetworkLoader;
-import top.seraphjack.simplelogin.utils.SHA256;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -30,7 +29,7 @@ public class CommandLogin extends CommandBase {
         if (args.length != 1) {
             throw new CommandException("Invalid arguments");
         }
-        NetworkLoader.INSTANCE.sendToServer(new MessageLogin(SHA256.getHashWithSalt(args[0])));
+        NetworkLoader.INSTANCE.sendToServer(new MessageLogin(args[0]));
         Notifier.instance().clearNotify();
     }
 

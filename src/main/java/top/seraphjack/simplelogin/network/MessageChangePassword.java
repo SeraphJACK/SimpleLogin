@@ -7,8 +7,9 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import org.mindrot.jbcrypt.BCrypt;
+import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
-import top.seraphjack.simplelogin.utils.SHA256;
 
 public class MessageChangePassword implements IMessage {
     private String oldPassword;
@@ -18,8 +19,8 @@ public class MessageChangePassword implements IMessage {
     }
 
     public MessageChangePassword(String oldPassword, String newPassword) {
-        this.oldPassword = SHA256.getHashWithSalt(oldPassword);
-        this.newPassword = SHA256.getHashWithSalt(newPassword);
+        this.oldPassword = BCrypt.hashpw(oldPassword, SLConstants.defaultBcryptSalt);
+        this.newPassword = BCrypt.hashpw(newPassword, SLConstants.defaultBcryptSalt);
     }
 
     @Override

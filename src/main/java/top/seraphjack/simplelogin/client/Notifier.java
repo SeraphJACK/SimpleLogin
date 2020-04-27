@@ -73,5 +73,6 @@ public class Notifier {
         } catch (InterruptedException e) {
             SimpleLogin.logger.error("Failed to stop notifier", e);
         }
+        INSTANCE = null;
     }
 }
