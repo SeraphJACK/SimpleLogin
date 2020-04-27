@@ -64,8 +64,13 @@ dependencies {
 
 shadowJar {
     configurations = [project.configurations.shadow]
+    classifier = ""
 
     relocate "org.mindrot", "top.seraphjack.repack.org.mindrot"
+}
+
+jar {
+    classifier = "withoutlibs"
 }
 
 reobf {
