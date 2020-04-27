@@ -71,6 +71,7 @@ shadowJar {
 
 jar {
     classifier = "withoutlibs"
+    exclude "LICENSE-jBCrypt"
 }
 
 reobf {
