@@ -104,7 +104,6 @@ public class PlayerLoginHandler {
 
     public void login(String id, String pwd, boolean allowMistakenPassword) {
         Login login = getLoginByName(id);
-        loginList.remove(login);
         EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(id);
 
         if (login == null || player == null) {
@@ -114,21 +113,25 @@ public class PlayerLoginHandler {
         if (System.currentTimeMillis() - login.lastLoginTrial < 1000) {
             player.sendMessage(new TextComponentString("Login trial too frequent"));
         } else if (pwd.length() >= 100) {
+            loginList.remove(login);
             player.connection.disconnect(new TextComponentString("Password too long."));
             SimpleLogin.logger.warn("Player " + id + " tried to login with a invalid password(too long).");
         } else if (!SLStorage.instance().storageProvider.registered(id)) {
             SLStorage.instance().storageProvider.register(id, pwd);
+            loginList.remove(login);
             afterPlayerLogin(login, player);
             SimpleLogin.logger.info("Player " + id + " has successfully registered.");
         } else if (SLStorage.instance().storageProvider.checkPassword(id, pwd)) {
+            loginList.remove(login);
             afterPlayerLogin(login, player);
             SimpleLogin.logger.info("Player " + id + " has successfully logged in.");
         } else {
+            SimpleLogin.logger.warn("Player " + id + " tried to login with a wrong password.");
             if (allowMistakenPassword) {
+                login.lastLoginTrial = System.currentTimeMillis();
                 player.sendMessage(new TextComponentString("Password not correct, please wait for at least 1 second before trying again"));
             } else {
-                login.lastLoginTrial = System.currentTimeMillis();
-                SimpleLogin.logger.warn("Player " + id + " tried to login with a wrong password.");
+                loginList.remove(login);
                 player.connection.disconnect(new TextComponentString("Wrong Password."));
             }
         }
