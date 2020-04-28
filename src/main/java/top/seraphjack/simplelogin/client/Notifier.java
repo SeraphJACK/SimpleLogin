@@ -29,11 +29,11 @@ public class Notifier {
                         switch (notifyState) {
                             case 1: {
                                 player.sendMessage(new TextComponentTranslation("simplelogin_notify_register"));
-                                continue;
+                                break;
                             }
                             case 2: {
                                 player.sendMessage(new TextComponentTranslation("simplelogin_notify_login"));
-                                continue;
+                                break;
                             }
                         }
                     }
