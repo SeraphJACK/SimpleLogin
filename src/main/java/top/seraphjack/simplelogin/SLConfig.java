@@ -40,6 +40,10 @@ public class SLConfig {
     public static class Client {
         @Config.Name("Password")
         public String password = UUID.randomUUID().toString();
+
+        @Config.Name("UseConfigPasswordInsteadOfCommandLogin")
+        @Config.Comment("Use password stored in configuration to register/login even if the server has enabled command login mode")
+        public boolean useConfigPasswordInsteadOfCommandLogin = false;
     }
 
     @Mod.EventBusSubscriber(modid = SLConstants.MODID)
