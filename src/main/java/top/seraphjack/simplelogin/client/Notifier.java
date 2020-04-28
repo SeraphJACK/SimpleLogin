@@ -37,7 +37,7 @@ public class Notifier {
                             }
                         }
                     }
-                    Thread.sleep(1000);
+                    Thread.sleep(2000);
                 } catch (Exception ignore) {
 
                 }

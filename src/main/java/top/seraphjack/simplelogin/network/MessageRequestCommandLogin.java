@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.client.Notifier;
 
 public class MessageRequestCommandLogin implements IMessage {
@@ -30,10 +31,14 @@ public class MessageRequestCommandLogin implements IMessage {
 
         @Override
         public IMessage onMessage(MessageRequestCommandLogin message, MessageContext ctx) {
-            if (message.isRegister) {
-                Notifier.instance().notifyLogin();
+            if (SLConfig.client.useConfigPasswordInsteadOfCommandLogin) {
+                NetworkLoader.INSTANCE.sendToServer(new MessageLogin(SLConfig.client.password));
             } else {
-                Notifier.instance().notifyRegister();
+                if (message.isRegister) {
+                    Notifier.instance().notifyLogin();
+                } else {
+                    Notifier.instance().notifyRegister();
+                }
             }
             return null;
         }
