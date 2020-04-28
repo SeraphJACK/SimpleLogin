@@ -30,5 +30,5 @@ public interface StorageProvider {
      * Should be immutable
      * @return all registered username
      */
-    Collection<String> getAllRegisteredUsername();
+    Collection<String> listEntries();
 }

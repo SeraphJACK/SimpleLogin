@@ -112,7 +112,7 @@ public class StorageProviderFile implements StorageProvider {
     }
 
     @Override
-    public Collection<String> getAllRegisteredUsername() {
+    public Collection<String> listEntries() {
         return new ImmutableList.Builder<String>().addAll(entries.keySet()).build();
     }
 

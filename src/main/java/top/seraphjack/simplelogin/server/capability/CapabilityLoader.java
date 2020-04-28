@@ -13,10 +13,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import top.seraphjack.simplelogin.SimpleLogin;
+import top.seraphjack.simplelogin.SLConstants;
 
 @SideOnly(Side.SERVER)
-@Mod.EventBusSubscriber(value = Side.SERVER, modid = SimpleLogin.MODID)
+@Mod.EventBusSubscriber(value = Side.SERVER, modid = SLConstants.MODID)
 public class CapabilityLoader {
     @CapabilityInject(ISLEntry.class)
     public static Capability<ISLEntry> CAPABILITY_SL_ENTRY;
@@ -36,10 +36,10 @@ public class CapabilityLoader {
     @SubscribeEvent
     public static void onAttachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof EntityPlayer) {
-            event.addCapability(new ResourceLocation(SimpleLogin.MODID, "sl_password"),
+            event.addCapability(new ResourceLocation(SLConstants.MODID, "sl_password"),
                     new CapabilitySLEntry.Provider());
 
-            event.addCapability(new ResourceLocation(SimpleLogin.MODID, "sl_lastPos"),
+            event.addCapability(new ResourceLocation(SLConstants.MODID, "sl_lastPos"),
                     new CapabilityLastPos.Provider());
         }
     }
@@ -47,13 +47,13 @@ public class CapabilityLoader {
     @SubscribeEvent
     public static void onAttachCapabilitiesWorld(AttachCapabilitiesEvent<World> event) {
         if (event.getObject().provider.getDimension() == 0) {
-            event.addCapability(new ResourceLocation(SimpleLogin.MODID, "sl_registered_players"),
+            event.addCapability(new ResourceLocation(SLConstants.MODID, "sl_registered_players"),
                     new CapabilityRegisteredPlayers.Provider());
         }
     }
 
     @SubscribeEvent
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("all")
     public static void onPlayerClone(net.minecraftforge.event.entity.player.PlayerEvent.Clone event) {
         Capability[] capabilities = new Capability[]{CAPABILITY_LAST_POS, CAPABILITY_SL_ENTRY};
         for (Capability capability : capabilities) {

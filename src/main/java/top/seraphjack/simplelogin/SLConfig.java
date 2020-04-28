@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.UUID;
 
-@Config(modid = SimpleLogin.MODID)
+@Config(modid = SLConstants.MODID)
 public class SLConfig {
     @Config.Name("Server")
     public static Server server = new Server();
@@ -42,12 +42,12 @@ public class SLConfig {
         public String password = UUID.randomUUID().toString();
     }
 
-    @Mod.EventBusSubscriber(modid = SimpleLogin.MODID)
+    @Mod.EventBusSubscriber(modid = SLConstants.MODID)
     public static class ConfigSyncHandler {
         @SubscribeEvent
         public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-            if (event.getModID().equals(SimpleLogin.MODID)) {
-                ConfigManager.sync(SimpleLogin.MODID, Config.Type.INSTANCE);
+            if (event.getModID().equals(SLConstants.MODID)) {
+                ConfigManager.sync(SLConstants.MODID, Config.Type.INSTANCE);
             }
         }
     }
