@@ -31,9 +31,9 @@ public class MessageRequestCommandLogin implements IMessage {
         @Override
         public IMessage onMessage(MessageRequestCommandLogin message, MessageContext ctx) {
             if (message.isRegister) {
-                Notifier.instance().notifyRegister();
-            } else {
                 Notifier.instance().notifyLogin();
+            } else {
+                Notifier.instance().notifyRegister();
             }
             return null;
         }

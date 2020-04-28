@@ -10,6 +10,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.SimpleLogin;
+import top.seraphjack.simplelogin.network.MessageRequestCommandLogin;
 import top.seraphjack.simplelogin.network.MessageRequestLogin;
 import top.seraphjack.simplelogin.network.NetworkLoader;
 import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
@@ -44,7 +45,11 @@ public class PlayerLoginHandler {
 
                         // Resend request
                         if (System.currentTimeMillis() - login.lastRequested >= 1000) {
-                            NetworkLoader.INSTANCE.sendTo(new MessageRequestLogin(), player);
+                            if (SLConfig.server.enableCommandLoginMode) {
+                                NetworkLoader.INSTANCE.sendTo(new MessageRequestCommandLogin(SLStorage.instance().storageProvider.registered(player.getName())), player);
+                            } else {
+                                NetworkLoader.INSTANCE.sendTo(new MessageRequestLogin(), player);
+                            }
                             login.lastRequested = System.currentTimeMillis();
                         }
 
