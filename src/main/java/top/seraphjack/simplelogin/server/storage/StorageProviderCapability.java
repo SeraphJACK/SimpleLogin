@@ -79,7 +79,7 @@ public class StorageProviderCapability implements StorageProvider {
     }
 
     @Override
-    public Collection<String> getAllRegisteredUsername() {
+    public Collection<String> listEntries() {
         return registeredPlayers.getRegisteredPlayers();
     }
 

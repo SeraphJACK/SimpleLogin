@@ -70,10 +70,10 @@ public class SLCommand extends CommandBase {
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
         if (args[0].equals("unregister") && args.length == 2) {
-            return getListOfStringsMatchingLastWord(args, SLStorage.instance().storageProvider.getAllRegisteredUsername());
+            return getListOfStringsMatchingLastWord(args, SLStorage.instance().storageProvider.listEntries());
         } else if (args[0].equals("setDefaultGameType")) {
             if (args.length == 2)
-                return getListOfStringsMatchingLastWord(args, SLStorage.instance().storageProvider.getAllRegisteredUsername());
+                return getListOfStringsMatchingLastWord(args, SLStorage.instance().storageProvider.listEntries());
             else if (args.length == 3)
                 return getListOfStringsMatchingLastWord(args, Arrays.asList("survival", "creative", "adventure", "spectator"));
         } else if (args.length <= 1) {

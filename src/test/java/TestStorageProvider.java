@@ -1,5 +1,4 @@
 import org.junit.Test;
-import org.mindrot.jbcrypt.BCrypt;
 
 public class TestStorageProvider {
     @Test
