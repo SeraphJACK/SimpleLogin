@@ -76,6 +76,8 @@ reobf {
 
 tasks.reobfShadowJar.mustRunAfter shadowJar
 
+tasks.sourceJar.exclude("LICENSE-jBCrypt")
+
 processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
