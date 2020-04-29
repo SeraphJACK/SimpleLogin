@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.UUID;
 
-@Config(modid = SimpleLogin.MODID)
+@Config(modid = SLConstants.MODID)
 public class SLConfig {
     @Config.Name("Server")
     public static Server server = new Server();
@@ -31,19 +31,27 @@ public class SLConfig {
         @Config.Name("Default Game Type")
         @Config.Comment("Default game type switched after player login")
         public int defaultGameType = 0;
+
+        @Config.Name("Enable Command Login Mode")
+        @Config.Comment("Ask players to login via command instead of password stored in configuration file")
+        public boolean enableCommandLoginMode = false;
     }
 
     public static class Client {
         @Config.Name("Password")
         public String password = UUID.randomUUID().toString();
+
+        @Config.Name("UseConfigPasswordInsteadOfCommandLogin")
+        @Config.Comment("Use password stored in configuration to register/login even if the server has enabled command login mode")
+        public boolean useConfigPasswordInsteadOfCommandLogin = false;
     }
 
-    @Mod.EventBusSubscriber(modid = SimpleLogin.MODID)
+    @Mod.EventBusSubscriber(modid = SLConstants.MODID)
     public static class ConfigSyncHandler {
         @SubscribeEvent
         public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-            if (event.getModID().equals(SimpleLogin.MODID)) {
-                ConfigManager.sync(SimpleLogin.MODID, Config.Type.INSTANCE);
+            if (event.getModID().equals(SLConstants.MODID)) {
+                ConfigManager.sync(SLConstants.MODID, Config.Type.INSTANCE);
             }
         }
     }

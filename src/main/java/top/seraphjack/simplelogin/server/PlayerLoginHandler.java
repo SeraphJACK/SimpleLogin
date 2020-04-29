@@ -10,6 +10,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.SimpleLogin;
+import top.seraphjack.simplelogin.network.MessageRequestCommandLogin;
 import top.seraphjack.simplelogin.network.MessageRequestLogin;
 import top.seraphjack.simplelogin.network.NetworkLoader;
 import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
@@ -44,7 +45,11 @@ public class PlayerLoginHandler {
 
                         // Resend request
                         if (System.currentTimeMillis() - login.lastRequested >= 1000) {
-                            NetworkLoader.INSTANCE.sendTo(new MessageRequestLogin(), player);
+                            if (SLConfig.server.enableCommandLoginMode) {
+                                NetworkLoader.INSTANCE.sendTo(new MessageRequestCommandLogin(SLStorage.instance().storageProvider.registered(player.getName())), player);
+                            } else {
+                                NetworkLoader.INSTANCE.sendTo(new MessageRequestLogin(), player);
+                            }
                             login.lastRequested = System.currentTimeMillis();
                         }
 
@@ -97,28 +102,38 @@ public class PlayerLoginHandler {
         return loginList.stream().filter(l -> l.name.equals(name)).findAny().orElse(null);
     }
 
-    public void login(String id, String pwd) {
+    public void login(String id, String pwd, boolean allowMistakenPassword) {
         Login login = getLoginByName(id);
-        loginList.remove(login);
         EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUsername(id);
 
         if (login == null || player == null) {
             return;
         }
 
-        if (pwd.length() >= 100) {
+        if (System.currentTimeMillis() - login.lastLoginTrial < 1000) {
+            player.sendMessage(new TextComponentString("Login trial too frequent"));
+        } else if (pwd.length() >= 100) {
+            loginList.remove(login);
             player.connection.disconnect(new TextComponentString("Password too long."));
             SimpleLogin.logger.warn("Player " + id + " tried to login with a invalid password(too long).");
         } else if (!SLStorage.instance().storageProvider.registered(id)) {
             SLStorage.instance().storageProvider.register(id, pwd);
+            loginList.remove(login);
             afterPlayerLogin(login, player);
             SimpleLogin.logger.info("Player " + id + " has successfully registered.");
         } else if (SLStorage.instance().storageProvider.checkPassword(id, pwd)) {
+            loginList.remove(login);
             afterPlayerLogin(login, player);
             SimpleLogin.logger.info("Player " + id + " has successfully logged in.");
         } else {
             SimpleLogin.logger.warn("Player " + id + " tried to login with a wrong password.");
-            player.connection.disconnect(new TextComponentString("Wrong Password."));
+            if (allowMistakenPassword) {
+                login.lastLoginTrial = System.currentTimeMillis();
+                player.sendMessage(new TextComponentString("Password not correct, please wait for at least 1 second before trying again"));
+            } else {
+                loginList.remove(login);
+                player.connection.disconnect(new TextComponentString("Wrong Password."));
+            }
         }
     }
 
@@ -169,7 +184,7 @@ public class PlayerLoginHandler {
         long time;
         double posX, posY, posZ;
         float yaw, pitch;
-        long lastRequested;
+        long lastRequested, lastLoginTrial;
 
         Login(EntityPlayerMP player) {
             this.name = player.getGameProfile().getName();

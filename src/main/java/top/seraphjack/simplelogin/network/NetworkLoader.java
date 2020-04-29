@@ -5,16 +5,17 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
-import top.seraphjack.simplelogin.SimpleLogin;
+import top.seraphjack.simplelogin.SLConstants;
 
 public class NetworkLoader {
-    public static SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(SimpleLogin.MODID);
+    public static SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(SLConstants.MODID);
     private static int msgId = 0;
 
     public NetworkLoader() {
         registerMessage(MessageLogin.MessageHandler.class, MessageLogin.class, Side.SERVER);
         registerMessage(MessageRequestLogin.MessageHandler.class, MessageRequestLogin.class, Side.CLIENT);
         registerMessage(MessageChangePassword.MessageHandler.class, MessageChangePassword.class, Side.SERVER);
+        registerMessage(MessageRequestCommandLogin.MessageHandler.class, MessageRequestCommandLogin.class, Side.CLIENT);
     }
 
     private static <REQ extends IMessage, REPLY extends IMessage> void registerMessage(Class<? extends IMessageHandler<REQ, REPLY>> messageHandler, Class<REQ> requestMessageType, Side side) {

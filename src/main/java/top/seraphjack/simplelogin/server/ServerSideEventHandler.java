@@ -11,19 +11,29 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import top.seraphjack.simplelogin.SLConfig;
+import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.SimpleLogin;
+import top.seraphjack.simplelogin.network.MessageRequestCommandLogin;
 import top.seraphjack.simplelogin.network.MessageRequestLogin;
 import top.seraphjack.simplelogin.network.NetworkLoader;
+import top.seraphjack.simplelogin.server.storage.SLStorage;
 
 import java.util.Arrays;
 
-@Mod.EventBusSubscriber(value = Side.SERVER, modid = SimpleLogin.MODID)
+@Mod.EventBusSubscriber(value = Side.SERVER, modid = SLConstants.MODID)
 public class ServerSideEventHandler {
     @SubscribeEvent
     public static void playerJoin(PlayerEvent.PlayerLoggedInEvent event) {
         FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() -> {
             PlayerLoginHandler.instance().playerJoin((EntityPlayerMP) event.player);
-            NetworkLoader.INSTANCE.sendTo(new MessageRequestLogin(), (EntityPlayerMP) event.player);
+            if (SLConfig.server.enableCommandLoginMode) {
+                NetworkLoader.INSTANCE.sendTo(
+                        new MessageRequestCommandLogin(SLStorage.instance().storageProvider.registered(event.player.getName())),
+                        (EntityPlayerMP) event.player
+                );
+            } else {
+                NetworkLoader.INSTANCE.sendTo(new MessageRequestLogin(), (EntityPlayerMP) event.player);
+            }
         });
     }
 

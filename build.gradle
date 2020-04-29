@@ -1,5 +1,3 @@
-import net.minecraftforge.gradle.user.IReobfuscator
-
 buildscript {
     repositories {
         jcenter() {
@@ -38,7 +36,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
-version = "0.3.4-stable"
+version = "0.3.5-beta"
 group = "top.seraphjack"
 archivesBaseName = "simplelogin"
 
@@ -66,8 +64,14 @@ dependencies {
 
 shadowJar {
     configurations = [project.configurations.shadow]
+    classifier = ""
 
     relocate "org.mindrot", "top.seraphjack.repack.org.mindrot"
+}
+
+jar {
+    classifier = "withoutlibs"
+    exclude "LICENSE-jBCrypt"
 }
 
 reobf {
