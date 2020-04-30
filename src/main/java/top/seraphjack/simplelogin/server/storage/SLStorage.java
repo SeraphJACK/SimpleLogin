@@ -1,6 +1,5 @@
 package top.seraphjack.simplelogin.server.storage;
 
-import java.io.IOException;
 import java.nio.file.Paths;
 
 public class SLStorage {

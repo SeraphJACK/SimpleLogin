@@ -27,7 +27,7 @@ public class PlayerLoginHandler {
     private static PlayerLoginHandler INSTANCE;
 
     private boolean alive;
-    private ConcurrentLinkedQueue<Login> loginList = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<Login> loginList = new ConcurrentLinkedQueue<>();
     private long lastEntriesSaved;
 
     private PlayerLoginHandler() {

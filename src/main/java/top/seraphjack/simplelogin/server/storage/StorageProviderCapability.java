@@ -18,7 +18,7 @@ import java.util.Objects;
 @ThreadSafe
 public class StorageProviderCapability implements StorageProvider {
     @Nonnull
-    private IRegisteredPlayers registeredPlayers = Objects.requireNonNull(FMLCommonHandler.instance()
+    private final IRegisteredPlayers registeredPlayers = Objects.requireNonNull(FMLCommonHandler.instance()
             .getMinecraftServerInstance().getWorld(0)
             .getCapability(CapabilityLoader.CAPABILITY_REGISTERED_PLAYERS, null));
 

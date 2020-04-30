@@ -14,7 +14,7 @@ public class ServerProxy extends CommonProxy {
     @Override
     public void preInit() {
         super.preInit();
-        new CapabilityLoader();
+        CapabilityLoader.registerCapabilities();
     }
 
     @Override

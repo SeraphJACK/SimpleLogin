@@ -26,7 +26,7 @@ public class CapabilityLastPos {
     }
 
     public static class Provider implements ICapabilitySerializable<NBTTagCompound> {
-        private ILastPos lastPos = new Implementation();
+        private final ILastPos lastPos = new Implementation();
 
         @Override
         public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {

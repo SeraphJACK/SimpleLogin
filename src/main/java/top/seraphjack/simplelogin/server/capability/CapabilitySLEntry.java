@@ -56,8 +56,8 @@ public class CapabilitySLEntry {
     }
 
     public static class Provider implements ICapabilitySerializable<NBTTagCompound> {
-        private ISLEntry password = new Implementation();
-        private Capability.IStorage<ISLEntry> storage = CapabilityLoader.CAPABILITY_SL_ENTRY.getStorage();
+        private final ISLEntry password = new Implementation();
+        private final Capability.IStorage<ISLEntry> storage = CapabilityLoader.CAPABILITY_SL_ENTRY.getStorage();
 
         @Override
         public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {

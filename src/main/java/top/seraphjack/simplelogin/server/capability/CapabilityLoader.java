@@ -16,6 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import top.seraphjack.simplelogin.SLConstants;
 
 @SideOnly(Side.SERVER)
+@SuppressWarnings("all")
 @Mod.EventBusSubscriber(value = Side.SERVER, modid = SLConstants.MODID)
 public class CapabilityLoader {
     @CapabilityInject(ISLEntry.class)
@@ -27,7 +28,7 @@ public class CapabilityLoader {
     @CapabilityInject(IRegisteredPlayers.class)
     public static Capability<IRegisteredPlayers> CAPABILITY_REGISTERED_PLAYERS;
 
-    public CapabilityLoader() {
+    public static void registerCapabilities() {
         CapabilityManager.INSTANCE.register(ISLEntry.class, new CapabilitySLEntry.Storage(), CapabilitySLEntry.Implementation::new);
         CapabilityManager.INSTANCE.register(ILastPos.class, new CapabilityLastPos.Storage(), CapabilityLastPos.Implementation::new);
         CapabilityManager.INSTANCE.register(IRegisteredPlayers.class, new CapabilityRegisteredPlayers.Storage(), CapabilityRegisteredPlayers.Implementation::new);
@@ -53,7 +54,6 @@ public class CapabilityLoader {
     }
 
     @SubscribeEvent
-    @SuppressWarnings("all")
     public static void onPlayerClone(net.minecraftforge.event.entity.player.PlayerEvent.Clone event) {
         Capability[] capabilities = new Capability[]{CAPABILITY_LAST_POS, CAPABILITY_SL_ENTRY};
         for (Capability capability : capabilities) {

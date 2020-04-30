@@ -34,7 +34,7 @@ public class CapabilityRegisteredPlayers {
     }
 
     public static class Implementation implements IRegisteredPlayers {
-        private Collection<String> players = new HashSet<>();
+        private final Collection<String> players = new HashSet<>();
 
         @Override
         public Collection<String> getRegisteredPlayers() {
@@ -58,7 +58,7 @@ public class CapabilityRegisteredPlayers {
     }
 
     public static class Provider implements ICapabilitySerializable<NBTTagList> {
-        private IRegisteredPlayers registeredPlayers = new Implementation();
+        private final IRegisteredPlayers registeredPlayers = new Implementation();
 
         @Override
         public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing) {
