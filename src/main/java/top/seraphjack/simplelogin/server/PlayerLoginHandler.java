@@ -30,6 +30,7 @@ public class PlayerLoginHandler {
     private final ConcurrentLinkedQueue<Login> loginList = new ConcurrentLinkedQueue<>();
     private long lastEntriesSaved;
 
+    @SuppressWarnings("BusyWait")
     private PlayerLoginHandler() {
         PLAYER_HANDLER_THREAD = new Thread(() -> {
             lastEntriesSaved = System.currentTimeMillis();

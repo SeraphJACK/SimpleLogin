@@ -11,7 +11,7 @@ import top.seraphjack.simplelogin.SimpleLogin;
 public class Notifier {
     private static Notifier INSTANCE;
 
-    private Thread NOTIFIER_THREAD;
+    private final Thread NOTIFIER_THREAD;
     private boolean alive;
     /**
      * 0: no notification
@@ -20,6 +20,7 @@ public class Notifier {
      */
     private short notifyState;
 
+    @SuppressWarnings("BusyWait")
     private Notifier() {
         NOTIFIER_THREAD = new Thread(() -> {
             while (alive) {
