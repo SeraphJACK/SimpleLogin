@@ -22,7 +22,7 @@ public class SLStorage {
             case "file": {
                 try {
                     storageProvider = new StorageProviderFile(Paths.get(".", "simplelogin", "storage", "entries.json"));
-                } catch (IOException ex) {
+                } catch (Exception ex) {
                     throw new RuntimeException("Unable to initialize storage provider", ex);
                 }
                 break;
