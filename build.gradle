@@ -41,7 +41,7 @@ group = "top.seraphjack"
 archivesBaseName = "simplelogin"
 
 if (System.getenv().BUILD_NUMBER != null) {
-    version += "-build${System.getenv().BUILD_NUMBER}"
+    version += "+build${System.getenv().BUILD_NUMBER}"
 }
 
 minecraft {
