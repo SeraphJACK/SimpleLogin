@@ -8,7 +8,6 @@ import com.google.gson.JsonObject;
 import net.minecraft.world.GameType;
 import org.mindrot.jbcrypt.BCrypt;
 import top.seraphjack.simplelogin.SLConfig;
-import top.seraphjack.simplelogin.SimpleLogin;
 
 import javax.activation.UnsupportedDataTypeException;
 import javax.annotation.concurrent.ThreadSafe;
@@ -90,24 +89,19 @@ public class StorageProviderFile implements StorageProvider {
     @Override
     public void save() throws IOException {
         synchronized (this) {
-            try {
-                JsonObject jsonObject = new JsonObject();
-                JsonArray entries = new JsonArray();
-                for (POJOUserEntry entry : this.entries.values()) {
-                    JsonObject jsonEntry = new JsonObject();
-                    jsonEntry.addProperty("username", entry.username);
-                    jsonEntry.addProperty("password", entry.password);
-                    jsonEntry.addProperty("gameType", entry.gameType);
-                    entries.add(jsonEntry);
-                }
-                jsonObject.addProperty("version", STORAGE_VERSION);
-                jsonObject.add("entries", entries);
-                Files.write(path, gson.toJson(jsonObject).getBytes(StandardCharsets.UTF_8), StandardOpenOption.TRUNCATE_EXISTING);
-                dirty = false;
-            } catch (IOException ex) {
-                SimpleLogin.logger.error("Unable to save entries", ex);
-                throw ex;
+            JsonObject jsonObject = new JsonObject();
+            JsonArray entries = new JsonArray();
+            for (POJOUserEntry entry : this.entries.values()) {
+                JsonObject jsonEntry = new JsonObject();
+                jsonEntry.addProperty("username", entry.username);
+                jsonEntry.addProperty("password", entry.password);
+                jsonEntry.addProperty("gameType", entry.gameType);
+                entries.add(jsonEntry);
             }
+            jsonObject.addProperty("version", STORAGE_VERSION);
+            jsonObject.add("entries", entries);
+            Files.write(path, gson.toJson(jsonObject).getBytes(StandardCharsets.UTF_8), StandardOpenOption.TRUNCATE_EXISTING);
+            dirty = false;
         }
     }
 

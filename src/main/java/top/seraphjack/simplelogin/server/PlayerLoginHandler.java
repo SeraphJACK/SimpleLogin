@@ -18,6 +18,7 @@ import top.seraphjack.simplelogin.server.storage.Position;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -74,8 +75,12 @@ public class PlayerLoginHandler {
                         if (SLStorage.instance().storageProvider.dirty()) {
                             SimpleLogin.logger.info("Auto saving entries");
                             long start = System.currentTimeMillis();
-                            SLStorage.instance().storageProvider.save();
-                            SimpleLogin.logger.info("Done! Took " + (System.currentTimeMillis() - start) + "ms.");
+                            try {
+                                SLStorage.instance().storageProvider.save();
+                                SimpleLogin.logger.info("Done! Took " + (System.currentTimeMillis() - start) + "ms.");
+                            } catch (IOException ex) {
+                                SimpleLogin.logger.error("Failed to auto save entries", ex);
+                            }
                         }
                     }
 
