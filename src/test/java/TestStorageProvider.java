@@ -1,3 +1,4 @@
+import net.minecraft.world.GameType;
 import org.junit.Assert;
 import org.junit.Test;
 import top.seraphjack.simplelogin.server.storage.StorageProvider;
@@ -24,11 +25,24 @@ public class TestStorageProvider {
         Assert.assertTrue(provider.checkPassword("testUser", "testPassword"));
         Assert.assertFalse(provider.checkPassword("testUser", "wrongPassword"));
         Assert.assertFalse(provider.checkPassword("wrongUser", "testPassword"));
+        Assert.assertTrue(provider.dirty());
         provider.save();
+        Assert.assertFalse(provider.dirty());
 
         provider = new StorageProviderFile(entryPath);
         Assert.assertTrue(provider.checkPassword("testUser", "testPassword"));
         Assert.assertFalse(provider.checkPassword("testUser", "wrongPassword"));
+
+        provider.changePassword("testUser", "newPassword");
+        Assert.assertTrue(provider.checkPassword("testUser", "newPassword"));
+        Assert.assertFalse(provider.checkPassword("testUSer", "testPassword"));
+
+        Assert.assertEquals(provider.gameType("testUser"), GameType.SURVIVAL);
+        provider.setGameType("testUser", GameType.CREATIVE);
+        Assert.assertEquals(provider.gameType("testUser"), GameType.CREATIVE);
+
+        provider.unregister("testUser");
+        Assert.assertFalse(provider.registered("testUser"));
 
         Files.deleteIfExists(entryPath);
     }
