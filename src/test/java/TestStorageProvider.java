@@ -14,9 +14,13 @@ public class TestStorageProvider {
 
         Files.deleteIfExists(entryPath);
 
-        StorageProvider provider = new StorageProviderFile(Paths.get(".", "testEntries.json"));
-        provider.unregister("testUser");
+        StorageProvider provider = new StorageProviderFile(entryPath);
+        Assert.assertFalse(provider.registered("testUser"));
+
         provider.register("testUser", "testPassword");
+        Assert.assertTrue(provider.registered("testUser"));
+        Assert.assertEquals(provider.listEntries().size(), 1);
+        Assert.assertEquals(provider.listEntries().iterator().next(), "testUser");
         Assert.assertTrue(provider.checkPassword("testUser", "testPassword"));
         Assert.assertFalse(provider.checkPassword("testUser", "wrongPassword"));
         Assert.assertFalse(provider.checkPassword("wrongUser", "testPassword"));
@@ -25,5 +29,7 @@ public class TestStorageProvider {
         provider = new StorageProviderFile(entryPath);
         Assert.assertTrue(provider.checkPassword("testUser", "testPassword"));
         Assert.assertFalse(provider.checkPassword("testUser", "wrongPassword"));
+
+        Files.deleteIfExists(entryPath);
     }
 }
