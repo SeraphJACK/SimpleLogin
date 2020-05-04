@@ -1,13 +1,11 @@
 package top.seraphjack.simplelogin.server.storage;
 
 import com.google.common.collect.ImmutableList;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import net.minecraft.world.GameType;
 import org.mindrot.jbcrypt.BCrypt;
 import top.seraphjack.simplelogin.SLConfig;
+import top.seraphjack.simplelogin.SimpleLogin;
 
 import javax.activation.UnsupportedDataTypeException;
 import javax.annotation.concurrent.ThreadSafe;
@@ -15,6 +13,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Collection;
 import java.util.Map;
@@ -35,21 +34,29 @@ public class StorageProviderFile implements StorageProvider {
         entries = new ConcurrentHashMap<>();
 
         if (Files.exists(path)) {
-            JsonObject json = gson.fromJson(new String(Files.readAllBytes(path), StandardCharsets.UTF_8), JsonObject.class);
-            if (json.getAsJsonPrimitive("version").getAsString().equals(STORAGE_VERSION)) {
-                JsonArray entries = json.getAsJsonArray("entries");
-                for (JsonElement element : entries) {
-                    String username = element.getAsJsonObject().getAsJsonPrimitive("username").getAsString();
-                    String password = element.getAsJsonObject().getAsJsonPrimitive("password").getAsString();
-                    int gameType = element.getAsJsonObject().getAsJsonPrimitive("gameType").getAsInt();
-                    POJOUserEntry userEntry = new POJOUserEntry();
-                    userEntry.username = username;
-                    userEntry.password = password;
-                    userEntry.gameType = gameType;
-                    this.entries.put(username, userEntry);
+            try {
+                JsonObject json = gson.fromJson(new String(Files.readAllBytes(path), StandardCharsets.UTF_8), JsonObject.class);
+                if (json.getAsJsonPrimitive("version").getAsString().equals(STORAGE_VERSION)) {
+                    JsonArray entries = json.getAsJsonArray("entries");
+                    for (JsonElement element : entries) {
+                        String username = element.getAsJsonObject().getAsJsonPrimitive("username").getAsString();
+                        String password = element.getAsJsonObject().getAsJsonPrimitive("password").getAsString();
+                        int gameType = element.getAsJsonObject().getAsJsonPrimitive("gameType").getAsInt();
+                        POJOUserEntry userEntry = new POJOUserEntry();
+                        userEntry.username = username;
+                        userEntry.password = password;
+                        userEntry.gameType = gameType;
+                        this.entries.put(username, userEntry);
+                    }
+                } else {
+                    throw new UnsupportedDataTypeException("Storage version doesn't match");
                 }
-            } else {
-                throw new UnsupportedDataTypeException("Storage version doesn't match");
+            } catch (Exception ex) {
+                if (ex instanceof IOException) throw ex;
+                SimpleLogin.logger.error("Failed to parse storage entries", ex);
+                SimpleLogin.logger.warn("Failed to parse storage file, moved old file to " + path.getFileName() + ".old");
+                Files.move(path, Paths.get(path.toString() + ".old"));
+                Files.createFile(path);
             }
         } else {
             if (!Files.exists(path.getParent())) {
