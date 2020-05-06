@@ -35,6 +35,12 @@ public class SLConfig {
         @Config.Name("Enable Command Login Mode")
         @Config.Comment("Ask players to login via command instead of password stored in configuration file")
         public boolean enableCommandLoginMode = false;
+
+        @Config.Name("Protect Player Coordinate")
+        @Config.Comment("Teleport players to the word's spawn point when they log out in order to protect their coordinates, " +
+                "might be incompatible with some mods (such as compact machine, " +
+                "in which case the player would die if they log out in the compact machine world)")
+        public boolean protectPlayerCoordinate = false;
     }
 
     public static class Client {

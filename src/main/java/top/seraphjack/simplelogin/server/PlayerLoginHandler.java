@@ -160,8 +160,10 @@ public class PlayerLoginHandler {
 
         // Teleport player to spawn point
         try {
-            BlockPos spawnPoint = player.world.getSpawnPoint();
-            player.setPosition(spawnPoint.getX(), spawnPoint.getY(), spawnPoint.getZ());
+            if (player.getRidingEntity() == null && SLConfig.server.protectPlayerCoordinate) {
+                BlockPos spawnPoint = player.world.getSpawnPoint();
+                player.setPosition(spawnPoint.getX(), spawnPoint.getY(), spawnPoint.getZ());
+            }
         } catch (Exception ex) {
             SimpleLogin.logger.error("Fail to set player position to spawn point when logging out.", ex);
         }
