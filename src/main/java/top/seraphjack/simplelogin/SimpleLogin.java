@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 
-@Mod(modid = SLConstants.MODID, version = SLConstants.VERSION, acceptedMinecraftVersions = "[1.10.2,1.12.2]", acceptableRemoteVersions = "[0.3.5-beta,)")
+@Mod(modid = SLConstants.MODID, version = SLConstants.VERSION, acceptedMinecraftVersions = "[1.10.2,1.12.2]", acceptableRemoteVersions = "[1.0.0-beta,)")
 public class SimpleLogin {
     public static Logger logger;
 
