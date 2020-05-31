@@ -6,6 +6,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.client.Notifier;
+import top.seraphjack.simplelogin.client.PasswordStorage;
 
 public class MessageRequestCommandLogin implements IMessage {
     private boolean isRegister;
@@ -32,7 +33,7 @@ public class MessageRequestCommandLogin implements IMessage {
         @Override
         public IMessage onMessage(MessageRequestCommandLogin message, MessageContext ctx) {
             if (SLConfig.client.useConfigPasswordInsteadOfCommandLogin) {
-                NetworkLoader.INSTANCE.sendToServer(new MessageLogin(SLConfig.client.password));
+                NetworkLoader.INSTANCE.sendToServer(new MessageLogin(PasswordStorage.getPassword()));
             } else {
                 if (message.isRegister) {
                     Notifier.instance().notifyLogin();

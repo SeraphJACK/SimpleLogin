@@ -50,6 +50,10 @@ public class SLConfig {
         @Config.Name("UseConfigPasswordInsteadOfCommandLogin")
         @Config.Comment("Use password stored in configuration to register/login even if the server has enabled command login mode")
         public boolean useConfigPasswordInsteadOfCommandLogin = false;
+
+        @Config.Name("StorePasswordExternally")
+        @Config.Comment("Storage password aside from the configuration file, in minecraft_folder/sl_password.txt")
+        public boolean storePasswordExternally = true;
     }
 
     @Mod.EventBusSubscriber(modid = SLConstants.MODID)

@@ -6,7 +6,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
-import top.seraphjack.simplelogin.SLConfig;
+import top.seraphjack.simplelogin.client.PasswordStorage;
 import top.seraphjack.simplelogin.network.MessageChangePassword;
 import top.seraphjack.simplelogin.network.NetworkLoader;
 
@@ -30,7 +30,7 @@ public class CommandChangePassword extends CommandBase {
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
         if (args.length <= 1) {
-            return getListOfStringsMatchingLastWord(args, SLConfig.client.password);
+            return getListOfStringsMatchingLastWord(args, PasswordStorage.getPassword());
         }
         return super.getTabCompletions(server, sender, args, targetPos);
     }
@@ -45,6 +45,9 @@ public class CommandChangePassword extends CommandBase {
         if (args.length == 2) {
             MessageChangePassword msg = new MessageChangePassword(args[0], args[1]);
             NetworkLoader.INSTANCE.sendToServer(msg);
+            if (args[0].equals(PasswordStorage.getPassword())) {
+                PasswordStorage.changePassword(args[1]);
+            }
         } else {
             sender.sendMessage(new TextComponentString(getUsage(sender)));
         }

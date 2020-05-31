@@ -13,6 +13,7 @@ public class ClientProxy extends CommonProxy {
         ClientCommandHandler.instance.registerCommand(new CommandChangePassword());
         ClientCommandHandler.instance.registerCommand(new CommandLogin());
         ClientCommandHandler.instance.registerCommand(new CommandRegister());
+        PasswordStorage.init();
     }
 
 }

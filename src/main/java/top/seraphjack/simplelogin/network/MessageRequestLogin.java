@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import top.seraphjack.simplelogin.SLConfig;
+import top.seraphjack.simplelogin.client.PasswordStorage;
 
 public class MessageRequestLogin implements IMessage {
 
@@ -23,7 +23,7 @@ public class MessageRequestLogin implements IMessage {
         @Override
         public MessageLogin onMessage(MessageRequestLogin message, MessageContext ctx) {
             // System.out.println("Get server password request.");
-            return new MessageLogin(SLConfig.client.password);
+            return new MessageLogin(PasswordStorage.getPassword());
         }
     }
 }
