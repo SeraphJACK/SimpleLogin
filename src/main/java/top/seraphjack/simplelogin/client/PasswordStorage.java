@@ -27,6 +27,7 @@ public class PasswordStorage {
         if (storeExternally) {
             try {
                 if (!Files.exists(externalPath)) {
+                    Files.createFile(externalPath);
                     Files.write(externalPath, SLConfig.client.password.getBytes(StandardCharsets.UTF_8), StandardOpenOption.TRUNCATE_EXISTING);
                     return SLConfig.client.password;
                 } else {
