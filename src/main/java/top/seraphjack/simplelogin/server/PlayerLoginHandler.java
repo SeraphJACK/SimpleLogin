@@ -153,9 +153,9 @@ public class PlayerLoginHandler {
         final Position pos = new Position(player.posX, player.posY, player.posZ);
 
         // Save player position in storage
-        if (!isPlayerInLoginList(username)) {
+        if (!isPlayerInLoginList(username) && SLConfig.server.protectPlayerCoordinate) {
             Objects.requireNonNull(player.getCapability(CapabilityLoader.CAPABILITY_LAST_POS, null))
-                    .setLastPos(pos);
+                    .setLastPos(player.getRidingEntity() == null ? SLConstants.defaultPosition : pos);
         }
 
         // Teleport player to spawn point
