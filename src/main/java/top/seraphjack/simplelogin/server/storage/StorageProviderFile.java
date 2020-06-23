@@ -54,7 +54,7 @@ public class StorageProviderFile implements StorageProvider {
             } catch (Exception ex) {
                 if (ex instanceof IOException) throw ex;
                 SimpleLogin.logger.error("Failed to parse storage entries", ex);
-                SimpleLogin.logger.warn("Failed to parse storage file, moved old file to " + path.getFileName() + ".old");
+                SimpleLogin.logger.warn("Moving old file to " + path.getFileName() + ".old");
                 Files.move(path, Paths.get(path.toString() + ".old"));
                 Files.createFile(path);
             }
