@@ -40,6 +40,7 @@ public class SLStorage {
                         SLConfig.server.mySql.user,
                         SLConfig.server.mySql.password
                 );
+                break;
             }
             default: {
                 throw new RuntimeException("Invalid storage method: " + method + ".");
