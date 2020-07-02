@@ -24,8 +24,11 @@ public class StorageProviderMySQL extends StorageProviderSQL {
         this.mysqlUrl = String.format("jdbc:mysql://%s:%d/%s", host, port, dbName);
         this.user = user;
         this.password = password;
-        // check connectivity
-        getSQLConnection();
+        try {
+            getSQLConnection().createStatement().execute("CREATE TABLE IF NOT EXISTS sl_entries(username varchar(16), defaultGameType tinyint, password varchar(16))");
+        } catch (SQLException ex) {
+            throw new RuntimeException("Failed to initialize database", ex);
+        }
     }
 
     @Override
