@@ -25,7 +25,7 @@ public class StorageProviderMySQL extends StorageProviderSQL {
         this.user = user;
         this.password = password;
         try {
-            getSQLConnection().createStatement().execute("CREATE TABLE IF NOT EXISTS sl_entries(username varchar(16), defaultGameType tinyint, password varchar(16))");
+            getSQLConnection().createStatement().execute("CREATE TABLE IF NOT EXISTS sl_entries(username varchar(32), defaultGameType tinyint, password varchar(255))");
         } catch (SQLException ex) {
             throw new RuntimeException("Failed to initialize database", ex);
         }

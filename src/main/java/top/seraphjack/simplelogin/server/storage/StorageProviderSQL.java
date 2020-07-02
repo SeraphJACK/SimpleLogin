@@ -20,7 +20,7 @@ public abstract class StorageProviderSQL implements StorageProvider {
             PreparedStatement st = getSQLConnection().prepareStatement("SELECT password FROM sl_entries WHERE username=?");
             st.setString(1, username);
             ResultSet rs = st.executeQuery();
-            if (rs.wasNull()) return false;
+            if (!rs.next()) return false;
             return BCrypt.checkpw(password, rs.getString("password"));
         } catch (SQLException ex) {
             SimpleLogin.logger.error("Error looking up password", ex);
@@ -42,9 +42,10 @@ public abstract class StorageProviderSQL implements StorageProvider {
     @Override
     public boolean registered(String username) {
         try {
-            PreparedStatement st = getSQLConnection().prepareStatement("SELECT username FROM sl_entries WHERE username=?");
+            PreparedStatement st = getSQLConnection().prepareStatement("SELECT EXISTS(SELECT * from sl_entries WHERE username=?)");
             st.setString(1, username);
-            return st.execute();
+            ResultSet rs = st.executeQuery();
+            return rs.next() && rs.getBoolean(1);
         } catch (SQLException ex) {
             SimpleLogin.logger.error("Error looking up entry", ex);
             return false;
@@ -53,6 +54,7 @@ public abstract class StorageProviderSQL implements StorageProvider {
 
     @Override
     public void register(String username, String password) {
+        if (registered(username)) return;
         try {
             PreparedStatement st = getSQLConnection().prepareStatement("INSERT INTO sl_entries (username,password,defaultGameType) VALUES (?,?,?)");
             st.setString(1, username);
@@ -75,7 +77,7 @@ public abstract class StorageProviderSQL implements StorageProvider {
             PreparedStatement st = getSQLConnection().prepareStatement("SELECT defaultGameType FROM sl_entries where username=?");
             st.setString(1, username);
             ResultSet rs = st.executeQuery();
-            if (rs.wasNull()) return null;
+            if (!rs.next()) return null;
             return GameType.getByID(rs.getInt("defaultGameType"));
         } catch (SQLException ex) {
             SimpleLogin.logger.error("Error looking up entry", ex);
@@ -118,13 +120,13 @@ public abstract class StorageProviderSQL implements StorageProvider {
         ImmutableSet.Builder<String> builder = ImmutableSet.builder();
         try {
             ResultSet rs = getSQLConnection().createStatement().executeQuery("SELECT username FROM sl_entries");
-            if (rs.wasNull()) return Collections.emptySet();
+            if (!rs.next()) return Collections.emptySet();
             do {
                 builder.add(rs.getString("username"));
             } while (rs.next());
         } catch (SQLException ex) {
             SimpleLogin.logger.error("Error looking up entry", ex);
         }
-        return null;
+        return builder.build();
     }
 }
