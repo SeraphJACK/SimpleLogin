@@ -73,8 +73,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 task mysqlJar(type: ShadowJar) {
     configurations = [project.configurations.shadow]
     classifier = 'mysql'
-    from sourceSets.main.java
-    from sourceSets.main.resources
+    from sourceSets.main.output
 }
 
 jar {
