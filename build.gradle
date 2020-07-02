@@ -84,9 +84,11 @@ jar {
 
 reobf {
     shadowJar { mappingType = 'SEARGE' }
+    mysqlJar { mappingType = 'SEARGE' }
 }
 
 tasks.reobfShadowJar.mustRunAfter shadowJar
+tasks.reobfMysqlJar.mustRunAfter mysqlJar
 
 tasks.sourceJar.exclude("LICENSE-jBCrypt")
 
