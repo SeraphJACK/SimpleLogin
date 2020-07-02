@@ -68,12 +68,13 @@ shadowJar {
     classifier = ""
 
     exclude "org/mariadb/**"
-    // relocate "org.mindrot", "top.seraphjack.repack.org.mindrot"
 }
-
-shadowJar {
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+task mysqlJar(type: ShadowJar) {
     configurations = [project.configurations.shadow]
-    classifier = "mysql"
+    classifier = 'mysql'
+    from sourceSets.main.java
+    from sourceSets.main.resources
 }
 
 jar {
@@ -102,6 +103,11 @@ processResources {
         exclude 'mcmod.info'
     }
 }
+
+artifacts {
+    archives mysqlJar
+}
+
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
