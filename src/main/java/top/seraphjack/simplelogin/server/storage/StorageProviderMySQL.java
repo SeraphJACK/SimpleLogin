@@ -8,6 +8,8 @@ import java.sql.SQLException;
 
 public class StorageProviderMySQL extends StorageProviderSQL {
 
+    private final Connection conn;
+
     static {
         try {
             DriverManager.registerDriver(new org.mariadb.jdbc.Driver());
@@ -16,16 +18,11 @@ public class StorageProviderMySQL extends StorageProviderSQL {
         }
     }
 
-    private final String mysqlUrl;
-    private final String user;
-    private final String password;
-
     public StorageProviderMySQL(String host, int port, String dbName, String user, String password) {
-        this.mysqlUrl = String.format("jdbc:mysql://%s:%d/%s", host, port, dbName);
-        this.user = user;
-        this.password = password;
+        String mysqlUrl = String.format("jdbc:mysql://%s:%d/%s", host, port, dbName);
         try {
-            getSQLConnection().createStatement().execute("CREATE TABLE IF NOT EXISTS sl_entries(username varchar(32), defaultGameType tinyint, password varchar(255))");
+            conn = DriverManager.getConnection(mysqlUrl, user, password);
+            conn.createStatement().execute("CREATE TABLE IF NOT EXISTS sl_entries(username varchar(32), defaultGameType tinyint, password varchar(255))");
         } catch (SQLException ex) {
             throw new RuntimeException("Failed to initialize database", ex);
         }
@@ -33,10 +30,6 @@ public class StorageProviderMySQL extends StorageProviderSQL {
 
     @Override
     protected Connection getSQLConnection() {
-        try {
-            return DriverManager.getConnection(mysqlUrl, user, password);
-        } catch (SQLException ex) {
-            throw new RuntimeException("Cannot connect to database", ex);
-        }
+        return conn;
     }
 }
