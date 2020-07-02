@@ -25,7 +25,7 @@ public class SLConfig {
         public String[] commandNames = {};
 
         @Config.Name("Storage method")
-        @Config.Comment("Available storage method: file(json file) / capability(save in player nbt)")
+        @Config.Comment("Available storage method: file(json file) / capability(save in player nbt) / mysql")
         public String storageMethod = "file";
 
         @Config.Name("Default Game Type")
