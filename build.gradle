@@ -60,17 +60,24 @@ configurations {
 dependencies {
     testCompile "junit:junit:4.12"
     shadow "org.mindrot:jbcrypt:0.4"
+    shadow "org.mariadb.jdbc:mariadb-java-client:2.6.1"
 }
 
 shadowJar {
     configurations = [project.configurations.shadow]
     classifier = ""
 
-    relocate "org.mindrot", "top.seraphjack.repack.org.mindrot"
+    exclude "org/mariadb/**"
+    // relocate "org.mindrot", "top.seraphjack.repack.org.mindrot"
+}
+
+shadowJar {
+    configurations = [project.configurations.shadow]
+    classifier = "mysql"
 }
 
 jar {
-    classifier = "withoutlibs"
+    classifier = "nolib"
     exclude "LICENSE-jBCrypt"
 }
 

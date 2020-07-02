@@ -41,6 +41,9 @@ public class SLConfig {
                 "might be incompatible with some mods (such as compact machine, " +
                 "in which case the player would die if they log out in the compact machine world)")
         public boolean protectPlayerCoordinate = false;
+
+        @Config.Name("MySQL")
+        public MySQL mySql = new MySQL();
     }
 
     public static class Client {
@@ -54,6 +57,23 @@ public class SLConfig {
         @Config.Name("StorePasswordExternally")
         @Config.Comment("Storage password aside from the configuration file, in minecraft_folder/sl_password.txt")
         public boolean storePasswordExternally = true;
+    }
+
+    public static class MySQL {
+        @Config.Name("User")
+        public String user = "simplelogin";
+
+        @Config.Name("Password")
+        public String password = "";
+
+        @Config.Name("Host")
+        public String host = "localhost";
+
+        @Config.Name("Port")
+        public int port = 3306;
+
+        @Config.Name("DB Name")
+        public String dbName = "simplelogin";
     }
 
     @Mod.EventBusSubscriber(modid = SLConstants.MODID)

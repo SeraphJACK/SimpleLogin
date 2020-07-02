@@ -1,5 +1,7 @@
 package top.seraphjack.simplelogin.server.storage;
 
+import top.seraphjack.simplelogin.SLConfig;
+
 import java.nio.file.Paths;
 
 public class SLStorage {
@@ -29,6 +31,15 @@ public class SLStorage {
             case "capability": {
                 storageProvider = new StorageProviderCapability();
                 break;
+            }
+            case "mysql": {
+                storageProvider = new StorageProviderMySQL(
+                        SLConfig.server.mySql.host,
+                        SLConfig.server.mySql.port,
+                        SLConfig.server.mySql.dbName,
+                        SLConfig.server.mySql.user,
+                        SLConfig.server.mySql.password
+                );
             }
             default: {
                 throw new RuntimeException("Invalid storage method: " + method + ".");
