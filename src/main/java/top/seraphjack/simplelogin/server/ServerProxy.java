@@ -37,5 +37,6 @@ public class ServerProxy extends CommonProxy {
 
         SimpleLogin.logger.info("Saving all entries");
         SLStorage.instance().storageProvider.save();
+        SLStorage.instance().storageProvider.close();
     }
 }

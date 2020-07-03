@@ -31,4 +31,8 @@ public interface StorageProvider {
      * @return all registered username
      */
     Collection<String> listEntries();
+
+    default void close() {
+        // NO-OP
+    }
 }

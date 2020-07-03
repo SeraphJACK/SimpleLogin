@@ -2,10 +2,12 @@ package top.seraphjack.simplelogin.server.storage;
 
 import top.seraphjack.simplelogin.SimpleLogin;
 
+import javax.annotation.concurrent.ThreadSafe;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+@ThreadSafe
 public class StorageProviderMySQL extends StorageProviderSQL {
 
     private final Connection conn;
@@ -31,5 +33,14 @@ public class StorageProviderMySQL extends StorageProviderSQL {
     @Override
     protected Connection getSQLConnection() {
         return conn;
+    }
+
+    @Override
+    public void close() {
+        try {
+            conn.close();
+        } catch (SQLException ex) {
+            SimpleLogin.logger.error("Error closing mysql connection", ex);
+        }
     }
 }
