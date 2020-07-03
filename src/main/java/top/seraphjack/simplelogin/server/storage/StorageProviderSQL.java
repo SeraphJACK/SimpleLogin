@@ -101,7 +101,7 @@ public abstract class StorageProviderSQL implements StorageProvider {
     public void changePassword(String username, String newPassword) {
         try {
             PreparedStatement st = getSQLConnection().prepareStatement("UPDATE sl_entries SET password=? WHERE username=?");
-            st.setString(1, newPassword);
+            st.setString(1, BCrypt.hashpw(newPassword, BCrypt.gensalt()));
             st.setString(2, username);
             st.execute();
         } catch (SQLException ex) {
