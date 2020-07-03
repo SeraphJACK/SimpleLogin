@@ -51,6 +51,7 @@ public class TestStorageProvider {
     @Test
     public void testStorageProviderMySQL() {
         StorageProvider provider = new StorageProviderMySQL("localhost", 3306, "sl_test", "test", "test");
+        provider.unregister("testUser");
         Assert.assertFalse(provider.registered("testUser"));
 
         provider.register("testUser", "testPassword");

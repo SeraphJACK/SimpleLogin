@@ -109,6 +109,7 @@ artifacts {
     archives mysqlJar
 }
 
+tasks.test.onlyIf { Boolean.getBoolean("run_unit_tests") }
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
