@@ -68,6 +68,9 @@ shadowJar {
     classifier = ""
 
     exclude "org/mariadb/**"
+    exclude "mariadb.properties"
+    exclude "LICENSE-MariaDB-Java-Client"
+    exclude "META-INF/services/**"
 }
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 task mysqlJar(type: ShadowJar) {
@@ -79,6 +82,8 @@ task mysqlJar(type: ShadowJar) {
 jar {
     classifier = "nolib"
     exclude "LICENSE-jBCrypt"
+    exclude "LICENSE-MariaDB-Java-Client"
+    exclude "META-INF/services/**"
 }
 
 reobf {
@@ -90,6 +95,7 @@ tasks.reobfShadowJar.mustRunAfter shadowJar
 tasks.reobfMysqlJar.mustRunAfter mysqlJar
 
 tasks.sourceJar.exclude("LICENSE-jBCrypt")
+tasks.sourceJar.exclude("LICENSE-MariaDB-Java-Client")
 
 processResources {
     inputs.property "version", project.version
