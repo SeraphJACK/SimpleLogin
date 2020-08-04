@@ -179,7 +179,7 @@ public class PlayerLoginHandler {
             Position lastPos = Objects.requireNonNull(player.getCapability(CapabilityLoader.CAPABILITY_LAST_POS, null))
                     .getLastPos();
 
-            if (lastPos.equals(SLConstants.defaultPosition)) {
+            if (lastPos.equals(SLConstants.defaultPosition) && SLConfig.server.protectPlayerCoordinate) {
                 player.setPosition(login.posX, login.posY, login.posZ);
             } else if (SLConfig.server.protectPlayerCoordinate) {
                 player.setPositionAndUpdate(lastPos.getX(), lastPos.getY(), lastPos.getZ());
