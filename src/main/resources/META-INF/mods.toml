@@ -5,6 +5,4 @@ modId="simplelogin"
 version="${version}"
 displayName="Simple Login"
 authors="Seraph_JACK, Yesterday17"
-description='''
-Auth mod based on forge.
-'''
+description="Auth mod based on forge."
