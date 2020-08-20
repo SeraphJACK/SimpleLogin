@@ -25,7 +25,7 @@ public class PlayerLoginHandler {
     private static PlayerLoginHandler INSTANCE;
 
     private boolean alive;
-    private ConcurrentLinkedQueue<Login> loginList = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<Login> loginList = new ConcurrentLinkedQueue<>();
     private long lastEntriesSaved;
 
     private PlayerLoginHandler() {
@@ -136,11 +136,13 @@ public class PlayerLoginHandler {
         }
 
         // Teleport player to spawn point
-        try {
-            BlockPos spawnPoint = player.world.getSpawnPoint();
-            player.setPosition(spawnPoint.getX(), spawnPoint.getY(), spawnPoint.getZ());
-        } catch (Exception ex) {
-            SimpleLogin.logger.error("Fail to set player position to spawn point when logging out.", ex);
+        if (SLConfig.SERVER.protectPlayerCoord.get()) {
+            try {
+                BlockPos spawnPoint = player.world.getSpawnPoint();
+                player.setPosition(spawnPoint.getX(), spawnPoint.getY(), spawnPoint.getZ());
+            } catch (Exception ex) {
+                SimpleLogin.logger.error("Fail to set player position to spawn point when logging out.", ex);
+            }
         }
     }
 
@@ -151,12 +153,14 @@ public class PlayerLoginHandler {
     private void afterPlayerLogin(Login login, ServerPlayerEntity player) {
         SLConstants.server.deferTask(() -> {
             player.setGameType(SLStorage.instance().storageProvider.gameType(login.name));
-            Position lastPos = player.getCapability(CapabilityLoader.CAPABILITY_LAST_POS).orElseThrow(RuntimeException::new).getLastPos();
+            if (SLConfig.SERVER.protectPlayerCoord.get()) {
+                Position lastPos = player.getCapability(CapabilityLoader.CAPABILITY_LAST_POS).orElseThrow(RuntimeException::new).getLastPos();
 
-            if (lastPos.equals(SLConstants.defaultPosition)) {
-                player.setPosition(login.posX, login.posY, login.posZ);
-            } else {
-                player.setPositionAndUpdate(lastPos.getX(), lastPos.getY(), lastPos.getZ());
+                if (lastPos.equals(SLConstants.defaultPosition)) {
+                    player.setPosition(login.posX, login.posY, login.posZ);
+                } else {
+                    player.setPositionAndUpdate(lastPos.getX(), lastPos.getY(), lastPos.getZ());
+                }
             }
         });
     }

@@ -17,6 +17,8 @@ public class SLConfig {
 
         public final ForgeConfigSpec.IntValue defaultGameType;
 
+        public final ForgeConfigSpec.BooleanValue protectPlayerCoord;
+
         Server(ForgeConfigSpec.Builder builder) {
             builder.push("server");
 
@@ -35,6 +37,10 @@ public class SLConfig {
             defaultGameType = builder
                     .comment("Default game type switched after player login")
                     .defineInRange("defaultGameType", 0, 0, 3);
+
+            protectPlayerCoord = builder
+                    .comment("Protect player's coordinates")
+                    .define("protectPlayerCoord", false);
 
             builder.pop();
         }
