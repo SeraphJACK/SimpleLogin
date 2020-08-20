@@ -86,7 +86,6 @@ dependencies {
 
 allprojects {
     repositories {
-        maven { url 'http://192.168.3.136:10091/repository/internal' }
         maven { url = "https://maven.covertdragon.team/repository/internal/" }
         maven { url = "https://maven.aliyun.com/repository/central/" }
     }
