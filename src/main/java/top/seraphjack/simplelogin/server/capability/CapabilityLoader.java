@@ -38,7 +38,7 @@ public class CapabilityLoader {
 
 
     @SubscribeEvent
-    @SuppressWarnings("all")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static void onPlayerClone(net.minecraftforge.event.entity.player.PlayerEvent.Clone event) throws Throwable {
         Capability[] capabilities = new Capability[]{CAPABILITY_LAST_POS};
         for (Capability capability : capabilities) {
