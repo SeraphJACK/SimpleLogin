@@ -1,12 +1,14 @@
 package top.seraphjack.simplelogin.server;
 
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.GameType;
 import net.minecraft.world.storage.IWorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.SimpleLogin;
@@ -32,10 +34,11 @@ public class PlayerLoginHandler {
     private PlayerLoginHandler() {
         PLAYER_HANDLER_THREAD = new Thread(() -> {
             lastEntriesSaved = System.currentTimeMillis();
+            MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
             while (alive) {
                 try {
                     for (Login login : loginList) {
-                        ServerPlayerEntity player = SLConstants.server.getPlayerList().getPlayerByUsername(login.name);
+                        ServerPlayerEntity player = server.getPlayerList().getPlayerByUsername(login.name);
                         if (player == null) {
                             // SimpleLogin.logger.warn("Can't find player " + login.name + ", ignoring...");
                             loginList.remove(login);
@@ -49,7 +52,7 @@ public class PlayerLoginHandler {
                         }
 
                         // Block players movement before authentication
-                        SLConstants.server.deferTask(() ->
+                        server.deferTask(() ->
                                 player.connection.setPlayerLocation(login.posX, login.posY, login.posZ, login.yaw, login.pitch)
                         );
 
@@ -98,9 +101,10 @@ public class PlayerLoginHandler {
     }
 
     public void login(String id, String pwd) {
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         Login login = getLoginByName(id);
         loginList.remove(login);
-        ServerPlayerEntity player = SLConstants.server.getPlayerList().getPlayerByUsername(id);
+        ServerPlayerEntity player = server.getPlayerList().getPlayerByUsername(id);
 
         if (login == null || player == null) {
             return;
@@ -152,7 +156,8 @@ public class PlayerLoginHandler {
     }
 
     private void afterPlayerLogin(Login login, ServerPlayerEntity player) {
-        SLConstants.server.deferTask(() -> {
+        MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+        server.deferTask(() -> {
             player.setGameType(SLStorage.instance().storageProvider.gameType(login.name));
             if (SLConfig.SERVER.protectPlayerCoord.get()) {
                 Position lastPos = player.getCapability(CapabilityLoader.CAPABILITY_LAST_POS).orElseThrow(RuntimeException::new).getLastPos();
