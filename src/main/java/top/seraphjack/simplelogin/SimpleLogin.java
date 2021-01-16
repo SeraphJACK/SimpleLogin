@@ -31,7 +31,7 @@ public class SimpleLogin {
     }
 
     public void commonSetup(FMLCommonSetupEvent event) {
-        ArgumentTypes.register("sl_entry", ArgumentTypeEntryName.class,
+        ArgumentTypes.register("simplelogin:entry", ArgumentTypeEntryName.class,
                 new ArgumentSerializer<>(ArgumentTypeEntryName::entryName));
     }
 }
