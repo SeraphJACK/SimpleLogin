@@ -14,7 +14,6 @@ import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.client.ChangePasswordCommand;

@@ -1,5 +1,7 @@
 package top.seraphjack.simplelogin.client;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import top.seraphjack.simplelogin.SimpleLogin;
 
 import java.io.IOException;
@@ -10,7 +12,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.UUID;
 
-public class PasswordHolder {
+@OnlyIn(Dist.CLIENT)
+public final class PasswordHolder {
     private static PasswordHolder INSTANCE;
 
     public static PasswordHolder instance() {
