@@ -27,7 +27,7 @@ public class SLConfig {
 
             commandNames = builder
                     .comment("Commands in whitelist can be executed before player login.")
-                    .define("commandNames", Collections.emptyList());
+                    .define("commandNames", Collections.singletonList("help"));
 
             storageMethod = builder
                     .comment("Available storage method: file(json file) / capability(save in player nbt)")
