@@ -32,7 +32,8 @@ public class ServerSideEventHandler {
     // Block command usage from unauthenticated players
     @SubscribeEvent
     public static void onCommand(CommandEvent event) {
-        String command = event.getParseResults().getReader().getString().substring(1);
+        String command = event.getParseResults().getReader().getString();
+        if (command.startsWith("/")) command = command.substring(1);
         SimpleLogin.logger.debug("Checking command {}", command);
         if (!(event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity)) {
             return;

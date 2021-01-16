@@ -10,7 +10,7 @@ public class SLConfig {
     public static class Server {
         public final ForgeConfigSpec.IntValue secs;
 
-        public final ForgeConfigSpec.ConfigValue<List<String>> commandNames;
+        public final ForgeConfigSpec.ConfigValue<List<? extends String>> commandNames;
 
         public final ForgeConfigSpec.ConfigValue<String> storageMethod;
 
@@ -27,7 +27,7 @@ public class SLConfig {
 
             commandNames = builder
                     .comment("Commands in whitelist can be executed before player login.")
-                    .define("commandNames", Collections.singletonList("help"));
+                    .defineList("commandNames", Collections.emptyList(), o -> o instanceof String);
 
             storageMethod = builder
                     .comment("Available storage method: file(json file) / capability(save in player nbt)")
