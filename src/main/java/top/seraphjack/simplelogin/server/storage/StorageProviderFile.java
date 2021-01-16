@@ -24,9 +24,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @ThreadSafe
 @OnlyIn(Dist.DEDICATED_SERVER)
 public class StorageProviderFile implements StorageProvider {
-    private Gson gson;
-    private Path path;
-    private Map<String, POJOUserEntry> entries;
+    private final Gson gson;
+    private final Path path;
+    private final Map<String, POJOUserEntry> entries;
     private boolean dirty = false;
 
     public StorageProviderFile(Path path) throws IOException {
@@ -35,7 +35,7 @@ public class StorageProviderFile implements StorageProvider {
 
         if (Files.exists(path)) {
             entries = new ConcurrentHashMap<>();
-            POJOUserEntry[] buf = gson.fromJson(new String(Files.readAllBytes(path), StandardCharsets.UTF_8), POJOUserEntry[].class);
+            POJOUserEntry[] buf = gson.fromJson(Files.newBufferedReader(path, StandardCharsets.UTF_8), POJOUserEntry[].class);
             if (buf != null) {
                 Arrays.stream(buf).forEach(e -> entries.put(e.username, e));
             }
@@ -76,15 +76,13 @@ public class StorageProviderFile implements StorageProvider {
     }
 
     @Override
-    public void save() throws IOException {
-        synchronized (this) {
-            try {
-                Files.write(path, gson.toJson(entries.values().toArray()).getBytes(StandardCharsets.UTF_8), StandardOpenOption.TRUNCATE_EXISTING);
-                dirty = false;
-            } catch (IOException ex) {
-                SimpleLogin.logger.error("Unable to save entries", ex);
-                throw ex;
-            }
+    public synchronized void save() throws IOException {
+        try {
+            Files.write(path, gson.toJson(entries.values().toArray()).getBytes(StandardCharsets.UTF_8), StandardOpenOption.TRUNCATE_EXISTING);
+            dirty = false;
+        } catch (IOException ex) {
+            SimpleLogin.logger.error("Unable to save entries", ex);
+            throw ex;
         }
     }
 
@@ -119,7 +117,7 @@ public class StorageProviderFile implements StorageProvider {
         return new ImmutableList.Builder<String>().addAll(entries.keySet()).build();
     }
 
-    private POJOUserEntry newEntry(String username, String password) {
+    private static POJOUserEntry newEntry(String username, String password) {
         POJOUserEntry entry = new POJOUserEntry();
         entry.username = username;
         entry.password = password;

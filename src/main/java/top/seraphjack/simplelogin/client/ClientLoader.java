@@ -5,7 +5,7 @@ import top.seraphjack.simplelogin.client.util.ClientCommandHandler;
 
 public final class ClientLoader {
 
-    public static void clientSetup(FMLClientSetupEvent event) {
+    public static void clientSetup(@SuppressWarnings("unused") FMLClientSetupEvent event) {
         ClientCommandHandler.registerCommands();
     }
 }

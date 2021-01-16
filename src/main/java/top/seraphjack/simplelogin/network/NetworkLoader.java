@@ -29,8 +29,6 @@ public class NetworkLoader {
         registerPacket(MessageLogin.class, MessageLogin::encode, MessageLogin::decode, MessageLogin::handle);
         registerPacket(MessageRequestLogin.class, MessageRequestLogin::encode, MessageRequestLogin::decode, MessageRequestLogin::handle);
         registerPacket(MessageChangePassword.class, MessageChangePassword::encode, MessageChangePassword::decode, MessageChangePassword::handle);
-        registerPacket(MessageRequestEntries.class, MessageRequestEntries::encode, MessageRequestEntries::decode, MessageRequestEntries::handle);
-        registerPacket(MessageEntries.class, MessageEntries::encode, MessageEntries::decode, MessageEntries::handle);
     }
 
     private static int id = 0;

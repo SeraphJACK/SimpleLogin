@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 public class MessageLogin {
-    private String pwd;
+    private final String pwd;
 
     public MessageLogin(String pwd) {
         this.pwd = SHA256.getSHA256(pwd);

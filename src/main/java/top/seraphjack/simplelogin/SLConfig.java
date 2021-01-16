@@ -54,28 +54,4 @@ public class SLConfig {
         SERVER_SPEC = specPair.getRight();
         SERVER = specPair.getLeft();
     }
-
-    public static class Client {
-        public final ForgeConfigSpec.ConfigValue<String> password;
-
-        Client(ForgeConfigSpec.Builder builder) {
-            builder.push("client");
-
-            password = builder
-                    .comment("User password")
-                    .define("password", UUID.randomUUID().toString());
-
-            builder.pop();
-        }
-    }
-
-
-    static final ForgeConfigSpec CLIENT_SPEC;
-    public static final Client CLIENT;
-
-    static {
-        final Pair<Client, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Client::new);
-        CLIENT_SPEC = specPair.getRight();
-        CLIENT = specPair.getLeft();
-    }
 }

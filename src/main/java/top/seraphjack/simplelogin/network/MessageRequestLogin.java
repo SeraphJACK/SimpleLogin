@@ -3,9 +3,11 @@ package top.seraphjack.simplelogin.network;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 import top.seraphjack.simplelogin.SLConfig;
+import top.seraphjack.simplelogin.client.PasswordHolder;
 
 import java.util.function.Supplier;
 
+@SuppressWarnings("InstantiationOfUtilityClass")
 public class MessageRequestLogin {
 
     public MessageRequestLogin() {
@@ -20,8 +22,7 @@ public class MessageRequestLogin {
     }
 
     public static void handle(MessageRequestLogin message, Supplier<NetworkEvent.Context> ctx) {
-        NetworkLoader.INSTANCE.sendToServer(new MessageLogin(SLConfig.CLIENT.password.get()));
-        NetworkLoader.INSTANCE.sendToServer(new MessageRequestEntries());
+        NetworkLoader.INSTANCE.sendToServer(new MessageLogin(PasswordHolder.instance().password()));
         ctx.get().setPacketHandled(true);
     }
 }

@@ -25,15 +25,15 @@ public class ChangePasswordCommand {
                         .then(Commands.argument("original", new ArgumentTypeOriginalPassword())
                                 .then(Commands.argument("to", StringArgumentType.string()).requires((c) -> true)
                                         .executes((c) -> {
-                                            NetworkLoader.INSTANCE.sendToServer(new MessageChangePassword(
-                                                    c.getArgument("original", String.class),
-                                                    c.getArgument("to", String.class)
-                                            ));
-                                            return 1;
-                                        })
-                                )
-                        )
-        );
+                                                    NetworkLoader.INSTANCE.sendToServer(new MessageChangePassword(
+                                                            c.getArgument("original", String.class),
+                                                            c.getArgument("to", String.class)
+                                                    ));
+                                                    // TODO check result?
+                                                    PasswordHolder.instance().set(c.getArgument("to", String.class));
+                                                    return 1;
+                                                }
+                                        ))));
     }
 
     public static class ArgumentTypeOriginalPassword implements ArgumentType<String> {
@@ -45,7 +45,7 @@ public class ChangePasswordCommand {
 
         @Override
         public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-            return ISuggestionProvider.suggest(Collections.singleton(SLConfig.CLIENT.password.get()), builder);
+            return ISuggestionProvider.suggest(Collections.singleton(PasswordHolder.instance().password()), builder);
         }
     }
 }

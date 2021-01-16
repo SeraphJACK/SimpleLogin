@@ -1,6 +1,5 @@
 package top.seraphjack.simplelogin;
 
-import net.minecraft.command.arguments.ArgumentTypes;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -22,12 +21,8 @@ public class SimpleLogin {
     public SimpleLogin() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientLoader::clientSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(ServerLoader::serverSetup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener((FMLCommonSetupEvent e) -> {
-            NetworkLoader.registerPackets();
-            ArgumentTypes.register("sl_entry", SLCommand.ArgumentTypeEntryName.class, new SLCommand.ArgumentTypeEntryName.Serializer());
-        });
+        FMLJavaModLoadingContext.get().getModEventBus().addListener((FMLCommonSetupEvent e) -> NetworkLoader.registerPackets());
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, SLConfig.CLIENT_SPEC);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SLConfig.SERVER_SPEC);
     }
 }

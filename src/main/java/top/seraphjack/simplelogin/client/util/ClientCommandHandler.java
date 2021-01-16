@@ -18,6 +18,7 @@ import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.client.ChangePasswordCommand;
+import top.seraphjack.simplelogin.client.PasswordHolder;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = SLConstants.MODID)
 public class ClientCommandHandler {
@@ -36,7 +37,7 @@ public class ClientCommandHandler {
             assert Minecraft.getInstance().player != null;
             Minecraft.getInstance().player.connection.getCommandDispatcher().register(
                     LiteralArgumentBuilder.<ISuggestionProvider>literal("sl_changepassword").then(
-                            LiteralArgumentBuilder.<ISuggestionProvider>literal(SLConfig.CLIENT.password.get()).requires((s) -> true)
+                            LiteralArgumentBuilder.<ISuggestionProvider>literal(PasswordHolder.instance().password()).requires((s) -> true)
                     )
             );
         }

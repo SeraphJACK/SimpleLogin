@@ -1,5 +1,7 @@
 package top.seraphjack.simplelogin.server.storage;
 
+import net.minecraft.crash.CrashReport;
+import net.minecraft.crash.ReportedException;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -28,7 +30,7 @@ public class SLStorage {
                 try {
                     storageProvider = new StorageProviderFile(Paths.get(".", "simplelogin", "storage", "entries.json"));
                 } catch (IOException ex) {
-                    throw new RuntimeException("Unable to initialize storage provider", ex);
+                    throw new ReportedException(new CrashReport("Unable to initialize storage provider", ex));
                 }
                 break;
             }
