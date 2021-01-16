@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 public class MessageChangePassword {
-    private String original, to;
+    private final String original, to;
 
     public MessageChangePassword(String original, String to) {
         this.original = SHA256.getSHA256(original);
@@ -31,9 +31,9 @@ public class MessageChangePassword {
         String username = Objects.requireNonNull(ctx.get().getSender()).getGameProfile().getName();
         if (SLStorage.instance().storageProvider.checkPassword(username, msg.original)) {
             SLStorage.instance().storageProvider.changePassword(username, msg.to);
-            Objects.requireNonNull(ctx.get().getSender()).sendMessage(new StringTextComponent("Password changed successfully."));
+            Objects.requireNonNull(ctx.get().getSender()).sendStatusMessage(new StringTextComponent("Password changed successfully."), false);
         } else {
-            Objects.requireNonNull(ctx.get().getSender()).sendMessage(new StringTextComponent("Wrong original password."));
+            Objects.requireNonNull(ctx.get().getSender()).sendStatusMessage(new StringTextComponent("Wrong original password."), false);
             SimpleLogin.logger.warn("Player " + username + " tried to change password with a wrong password.");
         }
         ctx.get().setPacketHandled(true);

@@ -21,10 +21,10 @@ import java.util.concurrent.CompletableFuture;
 public class ChangePasswordCommand {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(
-                Commands.literal("sl_changepassword").then(
-                        Commands.argument("original", new ArgumentTypeOriginalPassword())
-                                .then(
-                                        Commands.argument("to", StringArgumentType.string()).requires((c) -> true).executes((c) -> {
+                Commands.literal("sl_changepassword")
+                        .then(Commands.argument("original", new ArgumentTypeOriginalPassword())
+                                .then(Commands.argument("to", StringArgumentType.string()).requires((c) -> true)
+                                        .executes((c) -> {
                                             NetworkLoader.INSTANCE.sendToServer(new MessageChangePassword(
                                                     c.getArgument("original", String.class),
                                                     c.getArgument("to", String.class)
@@ -32,7 +32,7 @@ public class ChangePasswordCommand {
                                             return 1;
                                         })
                                 )
-                )
+                        )
         );
     }
 

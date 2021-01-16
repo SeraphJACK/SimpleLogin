@@ -22,6 +22,7 @@ public class SLStorage {
     }
 
     private SLStorage(String method) {
+        // noinspection SwitchStatementWithTooFewBranches
         switch (method) {
             case "file": {
                 try {
@@ -29,10 +30,6 @@ public class SLStorage {
                 } catch (IOException ex) {
                     throw new RuntimeException("Unable to initialize storage provider", ex);
                 }
-                break;
-            }
-            case "capability": {
-                storageProvider = new StorageProviderCapability();
                 break;
             }
             default: {

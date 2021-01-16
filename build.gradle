@@ -10,9 +10,9 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle'
 
-version = '0.0.0-alpha-mc1.15'
-group = 'top.seraphjack.simplelogin'
-archivesBaseName = 'simplelogin'
+version = '0.0.0'
+group = 'top.seraphjack'
+archivesBaseName = 'SimpleLogin-1.16'
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
@@ -21,7 +21,7 @@ if (System.getenv().BUILD_NUMBER != null) {
 }
 
 minecraft {
-    mappings channel: 'snapshot', version: '20190719-1.14.3'
+    mappings channel: 'snapshot', version: '20201028-1.16.3'
     runs {
         client {
             workingDirectory project.file('run')
@@ -78,7 +78,7 @@ configurations {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.2-31.1.1'
+    minecraft 'net.minecraftforge:forge:1.16.4-35.1.0'
 
     shade 'org.mindrot:jbcrypt:0.4'
 }
@@ -106,8 +106,8 @@ tasks.jar.mustRunAfter(processResources)
 jar {
     manifest {
         attributes([
-                "Specification-Title"     : "simplelogin",
-                "Specification-Vendor"    : "",
+                "Specification-Title"     : "SimpleLogin",
+                "Specification-Vendor"    : "SeraphJACK",
                 "Specification-Version"   : "1",
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : "${version}",

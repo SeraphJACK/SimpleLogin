@@ -5,6 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
@@ -30,48 +31,49 @@ import java.util.concurrent.CompletableFuture;
 public class SLCommand {
 
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
-        dispatcher.register(
-                Commands.literal("simplelogin")
+        LiteralArgumentBuilder<CommandSource> command = Commands.literal("simplelogin")
+                .then(Commands.literal("save").requires((c) -> c.hasPermissionLevel(3))
+                        .executes((c) -> {
+                            try {
+                                long start = System.currentTimeMillis();
+                                SLStorage.instance().storageProvider.save();
+                                long cost = System.currentTimeMillis() - start;
+                                c.getSource().sendFeedback(new StringTextComponent("Done. Took " + cost + " ms."), true);
+                            } catch (IOException e) {
+                                c.getSource().sendFeedback(new StringTextComponent("Error during saving entries, see log for details"), false);
+                                return 0;
+                            }
+                            return 1;
+                        })
+                )
+                .then(Commands.literal("unregister").requires((c) -> c.hasPermissionLevel(3))
                         .then(
-                                Commands.literal("save").requires((c) -> c.hasPermissionLevel(3)).executes((c) -> {
-                                    try {
-                                        long start = System.currentTimeMillis();
-                                        SLStorage.instance().storageProvider.save();
-                                        long cost = System.currentTimeMillis() - start;
-                                        c.getSource().sendFeedback(new StringTextComponent("Done. Took " + cost + " ms."), true);
-                                    } catch (IOException e) {
-                                        c.getSource().sendFeedback(new StringTextComponent("Error during saving entries, see log for details"), false);
-                                        return 0;
-                                    }
-                                    return 1;
-                                })
-                        )
-                        .then(
-                                Commands.literal("unregister").requires((c) -> c.hasPermissionLevel(3)).then(
-                                        Commands.argument("entry", ArgumentTypeEntryName.server()).executes((c) -> {
+                                Commands.argument("entry", ArgumentTypeEntryName.server())
+                                        .executes((c) -> {
                                             SLStorage.instance().storageProvider.unregister(c.getArgument("entry", String.class));
                                             c.getSource().sendFeedback(new StringTextComponent("Successfully unregistered."), false);
                                             return 1;
                                         })
+                        )
+                )
+                .then(Commands.literal("setDefaultGameType").requires((c) -> c.hasPermissionLevel(3))
+                        .then(Commands.argument("entry", ArgumentTypeEntryName.server())
+                                .then(Commands.argument("mode", IntegerArgumentType.integer(0, 3))
+                                        .executes((c) -> {
+                                            GameType gameType = GameType.values()[c.getArgument("mode", Integer.class) + 1];
+                                            SLStorage.instance().storageProvider.setGameType(c.getArgument("entry", String.class), gameType);
+                                            c.getSource().sendFeedback(new StringTextComponent("Successfully set entry default game type to " + gameType.getName() + "."), true);
+                                            return 1;
+                                        })
                                 )
                         )
-                        .then(
-                                Commands.literal("setDefaultGameType").requires((c) -> c.hasPermissionLevel(3)).then(
-                                        Commands.argument("entry", ArgumentTypeEntryName.server()).then(
-                                                Commands.argument("mode", IntegerArgumentType.integer(0, 3)).executes((c) -> {
-                                                    GameType gameType = GameType.values()[c.getArgument("mode", Integer.class) + 1];
-                                                    SLStorage.instance().storageProvider.setGameType(c.getArgument("entry", String.class), gameType);
-                                                    c.getSource().sendFeedback(new StringTextComponent("Successfully set entry default game type to " + gameType.getName() + "."), true);
-                                                    return 1;
-                                                })
-                                        )
-                                )
-                        )
-        );
+                );
+        dispatcher.register(command);
     }
 
+    @SuppressWarnings("InstantiationOfUtilityClass")
     public static final class ArgumentTypeEntryName implements ArgumentType<String> {
-        private boolean isClient;
+        private final boolean isClient;
 
         private ArgumentTypeEntryName(boolean isClient) {
             this.isClient = isClient;
