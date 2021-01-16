@@ -31,18 +31,19 @@ public class ServerSideEventHandler {
 
     // Block command usage from unauthenticated players
     @SubscribeEvent
-    public static void onCommand(CommandEvent event) throws Exception {
-        String command = event.getParseResults().getReader().getString();
-        if (SLConfig.SERVER.commandNames.get().contains(command)) {
-            SimpleLogin.logger.debug("Allowed {} to execute command {} before login", event.getParseResults().getContext().getSource().getName(), command);
-            return;
-        }
+    public static void onCommand(CommandEvent event) {
+        String command = event.getParseResults().getReader().getString().substring(1);
+        SimpleLogin.logger.debug("Checking command {}", command);
         if (!(event.getParseResults().getContext().getSource().getEntity() instanceof ServerPlayerEntity)) {
             return;
         }
-        if (PlayerLoginHandler.instance().isPlayerInLoginList(event.getParseResults().getContext().getSource().asPlayer().getGameProfile().getName())) {
-            SimpleLogin.logger.debug("Denied {} to execute command {} before login", event.getParseResults().getContext().getSource().getName(), command);
-            event.setCanceled(true);
+        if (!PlayerLoginHandler.instance().isPlayerInLoginList(event.getParseResults().getContext().getSource().getName())) {
+            return;
         }
+        if (SLConfig.SERVER.commandNames.get().contains(command)) {
+            return;
+        }
+        SimpleLogin.logger.debug("Denied {} to execute command {} before login", event.getParseResults().getContext().getSource().getName(), command);
+        event.setCanceled(true);
     }
 }
