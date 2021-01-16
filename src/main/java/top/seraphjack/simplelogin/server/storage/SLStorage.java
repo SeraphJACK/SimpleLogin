@@ -6,7 +6,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 @OnlyIn(Dist.DEDICATED_SERVER)
 public class SLStorage {
@@ -17,18 +17,18 @@ public class SLStorage {
         return INSTANCE;
     }
 
-    public static void initialize(String method) {
+    public static void initialize(String method, Path path) {
         if (INSTANCE == null) {
-            INSTANCE = new SLStorage(method);
+            INSTANCE = new SLStorage(method, path);
         }
     }
 
-    private SLStorage(String method) {
+    private SLStorage(String method, Path path) {
         // noinspection SwitchStatementWithTooFewBranches
         switch (method) {
             case "file": {
                 try {
-                    storageProvider = new StorageProviderFile(Paths.get(".", "simplelogin", "storage", "entries.json"));
+                    storageProvider = new StorageProviderFile(path);
                 } catch (IOException ex) {
                     throw new ReportedException(new CrashReport("Unable to initialize storage provider", ex));
                 }

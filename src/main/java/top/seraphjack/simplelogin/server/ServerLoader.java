@@ -17,7 +17,7 @@ import java.io.IOException;
 @Mod.EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = SLConstants.MODID)
 public final class ServerLoader {
 
-    public static void serverSetup(FMLDedicatedServerSetupEvent event) {
+    public static void serverSetup(@SuppressWarnings("unused") FMLDedicatedServerSetupEvent event) {
         CapabilityLoader.registerCapabilities();
     }
 
@@ -26,7 +26,7 @@ public final class ServerLoader {
         // Start player login handler
         PlayerLoginHandler.instance();
 
-        SLStorage.initialize(SLConfig.SERVER.storageMethod.get());
+        SLStorage.initialize(SLConfig.SERVER.storageMethod.get(), e.getServer().func_240776_a_(SLConstants.SL_ENTRY));
     }
 
     @SubscribeEvent
