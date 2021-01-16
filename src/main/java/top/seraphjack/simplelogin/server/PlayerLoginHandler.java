@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 @SuppressWarnings({"BusyWait", "InstantiationOfUtilityClass"})
 @OnlyIn(Dist.DEDICATED_SERVER)
-public class PlayerLoginHandler {
+public final class PlayerLoginHandler {
     private static Thread PLAYER_HANDLER_THREAD;
     private static PlayerLoginHandler INSTANCE;
 
@@ -40,13 +40,14 @@ public class PlayerLoginHandler {
                     for (Login login : loginList) {
                         ServerPlayerEntity player = server.getPlayerList().getPlayerByUsername(login.name);
                         if (player == null) {
-                            // SimpleLogin.logger.warn("Can't find player " + login.name + ", ignoring...");
+                            SimpleLogin.logger.debug("Can't find player " + login.name + ", ignoring...");
                             loginList.remove(login);
                             continue;
                         }
 
                         // Resend request
                         if (System.currentTimeMillis() - login.lastRequested >= 1000) {
+                            SimpleLogin.logger.debug("Resending login request to {}...", login.name);
                             NetworkLoader.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new MessageRequestLogin());
                             login.lastRequested = System.currentTimeMillis();
                         }

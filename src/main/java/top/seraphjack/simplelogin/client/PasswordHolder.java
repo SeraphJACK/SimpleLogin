@@ -45,7 +45,7 @@ public final class PasswordHolder {
 
     private void save() {
         try {
-            Files.write(PASSWORD_FILE_PATH, password.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE);
+            Files.write(PASSWORD_FILE_PATH, password.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
             SimpleLogin.logger.error("Failed to save password", e);
         }

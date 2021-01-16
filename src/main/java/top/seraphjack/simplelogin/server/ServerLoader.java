@@ -1,7 +1,6 @@
 package top.seraphjack.simplelogin.server;
 
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
@@ -10,7 +9,6 @@ import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.SimpleLogin;
-import top.seraphjack.simplelogin.command.SLCommand;
 import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
 
@@ -29,11 +27,6 @@ public final class ServerLoader {
         PlayerLoginHandler.instance();
 
         SLStorage.initialize(SLConfig.SERVER.storageMethod.get());
-    }
-
-    @SubscribeEvent
-    public static void registerCommands(RegisterCommandsEvent event) {
-        SLCommand.register(event.getDispatcher());
     }
 
     @SubscribeEvent
