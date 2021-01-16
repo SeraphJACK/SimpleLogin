@@ -1,5 +1,6 @@
 modLoader="javafml"
-loaderVersion="[28,)"
+loaderVersion="[34,)"
+license="MIT"
 [[mods]]
 modId="simplelogin"
 version="${version}"
