@@ -5,6 +5,10 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import java.util.concurrent.ScheduledExecutorService;
 
 public interface HandlerPlugin {
+    /**
+     * Called only once when the plugin is enabled
+     * @param executor executor to use for convenience
+     */
     default void enable(ScheduledExecutorService executor) {
     }
 
