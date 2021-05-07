@@ -7,6 +7,7 @@ import top.seraphjack.simplelogin.server.handler.HandlerPlugin;
 import top.seraphjack.simplelogin.server.handler.plugins.*;
 import top.seraphjack.simplelogin.server.storage.StorageProvider;
 import top.seraphjack.simplelogin.server.storage.StorageProviderFile;
+import top.seraphjack.simplelogin.server.storage.StorageProviderSQLite;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +25,7 @@ public class SLRegistries<S> {
         plugins.put(rl, plugin);
     }
 
-    public Optional<Supplier<? extends S>> getPlugin(ResourceLocation rl) {
+    public Optional<Supplier<? extends S>> get(ResourceLocation rl) {
         return Optional.ofNullable(plugins.get(rl));
     }
 
@@ -45,10 +46,9 @@ public class SLRegistries<S> {
 
         // Default storage providers
         STORAGE_PROVIDERS.register(new ResourceLocation("simplelogin", "file"),
-                () -> mustCall(() ->
-                        // Default path at $WORLD_DIR/sl_entries.dat
-                        new StorageProviderFile(ServerLifecycleHooks.getCurrentServer().func_240776_a_(SLConstants.SL_ENTRY))
-                ));
+                () -> mustCall(() -> new StorageProviderFile(ServerLifecycleHooks.getCurrentServer().func_240776_a_(SLConstants.SL_ENTRY))));
+        STORAGE_PROVIDERS.register(new ResourceLocation("simplelogin", "sqlite"),
+                () -> mustCall((Callable<StorageProvider>) StorageProviderSQLite::new));
     }
 
     private static <S> S mustCall(Callable<S> callable) {

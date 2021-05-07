@@ -21,7 +21,7 @@ public class SLStorage {
     }
 
     private SLStorage(String provider) {
-        storageProvider = SLRegistries.STORAGE_PROVIDERS.getPlugin(new ResourceLocation(provider))
+        storageProvider = SLRegistries.STORAGE_PROVIDERS.get(new ResourceLocation(provider))
                 .orElseThrow(() -> new RuntimeException("Storage provider not found: " + provider))
                 .get();
     }

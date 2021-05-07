@@ -35,7 +35,7 @@ public final class PlayerLoginHandler {
         // Load plugins
         for (ResourceLocation aRl : plugins) {
             this.plugins.add(
-                    SLRegistries.PLUGINS.getPlugin(aRl).orElseThrow(() -> {
+                    SLRegistries.PLUGINS.get(aRl).orElseThrow(() -> {
                         return new IllegalArgumentException("No such plugin found: " + aRl.toString());
                     }).get()
             );
