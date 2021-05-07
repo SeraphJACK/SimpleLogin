@@ -17,8 +17,6 @@ public final class SLConfig {
 
         public final ForgeConfigSpec.IntValue defaultGameType;
 
-        public final ForgeConfigSpec.BooleanValue protectPlayerCoord;
-
         public final ForgeConfigSpec.ConfigValue<List<? extends String>> plugins;
 
         Server(ForgeConfigSpec.Builder builder) {
@@ -33,19 +31,21 @@ public final class SLConfig {
                     .defineList("commandNames", Collections.emptyList(), o -> o instanceof String);
 
             storageProvider = builder
-                    .comment("Available storage method: file(json file) / capability(save in player nbt)")
+                    .comment("Which storage provider to use")
+                    .comment("Simplelogin provides to available providers by default:")
+                    .comment("simplelogin:file -> file based storage")
+                    .comment("simplelogin:sqlite -> sqlite based storage")
+                    .comment("Note that you need to add JDBC-sqlite yourself if you want to use sqlite")
                     .define("storageProvider", "simplelogin:file");
 
             defaultGameType = builder
                     .comment("Default game type switched after player login")
+                    .comment("0,1,2,3 represents survival,creative,adventure,spectator")
                     .defineInRange("defaultGameType", 0, 0, 3);
-
-            protectPlayerCoord = builder
-                    .comment("Protect player's coordinates")
-                    .define("protectPlayerCoord", false);
 
             plugins = builder
                     .comment("Player login handler plugins to load")
+                    .comment("simplelogin:protect_coord is disabled by default, add to here to enable coord protect feature")
                     .defineList("plugins",
                             Arrays.asList(
                                     "simplelogin:auto_save",
