@@ -13,7 +13,7 @@ public class SLConfig {
 
         public final ForgeConfigSpec.ConfigValue<List<? extends String>> commandNames;
 
-        public final ForgeConfigSpec.ConfigValue<String> storageMethod;
+        public final ForgeConfigSpec.ConfigValue<String> storageProvider;
 
         public final ForgeConfigSpec.IntValue defaultGameType;
 
@@ -32,9 +32,9 @@ public class SLConfig {
                     .comment("Commands in whitelist can be executed before player login.")
                     .defineList("commandNames", Collections.emptyList(), o -> o instanceof String);
 
-            storageMethod = builder
+            storageProvider = builder
                     .comment("Available storage method: file(json file) / capability(save in player nbt)")
-                    .define("storageMethod", "file");
+                    .define("storageProvider", "simplelogin:file");
 
             defaultGameType = builder
                     .comment("Default game type switched after player login")

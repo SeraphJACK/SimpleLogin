@@ -26,11 +26,10 @@ public final class ServerLoader {
 
     @SubscribeEvent
     public static void serverStarting(FMLServerStartingEvent e) throws RuntimeException {
-        // Start player login handler
+        SLStorage.initialize(SLConfig.SERVER.storageProvider.get());
+
         PlayerLoginHandler.initLoginHandler(SLConfig.SERVER.plugins.get().stream().map(ResourceLocation::new)
                 .collect(Collectors.toList()));
-
-        SLStorage.initialize(SLConfig.SERVER.storageMethod.get(), e.getServer().func_240776_a_(SLConstants.SL_ENTRY));
     }
 
     @SubscribeEvent

@@ -9,6 +9,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import top.seraphjack.simplelogin.SimpleLogin;
+import top.seraphjack.simplelogin.server.SLRegistries;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
 
 import javax.annotation.Nullable;
@@ -34,7 +35,7 @@ public final class PlayerLoginHandler {
         // Load plugins
         for (ResourceLocation aRl : plugins) {
             this.plugins.add(
-                    PluginRegistries.getPlugin(aRl).orElseThrow(() -> {
+                    SLRegistries.PLUGINS.getPlugin(aRl).orElseThrow(() -> {
                         return new IllegalArgumentException("No such plugin found: " + aRl.toString());
                     }).get()
             );
