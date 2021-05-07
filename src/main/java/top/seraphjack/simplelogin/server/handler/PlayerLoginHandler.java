@@ -58,7 +58,6 @@ public final class PlayerLoginHandler {
     public void login(String id, String pwd) {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         Login login = getLoginByName(id);
-        loginList.remove(login);
         ServerPlayerEntity player = server.getPlayerList().getPlayerByUsername(id);
 
         // Though player shouldn't be null if login is not null
@@ -80,6 +79,8 @@ public final class PlayerLoginHandler {
             SimpleLogin.logger.warn("Player " + id + " tried to login with a wrong password.");
             player.connection.disconnect(new StringTextComponent("Wrong Password."));
         }
+
+        loginList.remove(login);
     }
 
     public void playerJoin(final ServerPlayerEntity player) {
