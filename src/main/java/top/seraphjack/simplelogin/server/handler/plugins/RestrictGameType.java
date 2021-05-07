@@ -33,4 +33,9 @@ public final class RestrictGameType implements HandlerPlugin {
     public void preLogout(ServerPlayerEntity player) {
         player.setGameType(GameType.SPECTATOR);
     }
+
+    @Override
+    public void disable() {
+        // NO-OP
+    }
 }

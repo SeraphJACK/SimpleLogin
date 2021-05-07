@@ -12,6 +12,7 @@ import top.seraphjack.simplelogin.server.storage.StorageProviderSQLite;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
 
@@ -27,6 +28,10 @@ public class SLRegistries<S> {
 
     public Optional<Supplier<? extends S>> get(ResourceLocation rl) {
         return Optional.ofNullable(plugins.get(rl));
+    }
+
+    public Set<ResourceLocation> list() {
+        return plugins.keySet();
     }
 
     private SLRegistries() {

@@ -1,4 +1,4 @@
-package top.seraphjack.simplelogin.command;
+package top.seraphjack.simplelogin.command.arguments;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -49,7 +49,7 @@ public final class ArgumentTypeEntryName implements ArgumentType<EntryNameInput>
         return Suggestions.empty();
     }
 
-    public static String getEntryName(CommandContext<CommandSource> ctx, String name) {
+    public static <S> String getEntryName(CommandContext<S> ctx, String name) {
         return ctx.getArgument(name, EntryNameInput.class).getName();
     }
 }

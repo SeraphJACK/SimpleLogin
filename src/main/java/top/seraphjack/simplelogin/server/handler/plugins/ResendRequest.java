@@ -42,4 +42,9 @@ public final class ResendRequest implements HandlerPlugin {
         Optional.ofNullable(futures.remove(player.getGameProfile().getName()))
                 .ifPresent(f -> f.cancel(true));
     }
+
+    @Override
+    public void disable() {
+        futures.values().forEach(f -> f.cancel(true));
+    }
 }

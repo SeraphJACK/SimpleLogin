@@ -1,4 +1,12 @@
 {
   "simplelogin.command.error.entry_not_found": "Registry for player %s does not exist",
-  "simplelogin.command.about.info": "SimpleLogin version %s for Minecraft 1.16.*"
+  "simplelogin.command.about.info": "SimpleLogin version %s for Minecraft 1.16.*",
+  "simplelogin.command.plugin.not_found": "Plugin not found: %s",
+  "simplelogin.command.plugin.already_loaded": "Plugin is already loaded: %s",
+  "simplelogin.command.plugin.load_success": "Successfully loaded plugin: %s",
+  "simplelogin.command.plugin.not_loaded": "Plugin is not loaded: %s",
+  "simplelogin.command.plugin.unload_success": "Successfully unloaded plugin: %s",
+  "simplelogin.command.plugin.available_plugin_header": "List of available plugins:",
+  "simplelogin.command.plugin.loaded_plugin_header": "List of loaded plugins:",
+  "simplelogin.command.plugin.list_member": " - %s"
 }

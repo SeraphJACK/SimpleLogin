@@ -8,12 +8,15 @@ import top.seraphjack.simplelogin.server.storage.SLStorage;
 
 import java.io.IOException;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public final class AutoSave implements HandlerPlugin {
+    private ScheduledFuture<?> future;
+
     @Override
     public void enable(ScheduledExecutorService executor) {
-        executor.scheduleAtFixedRate(() -> {
+        this.future = executor.scheduleAtFixedRate(() -> {
             if (SLStorage.instance().storageProvider.dirty()) {
                 SimpleLogin.logger.info("Auto saving entries");
                 long start = System.currentTimeMillis();
@@ -40,5 +43,10 @@ public final class AutoSave implements HandlerPlugin {
     @Override
     public void preLogout(ServerPlayerEntity player) {
         // NO-OP
+    }
+
+    @Override
+    public void disable() {
+        future.cancel(true);
     }
 }

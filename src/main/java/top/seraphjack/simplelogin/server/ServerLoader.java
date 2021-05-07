@@ -6,7 +6,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.SimpleLogin;
@@ -33,7 +33,7 @@ public final class ServerLoader {
     }
 
     @SubscribeEvent
-    public static void serverStopping(FMLServerStoppingEvent e) throws IOException {
+    public static void serverStopped(FMLServerStoppedEvent e) throws IOException {
         PlayerLoginHandler.instance().stop();
 
         SimpleLogin.logger.info("Saving all entries");

@@ -32,4 +32,9 @@ public interface HandlerPlugin {
      * @param player player leaving server
      */
     void preLogout(ServerPlayerEntity player);
+
+    /**
+     * Called only once when the plugin is disabled
+     */
+    void disable();
 }

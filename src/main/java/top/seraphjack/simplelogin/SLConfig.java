@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class SLConfig {
+public final class SLConfig {
     public static class Server {
         public final ForgeConfigSpec.IntValue secs;
 
