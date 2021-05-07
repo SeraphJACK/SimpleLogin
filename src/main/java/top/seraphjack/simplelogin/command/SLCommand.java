@@ -8,7 +8,11 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.GameType;
+import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
+import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
 
 import java.io.IOException;
@@ -25,7 +29,8 @@ public class SLCommand {
                 .then(Commands.literal("setDefaultGameType").requires((c) -> c.hasPermissionLevel(3))
                         .then(Commands.argument("entry", ArgumentTypeEntryName.entryName())
                                 .then(Commands.argument("mode", IntegerArgumentType.integer(0, 3))
-                                        .executes(SLCommand::setDefaultGamemode))));
+                                        .executes(SLCommand::setDefaultGamemode))))
+                .then(Commands.literal("about").executes(SLCommand::about));
         dispatcher.register(command);
     }
 
@@ -51,6 +56,18 @@ public class SLCommand {
         GameType gameType = GameType.values()[ctx.getArgument("mode", Integer.class) + 1];
         SLStorage.instance().storageProvider.setGameType(ArgumentTypeEntryName.getEntryName(ctx, "entry"), gameType);
         ctx.getSource().sendFeedback(new StringTextComponent("Successfully set entry default game type to " + gameType.getName() + "."), false);
+        return Command.SINGLE_SUCCESS;
+    }
+
+    private static int about(CommandContext<CommandSource> ctx) {
+        @SuppressWarnings("OptionalGetWithoutIsPresent")
+        ModInfo info = FMLLoader.getLoadingModList().getMods().stream()
+                .filter(modInfo -> modInfo.getModId().equals(SLConstants.MODID))
+                .findAny().get();
+        ctx.getSource().sendFeedback(
+                new TranslationTextComponent("simplelogin.command.about.info", info.getVersion().toString()),
+                false
+        );
         return Command.SINGLE_SUCCESS;
     }
 

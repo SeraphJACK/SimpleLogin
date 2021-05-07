@@ -1,3 +1,4 @@
 {
-  "simplelogin.command.error.entry_not_found": "不存在名叫 %s 的注册玩家"
+  "simplelogin.command.error.entry_not_found": "不存在名叫 %s 的注册玩家",
+  "simplelogin.command.about.info": "SimpleLogin 版本 %s ，Minecraft 版本 1.16.*"
 }
