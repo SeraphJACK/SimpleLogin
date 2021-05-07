@@ -13,7 +13,9 @@ import top.seraphjack.simplelogin.server.storage.SLStorage;
 public final class RestrictGameType implements HandlerPlugin {
     @Override
     public void preLogin(ServerPlayerEntity player, Login login) {
-        player.setGameType(GameType.ADVENTURE);
+        ServerLifecycleHooks.getCurrentServer().deferTask(() -> {
+            player.setGameType(GameType.SPECTATOR);
+        });
     }
 
     @Override
@@ -29,7 +31,6 @@ public final class RestrictGameType implements HandlerPlugin {
 
     @Override
     public void preLogout(ServerPlayerEntity player) {
-        // NO-OP
-        // TODO: should we change game type here?
+        player.setGameType(GameType.SPECTATOR);
     }
 }

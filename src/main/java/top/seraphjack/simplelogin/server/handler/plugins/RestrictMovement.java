@@ -25,7 +25,7 @@ public final class RestrictMovement implements HandlerPlugin {
     public void preLogin(ServerPlayerEntity player, Login login) {
         ScheduledFuture<?> future = executor.scheduleWithFixedDelay(() -> {
             ServerLifecycleHooks.getCurrentServer().deferTask(() -> {
-                player.setPosition(login.posX, login.posY, login.posZ);
+                player.setPositionAndUpdate(login.posX, login.posY, login.posZ);
             });
         }, 0, 100, TimeUnit.MILLISECONDS);
         Optional.ofNullable(futures.put(login.name, future)).ifPresent(f -> f.cancel(true));
