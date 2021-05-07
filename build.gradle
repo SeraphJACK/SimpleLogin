@@ -1,8 +1,8 @@
 buildscript {
     repositories {
-        maven { url = 'https://maven.covertdragon.team/repository/internal/' }
-        maven { url = 'https://maven.aliyun.com/central/' }
-        maven { url = 'https://maven.aliyun.com/repository/public/' }
+        maven { url = 'https://maven.minecraftforge.net/' }
+        mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
@@ -87,8 +87,9 @@ dependencies {
 
 allprojects {
     repositories {
-        maven { url = "https://maven.covertdragon.team/repository/internal/" }
-        maven { url = "https://maven.aliyun.com/repository/central/" }
+        maven { url = 'https://maven.minecraftforge.net/' }
+        mavenCentral()
+        jcenter()
     }
 }
 

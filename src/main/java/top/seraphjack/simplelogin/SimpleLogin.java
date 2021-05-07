@@ -7,7 +7,6 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import top.seraphjack.simplelogin.client.ClientLoader;
 import top.seraphjack.simplelogin.command.CommandLoader;
 import top.seraphjack.simplelogin.network.NetworkLoader;
 import top.seraphjack.simplelogin.server.ServerLoader;
@@ -21,7 +20,6 @@ public final class SimpleLogin {
 
     public SimpleLogin() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(CommandLoader::commonSetup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(ClientLoader::clientSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(ServerLoader::serverSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener((FMLCommonSetupEvent e) -> NetworkLoader.registerPackets());
 

@@ -21,7 +21,7 @@ public class SLCommand {
                         .executes(SLCommand::save))
                 .then(Commands.literal("unregister").requires((c) -> c.hasPermissionLevel(3))
                         .then(Commands.argument("entry", ArgumentTypeEntryName.entryName())
-                                        .executes(SLCommand::unregister)))
+                                .executes(SLCommand::unregister)))
                 .then(Commands.literal("setDefaultGameType").requires((c) -> c.hasPermissionLevel(3))
                         .then(Commands.argument("entry", ArgumentTypeEntryName.entryName())
                                 .then(Commands.argument("mode", IntegerArgumentType.integer(0, 3))

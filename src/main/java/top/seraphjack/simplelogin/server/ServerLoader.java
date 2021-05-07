@@ -1,5 +1,6 @@
 package top.seraphjack.simplelogin.server;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -10,9 +11,11 @@ import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
+import top.seraphjack.simplelogin.server.handler.PlayerLoginHandler;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = SLConstants.MODID)
 public final class ServerLoader {
@@ -24,7 +27,8 @@ public final class ServerLoader {
     @SubscribeEvent
     public static void serverStarting(FMLServerStartingEvent e) throws RuntimeException {
         // Start player login handler
-        PlayerLoginHandler.instance();
+        PlayerLoginHandler.initLoginHandler(SLConfig.SERVER.plugins.get().stream().map(ResourceLocation::new)
+                .collect(Collectors.toList()));
 
         SLStorage.initialize(SLConfig.SERVER.storageMethod.get(), e.getServer().func_240776_a_(SLConstants.SL_ENTRY));
     }

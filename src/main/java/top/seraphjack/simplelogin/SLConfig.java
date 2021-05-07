@@ -3,6 +3,7 @@ package top.seraphjack.simplelogin;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,6 +18,8 @@ public class SLConfig {
         public final ForgeConfigSpec.IntValue defaultGameType;
 
         public final ForgeConfigSpec.BooleanValue protectPlayerCoord;
+
+        public final ForgeConfigSpec.ConfigValue<List<? extends String>> plugins;
 
         Server(ForgeConfigSpec.Builder builder) {
             builder.push("server");
@@ -40,6 +43,18 @@ public class SLConfig {
             protectPlayerCoord = builder
                     .comment("Protect player's coordinates")
                     .define("protectPlayerCoord", false);
+
+            plugins = builder
+                    .comment("Player login handler plugins to load")
+                    .defineList("plugins",
+                            Arrays.asList(
+                                    "simplelogin:auto_save",
+                                    "simplelogin:resend_request",
+                                    "simplelogin:restrict_game_type",
+                                    "simplelogin:restrict_movement",
+                                    "simplelogin:timeout"
+                            ),
+                            o -> o instanceof String);
 
             builder.pop();
         }
