@@ -14,10 +14,7 @@ import top.seraphjack.simplelogin.server.SLRegistries;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -52,7 +49,9 @@ public final class PlayerLoginHandler {
     }
 
     public void unloadPlugin(ResourceLocation rl) {
+        Optional<HandlerPlugin> plugin = this.plugins.stream().filter(p -> p.getFirst().equals(rl)).map(Pair::getSecond).findAny();
         if (this.plugins.removeIf(p -> p.getFirst().equals(rl))) {
+            plugin.ifPresent(HandlerPlugin::disable);
             SimpleLogin.logger.info("Unloaded plugin {}", rl.toString());
         }
     }
