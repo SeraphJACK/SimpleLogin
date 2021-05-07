@@ -106,7 +106,11 @@ public class SLCommand {
         }
 
         PlayerLoginHandler.instance().loadPlugin(plugin);
-        new TranslationTextComponent("simplelogin.command.plugin.load_success", plugin.toString());
+
+        ctx.getSource().sendFeedback(
+                new TranslationTextComponent("simplelogin.command.plugin.load_success", plugin.toString()),
+                true
+        );
 
         return Command.SINGLE_SUCCESS;
     }
@@ -129,7 +133,10 @@ public class SLCommand {
         }
 
         PlayerLoginHandler.instance().unloadPlugin(plugin);
-        new TranslationTextComponent("simplelogin.command.plugin.unload_success", plugin.toString());
+        ctx.getSource().sendFeedback(
+                new TranslationTextComponent("simplelogin.command.plugin.unload_success", plugin.toString()),
+                true
+        );
 
         return Command.SINGLE_SUCCESS;
     }
