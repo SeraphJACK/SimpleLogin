@@ -42,6 +42,9 @@ public class ServerSideEventHandler {
         if (command.startsWith("/")) command = command.substring(1);
         SimpleLogin.logger.debug("Checking command '{}'", command);
         ICommandSource realSource = getRealSource(event.getParseResults().getContext().getSource());
+        if (realSource == null) {
+            return;
+        }
         if (!(realSource instanceof ServerPlayerEntity)) {
             return;
         }
