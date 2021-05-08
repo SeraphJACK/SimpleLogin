@@ -45,7 +45,7 @@ public final class ArgumentTypeHandlerPlugin implements ArgumentType<HandlerPlug
 
     @Override
     public HandlerPluginInput parse(StringReader reader) throws CommandSyntaxException {
-        return HandlerPluginInput.of(new ResourceLocation(reader.readQuotedString()));
+        return HandlerPluginInput.of(ResourceLocation.read(reader));
     }
 
     @SuppressWarnings("unchecked")
@@ -61,10 +61,7 @@ public final class ArgumentTypeHandlerPlugin implements ArgumentType<HandlerPlug
             } else if (type == 2) {
                 plugins.addAll(SLRegistries.PLUGINS.list());
             }
-            return ISuggestionProvider.suggest(
-                    plugins.stream().map(ResourceLocation::toString).map(s -> "\"" + s + "\""),
-                    builder
-            );
+            return ISuggestionProvider.suggest(plugins.stream().map(ResourceLocation::toString), builder);
         } else if (context.getSource() instanceof ISuggestionProvider) {
             CommandContext<ISuggestionProvider> ctx = (CommandContext<ISuggestionProvider>) context;
             return ((ISuggestionProvider) context.getSource()).getSuggestionsFromServer(ctx, builder);
