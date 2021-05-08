@@ -18,3 +18,4 @@ testEntries.json
 .idea/
 .vscode/
 logs/
+test.db

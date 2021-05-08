@@ -19,7 +19,13 @@ public class StorageProviderSQL implements StorageProvider {
         this.conn = conn;
         try {
             conn.createStatement()
-                    .execute("CREATE TABLE IF NOT EXISTS sl_entries(username varchar(32), defaultGameType tinyint, password varchar(255))");
+                    .execute("CREATE TABLE IF NOT EXISTS sl_entries\n" +
+                            "(\n" +
+                            "    username        varchar(32),\n" +
+                            "    defaultGameType tinyint,\n" +
+                            "    password        varchar(255),\n" +
+                            "    PRIMARY KEY (username)\n" +
+                            ")");
         } catch (SQLException e) {
             throw new RuntimeException("Failed to initialize database", e);
         }
@@ -28,7 +34,9 @@ public class StorageProviderSQL implements StorageProvider {
     @Override
     public boolean checkPassword(String username, String password) {
         try {
-            PreparedStatement st = conn.prepareStatement("SELECT password FROM sl_entries WHERE username=?");
+            PreparedStatement st = conn.prepareStatement("SELECT password\n" +
+                    "FROM sl_entries\n" +
+                    "WHERE username = ?");
             st.setString(1, username);
             ResultSet rs = st.executeQuery();
             if (!rs.next()) return false;
@@ -42,7 +50,9 @@ public class StorageProviderSQL implements StorageProvider {
     @Override
     public void unregister(String username) {
         try {
-            PreparedStatement st = conn.prepareStatement("DELETE FROM sl_entries WHERE username=?");
+            PreparedStatement st = conn.prepareStatement("DELETE\n" +
+                    "FROM sl_entries\n" +
+                    "WHERE username = ?");
             st.setString(1, username);
             st.execute();
         } catch (SQLException ex) {
@@ -53,7 +63,7 @@ public class StorageProviderSQL implements StorageProvider {
     @Override
     public boolean registered(String username) {
         try {
-            PreparedStatement st = conn.prepareStatement("SELECT EXISTS(SELECT * from sl_entries WHERE username=?)");
+            PreparedStatement st = conn.prepareStatement("SELECT EXISTS(SELECT * from sl_entries WHERE username = ?)");
             st.setString(1, username);
             ResultSet rs = st.executeQuery();
             return rs.next() && rs.getBoolean(1);
@@ -67,7 +77,8 @@ public class StorageProviderSQL implements StorageProvider {
     public void register(String username, String password) {
         if (registered(username)) return;
         try {
-            PreparedStatement st = conn.prepareStatement("INSERT INTO sl_entries (username,password,defaultGameType) VALUES (?,?,?)");
+            PreparedStatement st = conn.prepareStatement("INSERT INTO sl_entries (username, password, defaultGameType)\n" +
+                    "VALUES (?, ?, ?)");
             st.setString(1, username);
             st.setString(2, BCrypt.hashpw(password, BCrypt.gensalt()));
             st.setInt(3, SLConfig.SERVER.defaultGameType.get());
@@ -85,7 +96,9 @@ public class StorageProviderSQL implements StorageProvider {
     @Override
     public GameType gameType(String username) {
         try {
-            PreparedStatement st = conn.prepareStatement("SELECT defaultGameType FROM sl_entries where username=?");
+            PreparedStatement st = conn.prepareStatement("SELECT defaultGameType\n" +
+                    "FROM sl_entries\n" +
+                    "where username = ?");
             st.setString(1, username);
             ResultSet rs = st.executeQuery();
             if (!rs.next()) return null;
@@ -99,7 +112,9 @@ public class StorageProviderSQL implements StorageProvider {
     @Override
     public void setGameType(String username, GameType gameType) {
         try {
-            PreparedStatement st = conn.prepareStatement("UPDATE sl_entries SET defaultGameType=? WHERE username=?");
+            PreparedStatement st = conn.prepareStatement("UPDATE sl_entries\n" +
+                    "SET defaultGameType=?\n" +
+                    "WHERE username = ?");
             st.setInt(1, gameType.getID());
             st.setString(2, username);
             st.execute();
@@ -111,7 +126,9 @@ public class StorageProviderSQL implements StorageProvider {
     @Override
     public void changePassword(String username, String newPassword) {
         try {
-            PreparedStatement st = conn.prepareStatement("UPDATE sl_entries SET password=? WHERE username=?");
+            PreparedStatement st = conn.prepareStatement("UPDATE sl_entries\n" +
+                    "SET password=?\n" +
+                    "WHERE username = ?");
             st.setString(1, BCrypt.hashpw(newPassword, BCrypt.gensalt()));
             st.setString(2, username);
             st.execute();
@@ -130,7 +147,8 @@ public class StorageProviderSQL implements StorageProvider {
     public Collection<String> getAllRegisteredUsername() {
         ImmutableSet.Builder<String> builder = ImmutableSet.builder();
         try {
-            ResultSet rs = conn.createStatement().executeQuery("SELECT username FROM sl_entries");
+            ResultSet rs = conn.createStatement().executeQuery("SELECT username\n" +
+                    "FROM sl_entries");
             while (rs.next()) {
                 builder.add(rs.getString("username"));
             }
