@@ -7,6 +7,7 @@ import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
 import top.seraphjack.simplelogin.server.handler.HandlerPlugin;
 import top.seraphjack.simplelogin.server.handler.Login;
+import top.seraphjack.simplelogin.server.handler.PlayerLoginHandler;
 import top.seraphjack.simplelogin.server.storage.Position;
 
 import static top.seraphjack.simplelogin.server.capability.CapabilityLastPos.defaultPosition;
@@ -25,9 +26,9 @@ public final class ProtectCoord implements HandlerPlugin {
                     .orElseThrow(RuntimeException::new).getLastPos();
 
             if (lastPos.equals(defaultPosition)) {
-                player.teleport(player.getServerWorld(), login.posX, login.posY, login.posZ, login.yaw, login.pitch);
+                player.setPositionAndUpdate(login.posX, login.posY, login.posZ);
             } else {
-                player.teleport(player.getServerWorld(), lastPos.getX(), lastPos.getY(), lastPos.getZ(), login.yaw, login.pitch);
+                player.setPositionAndUpdate(lastPos.getX(), lastPos.getY(), lastPos.getZ());
             }
         });
     }
@@ -35,9 +36,10 @@ public final class ProtectCoord implements HandlerPlugin {
     @Override
     public void preLogout(ServerPlayerEntity player) {
         try {
-            player.getCapability(CapabilityLoader.CAPABILITY_LAST_POS)
-                    .orElseThrow(RuntimeException::new)
-                    .setLastPos(new Position(player.getPosX(), player.getPosY(), player.getPosZ()));
+            if (PlayerLoginHandler.instance().hasPlayerLoggedIn(player.getGameProfile().getName())) {
+                final Position pos = new Position(player.getPosX(), player.getPosY(), player.getPosZ());
+                player.getCapability(CapabilityLoader.CAPABILITY_LAST_POS).ifPresent(c -> c.setLastPos(pos));
+            }
             IWorldInfo info = player.getServerWorld().getWorldInfo();
             player.setPosition(info.getSpawnX(), info.getSpawnY(), info.getSpawnZ());
         } catch (Exception ex) {
