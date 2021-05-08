@@ -11,7 +11,7 @@ public final class SLConfig {
     public static class Server {
         public final ForgeConfigSpec.IntValue secs;
 
-        public final ForgeConfigSpec.ConfigValue<List<? extends String>> commandNames;
+        public final ForgeConfigSpec.ConfigValue<List<? extends String>> whitelistCommands;
 
         public final ForgeConfigSpec.ConfigValue<String> storageProvider;
 
@@ -26,7 +26,7 @@ public final class SLConfig {
                     .comment("Login Timeout(s)")
                     .defineInRange("secs", 60, 0, 1200);
 
-            commandNames = builder
+            whitelistCommands = builder
                     .comment("Commands in whitelist can be executed before player login.")
                     .defineList("commandNames", Collections.emptyList(), o -> o instanceof String);
 
