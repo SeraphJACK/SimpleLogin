@@ -44,7 +44,7 @@ There are various ways to store the user data at the server side and each has it
 Login provides an abstract layer to allow different storage implementations. Each implementation is called a "storage
 provider".
 
-Each storage provider has its own unique resource location (i.e. `simplelogin:file`) to identify itself.
+Each storage provider has its own unique resource location (e.g. `simplelogin:file`) to identify itself.
 
 Simple Login itself provides two storage providers: `file` and `sqlite`.
 
