@@ -16,6 +16,8 @@ import javax.annotation.Nullable;
 
 @OnlyIn(Dist.DEDICATED_SERVER)
 public class CapabilityLastPos {
+    public static final Position defaultPosition = new Position(0, 255, 0);
+
     public static class Storage implements Capability.IStorage<ILastPos> {
         @Nullable
         @Override
@@ -53,7 +55,7 @@ public class CapabilityLastPos {
     }
 
     public static class Implementation implements ILastPos {
-        Position lastPos = SLConstants.defaultPosition;
+        Position lastPos = defaultPosition;
 
         @Override
         public Position getLastPos() {

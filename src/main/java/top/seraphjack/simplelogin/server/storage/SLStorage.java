@@ -1,12 +1,9 @@
 package top.seraphjack.simplelogin.server.storage;
 
-import net.minecraft.crash.CrashReport;
-import net.minecraft.crash.ReportedException;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import java.io.IOException;
-import java.nio.file.Path;
+import top.seraphjack.simplelogin.server.SLRegistries;
 
 @OnlyIn(Dist.DEDICATED_SERVER)
 public class SLStorage {
@@ -17,26 +14,15 @@ public class SLStorage {
         return INSTANCE;
     }
 
-    public static void initialize(String method, Path path) {
+    public static void initialize(String provider) {
         if (INSTANCE == null) {
-            INSTANCE = new SLStorage(method, path);
+            INSTANCE = new SLStorage(provider);
         }
     }
 
-    private SLStorage(String method, Path path) {
-        // noinspection SwitchStatementWithTooFewBranches
-        switch (method) {
-            case "file": {
-                try {
-                    storageProvider = new StorageProviderFile(path);
-                } catch (IOException ex) {
-                    throw new ReportedException(new CrashReport("Unable to initialize storage provider", ex));
-                }
-                break;
-            }
-            default: {
-                throw new RuntimeException("Invalid storage method: " + method + ".");
-            }
-        }
+    private SLStorage(String provider) {
+        storageProvider = SLRegistries.STORAGE_PROVIDERS.get(new ResourceLocation(provider))
+                .orElseThrow(() -> new RuntimeException("Storage provider not found: " + provider))
+                .get();
     }
 }

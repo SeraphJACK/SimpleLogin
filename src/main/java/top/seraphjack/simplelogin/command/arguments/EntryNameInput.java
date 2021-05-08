@@ -1,6 +1,6 @@
-package top.seraphjack.simplelogin.command;
+package top.seraphjack.simplelogin.command.arguments;
 
-public class EntryNameInput {
+public final class EntryNameInput {
     private final String input;
 
     private EntryNameInput(String input) {
