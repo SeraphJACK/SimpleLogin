@@ -22,7 +22,6 @@ public final class ProtectCoord implements HandlerPlugin {
     public void postLogin(ServerPlayerEntity player, Login login) {
         ServerLifecycleHooks.getCurrentServer().deferTask(() -> {
             Position lastPos = player.getCapability(CapabilityLoader.CAPABILITY_LAST_POS)
-                    // FIXME this is somehow broken and I don't really know why
                     .orElseThrow(RuntimeException::new).getLastPos();
 
             if (lastPos.equals(defaultPosition)) {
