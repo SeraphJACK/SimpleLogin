@@ -141,14 +141,14 @@ All commands have auto complete support.
 
 - `/simplelogin unregister <PlayerName>`
 
-    - Unregister the player.
+    - Unregister the player
 
 - `/simplelogin save`
-    - Save all player entries.
+    - Save all player entries
 
 - `/simplelogin setDefaultGameType <PlayerName> <GameType>`
 
-    - Configure the after-login game type for the player.
+    - Configure the after-login game type for the player
 
 - `/simplelogin about`
     - Show the version information
@@ -177,8 +177,8 @@ All commands have auto complete support.
     - plugins to load by default.
 
 - commandNames: String Array
-    - Commands that are allowed to be executed by an unauthenticated player.
-    - You need to specify full command without the heading `/`, such as `give @p minecraft:apple 16`
+    - Commands that are allowed to be executed by a player before they log in.
+    - Note that you need to specify full command without the heading `/`, such as `give @p minecraft:apple 16`
 
 - storageProvider: String
     - The storage provider to use.
@@ -186,3 +186,7 @@ All commands have auto complete support.
 - defaultGameType: Integer
     - Default game type for newly registered users.
     - 0, 1, 2, 3 represents survival, creative, adventure and spectator.
+
+## TODOs
+
+- [ ] Change password
