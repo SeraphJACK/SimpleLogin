@@ -1,15 +1,15 @@
 # SimpleLogin
 
-SimpleLogin is a forge mod aimed to protect servers in off-line mode.
+SimpleLogin is a forge mod aimed to protect servers in offline mode.
 
 ## Introduction
 
 SimpleLogin is similar to some auth plugins in bukkit like AuthMe: the mod will check player's password when they log
 in.
 
-However, there are some differences: instead of inputting the password using command, passwords are stored in a specific
-file at the client side and automatically sent to the server when player joins, so that players don't have to input the
-password every time. Besides, client will generate a random password during the first launch, so in most cases players
+However, there are some differences: instead of inputting the password using a command, passwords are stored in a specific
+file at the client-side and automatically sent to the server when the player joins, so that players don't have to input the
+password every time. Besides, the client will generate a random password during the first launch, so in most cases, players
 won't even need to do anything.
 
 ## Installation
@@ -20,7 +20,7 @@ Put the `simplelogin-xxx.jar` into the `mods` directory on **both server-side an
 
 **You don't need to configure anything if you don't care much.**
 
-Players' password does not need to be inputted manually, instead, client would generate a random UUID as the password
+Players' password does not need to be inputted manually, instead, the client would generate a random UUID as the password
 and save it in `.minecraft/.sl_password`, and send it to the server when joining.
 
 The server will remember the player's password when he joins for the first time, and when he joins later the server will
@@ -30,8 +30,8 @@ check if the password matches the first one.
 
 _Is my password safe?_
 
-Sure, the password is hashed using SHA256 at the client side, and hashed using BCrypt before storing at the server side.
-However, the password is stored without any encryption **at the client side**, so be careful don't
+Sure, the password is hashed using SHA256 at the client-side and hashed using BCrypt before storing at the server-side.
+However, the password is stored without any encryption **at the client-side**, so be careful don't
 copy `.minecraft/.sl_password` file when sharing your client with others.
 
 _What should I do if I want to change the client?_
@@ -40,11 +40,11 @@ You should backup your `minecraft/.sl_entry` file and copy it to your new client
 
 ## Storage providers
 
-There are various ways to store the user data at the server side and each has its own benefits and shortcomings. Simple
+There are various ways to store the user data at the server-side and each has its benefits and shortcomings. Simple
 Login provides an abstract layer to allow different storage implementations. Each implementation is called a "storage
 provider".
 
-Each storage provider has its own unique resource location (e.g. `simplelogin:file`) to identify itself.
+Each storage provider has its unique resource location (e.g. `simplelogin:file`) to identify itself.
 
 Simple Login itself provides two storage providers: `file` and `sqlite`.
 
@@ -59,9 +59,9 @@ as JSON format at `world/sl_entries.dat`.
 
 ResourceLocation: `simplelogin:sqlite`
 
-SQLite storage provider might be more efficient than the file provider, but it needs a SQLite JDBC connector which has
+SQLite storage provider might be more efficient than the file provider, but it needs an SQLite JDBC connector which has
 roughly 6 MB and I decided not to bundle it in Simple Login. Therefore, if you want to use this provider, you'll need to
-install a JDBC connector your self. The simplest way to do that is to [download it][JDBC-Download] and copy `org/sqlite`
+install a JDBC connector yourself. The simplest way to do that is to [download it][JDBC-Download] and copy `org/sqlite`
 and `META-INF/services` directories into Simple Login mod jar.
 
 [JDBC-Download]: https://repo1.maven.org/maven2/org/xerial/sqlite-jdbc/3.8.9.1/sqlite-jdbc-3.8.9.1.jar
@@ -79,15 +79,15 @@ calling `top.seraphjack.simplelogin.server.SLRegistries.STORAGE_PROVIDERS::regis
 Simple Login plugins, or plugins for short, is an extension to how Simple Login handles when players join, log in and
 leave the server.
 
-Just like storage providers, each plugin has its own unique resource location to identify itself.
+Just like storage providers, each plugin has its unique resource location to identify itself.
 
-Some key functionalities of Simple Login are also implemented as built in plugin, and here's a list of them.
+Some key functionalities of Simple Login are also implemented as built-in plugins, and here's a list of them.
 
 ### AutoSave
 
 ResourceLocation: `simplelogin:autosave`
 
-This plugin will trigger Storage provider to save all data every five minutes.
+This plugin will trigger the Storage provider to save all data every five minutes.
 
 This plugin is enabled by default.
 
@@ -96,7 +96,7 @@ This plugin is enabled by default.
 ResourceLocation: `simplelogin:protect_coord`
 
 This plugin will teleport players back to the spawn point before they leave the server, and teleport them back when they
-successfully logged in, thus prevents possible position leakage by unauthorized log in attempts.
+successfully logged in, thus prevents possible position leakage by unauthorized log-in attempts.
 
 This plugin is disabled by default since its behavior will cause some problems when playing large modpacks.
 
@@ -122,7 +122,7 @@ This plugin is enabled by default.
 
 ResourceLocation: `simplelogin:restrict_movement`
 
-This plugin will prevent player move around before log in.
+This plugin will prevent players from moving around before login.
 
 This plugin is enabled by default.
 
@@ -130,14 +130,14 @@ This plugin is enabled by default.
 
 ResourceLocation: `simplelogin:timeout`
 
-This plugin will kick players who haven't log in after a specific period of time(defined in Simple Login's
+This plugin will kick players who haven't log in after a specific time (defined in Simple Login's
 configuration, default is 60 seconds).
 
 This plugin is enabled by default.
 
 ## Commands
 
-All commands have auto complete support.
+All commands have auto-complete support.
 
 - `/simplelogin unregister <PlayerName>`
 
