@@ -165,6 +165,10 @@ All commands have auto complete support.
 - `/simplelogin plugin unload <ResourceLocation>`
     - Unload the specified plugin
 
+- `/sl_change_password <NewPassword>`
+    - Change password to NewPassword
+    - This command is implemented on client-side for security reasons
+
 ## Configuration
 
 ### Server Configuration
@@ -186,7 +190,3 @@ All commands have auto complete support.
 - defaultGameType: Integer
     - Default game type for newly registered users.
     - 0, 1, 2, 3 represents survival, creative, adventure and spectator.
-
-## TODOs
-
-- [ ] Change password

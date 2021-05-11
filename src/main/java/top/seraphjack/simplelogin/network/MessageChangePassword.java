@@ -33,6 +33,7 @@ public class MessageChangePassword {
             SLStorage.instance().storageProvider.changePassword(username, msg.to);
             Objects.requireNonNull(ctx.get().getSender()).sendStatusMessage(new StringTextComponent("Password changed successfully."), false);
         } else {
+            // Should never happen though
             Objects.requireNonNull(ctx.get().getSender()).sendStatusMessage(new StringTextComponent("Wrong original password."), false);
             SimpleLogin.logger.warn("Player " + username + " tried to change password with a wrong password.");
         }
