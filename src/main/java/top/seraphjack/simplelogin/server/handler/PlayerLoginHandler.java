@@ -20,6 +20,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.stream.Collectors;
 
+import static top.seraphjack.simplelogin.SLConstants.MAX_PASSWORD_LENGTH;
+
 @OnlyIn(Dist.DEDICATED_SERVER)
 public final class PlayerLoginHandler {
     private static PlayerLoginHandler INSTANCE;
@@ -81,10 +83,7 @@ public final class PlayerLoginHandler {
             return;
         }
 
-        if (pwd.length() >= 100) {
-            player.connection.disconnect(new StringTextComponent("Password too long."));
-            SimpleLogin.logger.warn("Player " + id + " tried to login with a invalid password(too long).");
-        } else if (!SLStorage.instance().storageProvider.registered(id)) {
+        if (!SLStorage.instance().storageProvider.registered(id)) {
             SLStorage.instance().storageProvider.register(id, pwd);
             SimpleLogin.logger.info("Player " + id + " has successfully registered.");
             postLogin(player, login);
