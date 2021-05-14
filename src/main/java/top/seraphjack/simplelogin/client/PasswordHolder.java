@@ -26,6 +26,7 @@ public final class PasswordHolder {
     public static final Path PASSWORD_FILE_PATH = Paths.get(".", ".sl_password");
 
     private String password = UUID.randomUUID().toString();
+    private String pendingPassword = null;
 
     private PasswordHolder() {
         if (Files.exists(PASSWORD_FILE_PATH)) {
@@ -51,9 +52,20 @@ public final class PasswordHolder {
         }
     }
 
-    public void set(String o) {
-        this.password = o;
+    public void setPendingPassword(String o) {
+        this.pendingPassword = o;
         save();
+    }
+
+    public void applyPending() {
+        if (this.pendingPassword == null) return;
+        this.password = pendingPassword;
+        save();
+        this.pendingPassword = null;
+    }
+
+    public void dropPending() {
+        this.pendingPassword = null;
     }
 
     public String password() {

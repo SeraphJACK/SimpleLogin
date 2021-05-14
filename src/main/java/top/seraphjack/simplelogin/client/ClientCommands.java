@@ -81,7 +81,7 @@ public final class ClientCommands {
         if (Minecraft.getInstance().player != null) {
             String password = StringArgumentType.getString(ctx, "password");
             NetworkLoader.INSTANCE.sendToServer(new MessageChangePassword(PasswordHolder.instance().password(), password));
-            PasswordHolder.instance().set(password);
+            PasswordHolder.instance().setPendingPassword(password);
         }
         return Command.SINGLE_SUCCESS;
     }
