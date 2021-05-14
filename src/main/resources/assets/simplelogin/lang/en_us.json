@@ -8,5 +8,7 @@
   "simplelogin.command.plugin.unload_success": "Successfully unloaded plugin: %s",
   "simplelogin.command.plugin.available_plugin_header": "List of available plugins:",
   "simplelogin.command.plugin.loaded_plugin_header": "List of loaded plugins:",
-  "simplelogin.command.plugin.list_member": " - %s"
+  "simplelogin.command.plugin.list_member": " - %s",
+  "simplelogin.info.password_change_successful": "Password changed successfully.",
+  "simplelogin.info.password_change_fail": "Password change failed."
 }

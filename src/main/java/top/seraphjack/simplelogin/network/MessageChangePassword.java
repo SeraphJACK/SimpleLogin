@@ -2,6 +2,7 @@ package top.seraphjack.simplelogin.network;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
@@ -28,17 +29,21 @@ public class MessageChangePassword {
     }
 
     public static void handle(MessageChangePassword msg, Supplier<NetworkEvent.Context> ctx) {
+        NetworkEvent.Context context = ctx.get();
+        assert context.getSender() != null;
         String username = Objects.requireNonNull(ctx.get().getSender()).getGameProfile().getName();
         if (SLStorage.instance().storageProvider.checkPassword(username, msg.original)) {
             SLStorage.instance().storageProvider.changePassword(username, msg.to);
-            Objects.requireNonNull(ctx.get().getSender()).sendStatusMessage(new StringTextComponent("Password changed successfully."), false);
+            context.getSender().sendStatusMessage(new TranslationTextComponent(
+                    "simplelogin.info.password_change_successful"), false);
             NetworkLoader.INSTANCE.sendToServer(new MessageChangePasswordResponse(true));
         } else {
             // Should never happen though
-            Objects.requireNonNull(ctx.get().getSender()).sendStatusMessage(new StringTextComponent("Wrong original password."), false);
+            context.getSender().sendStatusMessage(new StringTextComponent(
+                    "simplelogin.info.password_change_fail"), false);
             NetworkLoader.INSTANCE.sendToServer(new MessageChangePasswordResponse(false));
             SimpleLogin.logger.warn("Player " + username + " tried to change password with a wrong password.");
         }
-        ctx.get().setPacketHandled(true);
+        context.setPacketHandled(true);
     }
 }

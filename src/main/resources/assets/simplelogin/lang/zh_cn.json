@@ -8,5 +8,7 @@
   "simplelogin.command.plugin.unload_success": "插件卸载成功: %s",
   "simplelogin.command.plugin.available_plugin_header": "可用插件列表：",
   "simplelogin.command.plugin.loaded_plugin_header": "已加载插件列表：",
-  "simplelogin.command.plugin.list_member": " - %s"
+  "simplelogin.command.plugin.list_member": " - %s",
+  "simplelogin.info.password_change_successful": "密码修改成功。",
+  "simplelogin.info.password_change_fail": "密码修改失败。"
 }
