@@ -4,6 +4,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.PacketDistributor;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
 import top.seraphjack.simplelogin.utils.SHA256;
@@ -36,12 +37,14 @@ public class MessageChangePassword {
             SLStorage.instance().storageProvider.changePassword(username, msg.to);
             context.getSender().sendStatusMessage(new TranslationTextComponent(
                     "simplelogin.info.password_change_successful"), false);
-            NetworkLoader.INSTANCE.sendToServer(new MessageChangePasswordResponse(true));
+            NetworkLoader.INSTANCE.send(PacketDistributor.PLAYER.with(context::getSender),
+                    new MessageChangePasswordResponse(true));
         } else {
             // Should never happen though
             context.getSender().sendStatusMessage(new StringTextComponent(
                     "simplelogin.info.password_change_fail"), false);
-            NetworkLoader.INSTANCE.sendToServer(new MessageChangePasswordResponse(false));
+            NetworkLoader.INSTANCE.send(PacketDistributor.PLAYER.with(context::getSender),
+                    new MessageChangePasswordResponse(false));
             SimpleLogin.logger.warn("Player " + username + " tried to change password with a wrong password.");
         }
         context.setPacketHandled(true);
