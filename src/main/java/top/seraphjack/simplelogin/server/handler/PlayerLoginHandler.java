@@ -1,7 +1,7 @@
 package top.seraphjack.simplelogin.server.handler;
 
+import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
@@ -14,13 +14,13 @@ import top.seraphjack.simplelogin.server.SLRegistries;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.stream.Collectors;
-
-import static top.seraphjack.simplelogin.SLConstants.MAX_PASSWORD_LENGTH;
 
 @OnlyIn(Dist.DEDICATED_SERVER)
 public final class PlayerLoginHandler {
@@ -30,36 +30,34 @@ public final class PlayerLoginHandler {
     private final ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(2, new ThreadFactoryBuilder()
             .setNameFormat("SimpleLogin-Worker-%d")
             .build());
-    private final List<Pair<ResourceLocation, HandlerPlugin>> plugins = new LinkedList<>();
+    private final Map<ResourceLocation, HandlerPlugin> plugins = new ConcurrentHashMap<>();
 
     private PlayerLoginHandler(Collection<ResourceLocation> plugins) {
         // Load plugins
-        for (ResourceLocation aRl : plugins) {
-            loadPlugin(aRl);
-        }
+        plugins.forEach(this::loadPlugin);
     }
 
     public void loadPlugin(ResourceLocation rl) {
-        if (this.plugins.stream().anyMatch(p -> p.getFirst().equals(rl))) return;
+        if (this.plugins.containsKey(rl)) return;
         SimpleLogin.logger.info("Loading plugin {}", rl.toString());
         HandlerPlugin plugin = SLRegistries.PLUGINS.get(rl).orElseThrow(() -> {
             return new IllegalArgumentException("No such plugin found: " + rl);
         }).get();
 
-        this.plugins.add(Pair.of(rl, plugin));
+        // Should not be possible though
+        Optional.ofNullable(this.plugins.put(rl, plugin)).ifPresent(HandlerPlugin::disable);
         plugin.enable(executor);
     }
 
     public void unloadPlugin(ResourceLocation rl) {
-        Optional<HandlerPlugin> plugin = this.plugins.stream().filter(p -> p.getFirst().equals(rl)).map(Pair::getSecond).findAny();
-        if (this.plugins.removeIf(p -> p.getFirst().equals(rl))) {
-            plugin.ifPresent(HandlerPlugin::disable);
+        Optional.ofNullable(plugins.remove(rl)).ifPresent(p -> {
+            p.disable();
             SimpleLogin.logger.info("Unloaded plugin {}", rl.toString());
-        }
+        });
     }
 
     public Collection<ResourceLocation> listPlugins() {
-        return this.plugins.stream().map(Pair::getFirst).collect(Collectors.toSet());
+        return new ImmutableSet.Builder<ResourceLocation>().addAll(this.plugins.keySet()).build();
     }
 
     public static void initLoginHandler(Collection<ResourceLocation> pluginList) {
@@ -101,16 +99,16 @@ public final class PlayerLoginHandler {
     public void playerJoin(final ServerPlayerEntity player) {
         Login login = new Login(player);
         loginList.add(login);
-        plugins.forEach(p -> p.getSecond().preLogin(player, login));
+        plugins.values().forEach(p -> p.preLogin(player, login));
     }
 
     public void playerLeave(final ServerPlayerEntity player) {
         loginList.removeIf(l -> l.name.equals(player.getGameProfile().getName()));
-        plugins.forEach(p -> p.getSecond().preLogout(player));
+        plugins.values().forEach(p -> p.preLogout(player));
     }
 
     public void postLogin(final ServerPlayerEntity player, final Login login) {
-        plugins.forEach(p -> p.getSecond().postLogin(player, login));
+        plugins.values().forEach(p -> p.postLogin(player, login));
     }
 
     public boolean hasPlayerLoggedIn(String id) {
@@ -119,8 +117,8 @@ public final class PlayerLoginHandler {
 
     public void stop() {
         SimpleLogin.logger.info("Shutting down player login handler");
-        SimpleLogin.logger.info("Disabling all plugins...");
-        this.plugins.stream().map(Pair::getSecond).forEach(HandlerPlugin::disable);
+        SimpleLogin.logger.info("Disabling all plugins");
+        this.plugins.values().forEach(HandlerPlugin::disable);
         this.plugins.clear();
         executor.shutdown();
     }
