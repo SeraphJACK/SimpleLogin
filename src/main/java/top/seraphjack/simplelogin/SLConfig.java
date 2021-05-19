@@ -24,7 +24,7 @@ public final class SLConfig {
 
             secs = builder
                     .comment("Login Timeout(s)")
-                    .defineInRange("secs", 60, 0, 1200);
+                    .defineInRange("secs", 600, 0, 1200);
 
             whitelistCommands = builder
                     .comment("Commands in whitelist can be executed before player login.")
