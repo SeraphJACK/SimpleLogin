@@ -130,8 +130,9 @@ This plugin is enabled by default.
 
 ResourceLocation: `simplelogin:timeout`
 
-This plugin will kick players who haven't log in after a specific time (defined in Simple Login's
-configuration, default is 60 seconds).
+This plugin will kick players who haven't authenticated after a while (default is 600 seconds, can be changed in Simple Login's
+configuration in `<server>/<world>/serverconfig/simplelogin-server.toml`).
+The timeout value used to be 60 seconds but has been increased to 600 seconds after issues with large modpacks causing the synchronization upon login to take longer than a minute.
 
 This plugin is enabled by default.
 
@@ -174,8 +175,9 @@ All commands have auto-complete support.
 ### Server Configuration
 
 - secs: Integer
-    - Player login time limit.
-    - Default 60 seconds.
+    - Time to wait for player to authenticate, if no successful authentication happened after this long the player will be disconnected.
+    - Default 600 seconds.
+    - Used to be 60 seconds but was increased to 10 minutes because of timeout issues with large modpacks.
 
 - plugins: String Array
     - plugins to load by default.
