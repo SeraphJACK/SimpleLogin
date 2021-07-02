@@ -10,7 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.UUID;
 
 @OnlyIn(Dist.CLIENT)
 public final class PasswordHolder {
@@ -25,14 +24,14 @@ public final class PasswordHolder {
 
     public static final Path PASSWORD_FILE_PATH = Paths.get(".", ".sl_password");
 
-    private String password = UUID.randomUUID().toString();
+    private String password = null;
     private String pendingPassword = null;
+    private boolean initialized = false;
 
     private PasswordHolder() {
         if (Files.exists(PASSWORD_FILE_PATH)) {
+            initialized = true;
             read();
-        } else {
-            save();
         }
     }
 
@@ -52,12 +51,25 @@ public final class PasswordHolder {
         }
     }
 
+    public boolean initialized() {
+        return initialized;
+    }
+
+    public void initialize(String password) {
+        if (initialized) throw new IllegalStateException();
+        initialized = true;
+        this.password = password;
+        save();
+    }
+
     public void setPendingPassword(String o) {
+        if (!initialized) throw new IllegalStateException();
         this.pendingPassword = o;
         save();
     }
 
     public void applyPending() {
+        if (!initialized) throw new IllegalStateException();
         if (this.pendingPassword == null) return;
         this.password = pendingPassword;
         save();
@@ -65,10 +77,12 @@ public final class PasswordHolder {
     }
 
     public void dropPending() {
+        if (!initialized) throw new IllegalStateException();
         this.pendingPassword = null;
     }
 
     public String password() {
+        if (!initialized) throw new IllegalStateException();
         return password;
     }
 }
