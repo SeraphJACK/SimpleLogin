@@ -72,6 +72,7 @@ public final class PlayerLoginHandler {
     }
 
     public void login(String id, String pwd) {
+        id = id.toLowerCase();
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         Login login = getLoginByName(id);
         ServerPlayerEntity player = server.getPlayerList().getPlayerByUsername(id);

@@ -11,7 +11,7 @@ public final class Login {
     public final float yaw, pitch;
 
     Login(ServerPlayerEntity player) {
-        this.name = player.getGameProfile().getName();
+        this.name = player.getGameProfile().getName().toLowerCase();
         this.time = System.currentTimeMillis();
         this.posX = player.getPosX();
         this.posY = player.getPosY();
