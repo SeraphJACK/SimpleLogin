@@ -37,7 +37,7 @@ public class StorageProviderFile implements StorageProvider {
             entries = new ConcurrentHashMap<>();
             POJOUserEntry[] buf = gson.fromJson(Files.newBufferedReader(path, StandardCharsets.UTF_8), POJOUserEntry[].class);
             if (buf != null) {
-                Arrays.stream(buf).forEach(e -> entries.put(e.username, e));
+                Arrays.stream(buf).peek(e -> e.username = e.username.toLowerCase()).forEach(e -> entries.put(e.username, e));
             }
         } else {
             if (!Files.exists(path.getParent())) {
