@@ -10,7 +10,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle'
 
-version = '1.1.1'
+version = '1.1.2'
 group = 'top.seraphjack'
 archivesBaseName = 'SimpleLogin-1.16'
 
