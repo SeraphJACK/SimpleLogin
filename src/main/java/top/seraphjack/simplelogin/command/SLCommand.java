@@ -90,7 +90,7 @@ public class SLCommand {
 
     private static int loadPlugin(CommandContext<CommandSourceStack> ctx) {
         ResourceLocation plugin = ArgumentTypeHandlerPlugin.getPlugin(ctx, "plugin");
-        if (!SLRegistries.PLUGINS.get(plugin).isPresent()) {
+        if (SLRegistries.PLUGINS.get(plugin).isEmpty()) {
             ctx.getSource().sendSuccess(
                     new TranslatableComponent("simplelogin.command.plugin.not_found", plugin.toString()),
                     true
@@ -117,7 +117,7 @@ public class SLCommand {
 
     private static int unloadPlugin(CommandContext<CommandSourceStack> ctx) {
         ResourceLocation plugin = ArgumentTypeHandlerPlugin.getPlugin(ctx, "plugin");
-        if (!SLRegistries.PLUGINS.get(plugin).isPresent()) {
+        if (SLRegistries.PLUGINS.get(plugin).isEmpty()) {
             ctx.getSource().sendSuccess(
                     new TranslatableComponent("simplelogin.command.plugin.not_found", plugin.toString()),
                     true

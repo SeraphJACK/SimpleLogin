@@ -17,8 +17,6 @@ import net.minecraftforge.fml.common.Mod;
 import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.server.storage.Position;
 
-import javax.swing.text.html.HTML;
-
 @OnlyIn(Dist.DEDICATED_SERVER)
 @Mod.EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = SLConstants.MODID)
 public class CapabilityLoader {

@@ -17,7 +17,7 @@ import java.util.UUID;
 public final class SetPasswordScreen extends Screen {
     private final Screen parentScreen;
 
-    private EditBox textFieldPassword;
+    private EditBox password;
     private Button buttonRandom;
     private Button buttonComplete;
 
@@ -28,51 +28,56 @@ public final class SetPasswordScreen extends Screen {
 
     @Override
     protected void init() {
-        this.textFieldPassword = new EditBox(this.font,
+        this.password = new EditBox(this.font,
                 this.width / 2 - 100, this.height / 2, 170, 20,
                 new TranslatableComponent("simplelogin.password"));
-        this.textFieldPassword.setMaxLength(SLConstants.MAX_PASSWORD_LENGTH);
-//        this.textFieldPassword.setValidator((p) -> p.length() <= SLConstants.MAX_PASSWORD_LENGTH);
-        this.textFieldPassword.setResponder((p) -> {
+        this.password.setBordered(true);
+        this.password.setEditable(true);
+        this.password.setMaxLength(SLConstants.MAX_PASSWORD_LENGTH);
+        this.password.setFilter((p) -> p.length() <= SLConstants.MAX_PASSWORD_LENGTH);
+        this.password.setResponder((p) -> {
             buttonComplete.active = !p.isEmpty();
         });
 
         this.buttonRandom = this.addWidget(new Button(this.width / 2 + 80, this.height / 2, 20, 20,
                 new TextComponent("R"), (btn) -> {
-            this.textFieldPassword.setValue(UUID.randomUUID().toString());
+            this.password.setValue(UUID.randomUUID().toString());
         }));
         this.buttonComplete = this.addWidget(new Button(this.width / 2 - 100, this.height / 2 + 40, 200, 20,
                 CommonComponents.GUI_DONE, (btn) -> {
-            String password = textFieldPassword.getValue();
+            String password = this.password.getValue();
             if (!password.isEmpty()) {
                 PasswordHolder.instance().initialize(password);
                 onClose();
             }
         }));
         this.buttonComplete.active = false;
+        this.setInitialFocus(this.password);
     }
 
     @Override
     public void tick() {
-        this.textFieldPassword.tick();
+        this.password.tick();
     }
 
     @Override
     public void resize(Minecraft minecraft, int width, int height) {
-        String pwd = textFieldPassword.getValue();
+        String pwd = password.getValue();
         this.init(minecraft, width, height);
-        this.textFieldPassword.setValue(pwd);
+        this.password.setValue(pwd);
     }
 
     @Override
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+        this.setFocused(this.password);
+        this.password.setFocus(true);
         renderBackground(poseStack);
 
         int middle = width / 2;
         drawCenteredString(poseStack, font, new TranslatableComponent("simplelogin.password.title"),
                 middle, height / 4, 0xFFFFFF);
 
-        this.textFieldPassword.render(poseStack, mouseX, mouseY, partialTicks);
+        this.password.render(poseStack, mouseX, mouseY, partialTicks);
         this.buttonRandom.render(poseStack, mouseX, mouseY, partialTicks);
         this.buttonComplete.render(poseStack, mouseX, mouseY, partialTicks);
     }
@@ -80,8 +85,8 @@ public final class SetPasswordScreen extends Screen {
     @Override
     public void onClose() {
         if (!PasswordHolder.instance().initialized()) {
-            if (!this.textFieldPassword.getValue().isEmpty()) {
-                PasswordHolder.instance().initialize(this.textFieldPassword.getValue());
+            if (!this.password.getValue().isEmpty()) {
+                PasswordHolder.instance().initialize(this.password.getValue());
             } else {
                 PasswordHolder.instance().initialize(UUID.randomUUID().toString());
             }

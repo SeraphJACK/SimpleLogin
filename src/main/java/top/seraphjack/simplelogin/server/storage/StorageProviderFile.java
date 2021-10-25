@@ -78,8 +78,7 @@ public class StorageProviderFile implements StorageProvider {
     @Override
     public synchronized void save() throws IOException {
         try {
-            Files.write(path, gson.toJson(entries.values().toArray()).getBytes(StandardCharsets.UTF_8),
-                    StandardOpenOption.TRUNCATE_EXISTING);
+            Files.writeString(path, gson.toJson(entries.values().toArray()), StandardOpenOption.TRUNCATE_EXISTING);
             dirty = false;
         } catch (IOException ex) {
             SimpleLogin.logger.error("Unable to save entries", ex);
