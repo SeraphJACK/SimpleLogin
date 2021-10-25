@@ -1,6 +1,6 @@
 {
   "simplelogin.command.error.entry_not_found": "不存在名叫 %s 的注册玩家",
-  "simplelogin.command.about.info": "SimpleLogin 版本 %s ，Minecraft 版本 1.16.*",
+  "simplelogin.command.about.info": "SimpleLogin 版本 %s ，Minecraft 版本 1.17.*",
   "simplelogin.command.plugin.not_found": "插件不存在: %s",
   "simplelogin.command.plugin.already_loaded": "插件已被加载: %s",
   "simplelogin.command.plugin.load_success": "插件加载成功: %s",

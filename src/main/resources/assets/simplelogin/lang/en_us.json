@@ -1,6 +1,6 @@
 {
   "simplelogin.command.error.entry_not_found": "Registry for player %s does not exist",
-  "simplelogin.command.about.info": "SimpleLogin version %s for Minecraft 1.16.*",
+  "simplelogin.command.about.info": "SimpleLogin version %s for Minecraft 1.17.*",
   "simplelogin.command.plugin.not_found": "Plugin not found: %s",
   "simplelogin.command.plugin.already_loaded": "Plugin is already loaded: %s",
   "simplelogin.command.plugin.load_success": "Successfully loaded plugin: %s",
