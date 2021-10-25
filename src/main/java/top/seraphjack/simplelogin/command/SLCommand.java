@@ -70,7 +70,7 @@ public class SLCommand {
     }
 
     private static int setDefaultGamemode(CommandContext<CommandSourceStack> ctx) {
-        GameType gameType = GameType.values()[ctx.getArgument("mode", Integer.class) + 1];
+        GameType gameType = GameType.byId(ctx.getArgument("mode", Integer.class));
         SLStorage.instance().storageProvider.setGameType(ArgumentTypeEntryName.getEntryName(ctx, "entry"), gameType);
         ctx.getSource().sendSuccess(new TextComponent("Successfully set entry default game type to " + gameType.getName() + "."), false);
         return Command.SINGLE_SUCCESS;
