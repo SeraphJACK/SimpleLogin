@@ -113,7 +113,7 @@ public final class PlayerLoginHandler {
     }
 
     public boolean hasPlayerLoggedIn(String id) {
-        return loginList.stream().noneMatch(e -> e.name.equals(id));
+        return loginList.stream().noneMatch(e -> e.name.equals(id.toLowerCase()));
     }
 
     public void stop() {
