@@ -1,12 +1,12 @@
 package top.seraphjack.simplelogin.server.storage;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.DEDICATED_SERVER)
-public class Position {
+public final class Position {
     private final double x, y, z;
 
     public Position(double x, double y, double z) {
@@ -36,15 +36,15 @@ public class Position {
         return false;
     }
 
-    public INBT toNBT() {
-        CompoundNBT tag = new CompoundNBT();
+    public Tag toNBT() {
+        CompoundTag tag = new CompoundTag();
         tag.putDouble("x", x);
         tag.putDouble("y", y);
         tag.putDouble("z", z);
         return tag;
     }
 
-    public static Position fromNBT(CompoundNBT nbt) {
+    public static Position fromNBT(CompoundTag nbt) {
         return new Position(nbt.getDouble("x"), nbt.getDouble("y"), nbt.getDouble("z"));
     }
 }

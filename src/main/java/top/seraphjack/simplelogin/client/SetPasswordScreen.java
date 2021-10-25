@@ -1,13 +1,13 @@
 package top.seraphjack.simplelogin.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.DialogTexts;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import top.seraphjack.simplelogin.SLConstants;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -17,37 +17,36 @@ import java.util.UUID;
 public final class SetPasswordScreen extends Screen {
     private final Screen parentScreen;
 
-    private TextFieldWidget textFieldPassword;
+    private EditBox textFieldPassword;
     private Button buttonRandom;
     private Button buttonComplete;
 
     SetPasswordScreen(Screen parent) {
-        super(new TranslationTextComponent("simplelogin.password.title"));
+        super(new TranslatableComponent("simplelogin.password.title"));
         this.parentScreen = parent;
     }
 
     @Override
     protected void init() {
-        this.textFieldPassword = new TextFieldWidget(this.font,
+        this.textFieldPassword = new EditBox(this.font,
                 this.width / 2 - 100, this.height / 2, 170, 20,
-                new TranslationTextComponent("simplelogin.password"));
-        this.textFieldPassword.setMaxStringLength(SLConstants.MAX_PASSWORD_LENGTH);
-        this.textFieldPassword.setValidator((p) -> p.length() <= SLConstants.MAX_PASSWORD_LENGTH);
+                new TranslatableComponent("simplelogin.password"));
+        this.textFieldPassword.setMaxLength(SLConstants.MAX_PASSWORD_LENGTH);
+//        this.textFieldPassword.setValidator((p) -> p.length() <= SLConstants.MAX_PASSWORD_LENGTH);
         this.textFieldPassword.setResponder((p) -> {
             buttonComplete.active = !p.isEmpty();
         });
-        this.children.add(textFieldPassword);
 
-        this.buttonRandom = this.addButton(new Button(this.width / 2 + 80, this.height / 2, 20, 20,
-                new StringTextComponent("R"), (btn) -> {
-            this.textFieldPassword.setText(UUID.randomUUID().toString());
+        this.buttonRandom = this.addWidget(new Button(this.width / 2 + 80, this.height / 2, 20, 20,
+                new TextComponent("R"), (btn) -> {
+            this.textFieldPassword.setValue(UUID.randomUUID().toString());
         }));
-        this.buttonComplete = this.addButton(new Button(this.width / 2 - 100, this.height / 2 + 40, 200, 20,
-                DialogTexts.GUI_DONE, (btn) -> {
-            String password = textFieldPassword.getText();
+        this.buttonComplete = this.addWidget(new Button(this.width / 2 - 100, this.height / 2 + 40, 200, 20,
+                CommonComponents.GUI_DONE, (btn) -> {
+            String password = textFieldPassword.getValue();
             if (!password.isEmpty()) {
                 PasswordHolder.instance().initialize(password);
-                closeScreen();
+                onClose();
             }
         }));
         this.buttonComplete.active = false;
@@ -60,34 +59,34 @@ public final class SetPasswordScreen extends Screen {
 
     @Override
     public void resize(Minecraft minecraft, int width, int height) {
-        String pwd = textFieldPassword.getText();
+        String pwd = textFieldPassword.getValue();
         this.init(minecraft, width, height);
-        this.textFieldPassword.setText(pwd);
+        this.textFieldPassword.setValue(pwd);
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        renderBackground(matrixStack);
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+        renderBackground(poseStack);
 
         int middle = width / 2;
-        drawCenteredString(matrixStack, font, new TranslationTextComponent("simplelogin.password.title"),
+        drawCenteredString(poseStack, font, new TranslatableComponent("simplelogin.password.title"),
                 middle, height / 4, 0xFFFFFF);
 
-        this.textFieldPassword.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.buttonRandom.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.buttonComplete.render(matrixStack, mouseX, mouseY, partialTicks);
+        this.textFieldPassword.render(poseStack, mouseX, mouseY, partialTicks);
+        this.buttonRandom.render(poseStack, mouseX, mouseY, partialTicks);
+        this.buttonComplete.render(poseStack, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public void closeScreen() {
+    public void onClose() {
         if (!PasswordHolder.instance().initialized()) {
-            if (!this.textFieldPassword.getText().isEmpty()) {
-                PasswordHolder.instance().initialize(this.textFieldPassword.getText());
+            if (!this.textFieldPassword.getValue().isEmpty()) {
+                PasswordHolder.instance().initialize(this.textFieldPassword.getValue());
             } else {
                 PasswordHolder.instance().initialize(UUID.randomUUID().toString());
             }
         }
         assert this.minecraft != null;
-        this.minecraft.displayGuiScreen(this.parentScreen);
+        this.minecraft.setScreen(this.parentScreen);
     }
 }

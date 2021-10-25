@@ -1,12 +1,12 @@
 package top.seraphjack.simplelogin.server;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
+import net.minecraftforge.fmlserverevents.FMLServerStoppedEvent;
 import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.SimpleLogin;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public final class ServerLoader {
 
     public static void serverSetup(@SuppressWarnings("unused") FMLDedicatedServerSetupEvent event) {
-        CapabilityLoader.registerCapabilities();
+        // NO-OP
     }
 
     @SubscribeEvent

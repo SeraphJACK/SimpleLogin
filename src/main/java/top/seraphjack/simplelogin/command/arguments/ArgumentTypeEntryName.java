@@ -7,9 +7,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.forgespi.Environment;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 
 public final class ArgumentTypeEntryName implements ArgumentType<EntryNameInput> {
 
-    private static final DynamicCommandExceptionType ENTRY_NOT_EXIST = new DynamicCommandExceptionType((o -> new TranslationTextComponent("simplelogin.command.error.entry_not_found", o)));
+    private static final DynamicCommandExceptionType ENTRY_NOT_EXIST = new DynamicCommandExceptionType((o -> new TranslatableComponent("simplelogin.command.error.entry_not_found", o)));
 
     private ArgumentTypeEntryName() {
     }
@@ -40,11 +40,11 @@ public final class ArgumentTypeEntryName implements ArgumentType<EntryNameInput>
     @Override
     @SuppressWarnings("unchecked")
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        if (context.getSource() instanceof CommandSource) {
-            return ISuggestionProvider.suggest(SLStorage.instance().storageProvider.getAllRegisteredUsername(), builder);
-        } else if (context.getSource() instanceof ISuggestionProvider) {
-            CommandContext<ISuggestionProvider> ctx = (CommandContext<ISuggestionProvider>) context;
-            return ((ISuggestionProvider) context.getSource()).getSuggestionsFromServer(ctx, builder);
+        if (context.getSource() instanceof CommandSourceStack) {
+            return SharedSuggestionProvider.suggest(SLStorage.instance().storageProvider.getAllRegisteredUsername(), builder);
+        } else if (context.getSource() instanceof SharedSuggestionProvider) {
+            CommandContext<SharedSuggestionProvider> ctx = (CommandContext<SharedSuggestionProvider>) context;
+            return ((SharedSuggestionProvider) context.getSource()).customSuggestion(ctx, builder);
         }
         return Suggestions.empty();
     }

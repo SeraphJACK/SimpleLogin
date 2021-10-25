@@ -2,13 +2,13 @@ package top.seraphjack.simplelogin.server.handler;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.server.SLRegistries;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
@@ -75,7 +75,7 @@ public final class PlayerLoginHandler {
         id = id.toLowerCase();
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         Login login = getLoginByName(id);
-        ServerPlayerEntity player = server.getPlayerList().getPlayerByUsername(id);
+        ServerPlayer player = server.getPlayerList().getPlayerByName(id);
 
         // Though player shouldn't be null if login is not null
         if (login == null || player == null) {
@@ -91,24 +91,24 @@ public final class PlayerLoginHandler {
             postLogin(player, login);
         } else {
             SimpleLogin.logger.warn("Player " + id + " tried to login with a wrong password.");
-            player.connection.disconnect(new StringTextComponent("Wrong Password."));
+            player.connection.disconnect(new TextComponent("Wrong Password."));
         }
 
         loginList.remove(login);
     }
 
-    public void playerJoin(final ServerPlayerEntity player) {
+    public void playerJoin(final ServerPlayer player) {
         Login login = new Login(player);
         loginList.add(login);
         plugins.values().forEach(p -> p.preLogin(player, login));
     }
 
-    public void playerLeave(final ServerPlayerEntity player) {
+    public void playerLeave(final ServerPlayer player) {
         loginList.removeIf(l -> l.name.equals(player.getGameProfile().getName()));
         plugins.values().forEach(p -> p.preLogout(player));
     }
 
-    public void postLogin(final ServerPlayerEntity player, final Login login) {
+    public void postLogin(final ServerPlayer player, final Login login) {
         plugins.values().forEach(p -> p.postLogin(player, login));
     }
 

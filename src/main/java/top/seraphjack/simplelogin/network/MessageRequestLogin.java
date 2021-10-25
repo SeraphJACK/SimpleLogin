@@ -1,8 +1,7 @@
 package top.seraphjack.simplelogin.network;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
-import top.seraphjack.simplelogin.SLConfig;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import top.seraphjack.simplelogin.client.PasswordHolder;
 
 import java.util.function.Supplier;
@@ -13,11 +12,11 @@ public class MessageRequestLogin {
     public MessageRequestLogin() {
     }
 
-    public static void encode(MessageRequestLogin msg, PacketBuffer buffer) {
+    public static void encode(MessageRequestLogin msg, FriendlyByteBuf buffer) {
         // NO-OP
     }
 
-    public static MessageRequestLogin decode(PacketBuffer buffer) {
+    public static MessageRequestLogin decode(FriendlyByteBuf buffer) {
         return new MessageRequestLogin();
     }
 

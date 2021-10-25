@@ -1,6 +1,6 @@
 package top.seraphjack.simplelogin.server.handler.plugins;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.server.handler.HandlerPlugin;
 import top.seraphjack.simplelogin.server.handler.Login;
@@ -31,17 +31,17 @@ public final class AutoSave implements HandlerPlugin {
     }
 
     @Override
-    public void preLogin(ServerPlayerEntity player, Login login) {
+    public void preLogin(ServerPlayer player, Login login) {
         // NO-OP
     }
 
     @Override
-    public void postLogin(ServerPlayerEntity player, Login login) {
+    public void postLogin(ServerPlayer player, Login login) {
         // NO-OP
     }
 
     @Override
-    public void preLogout(ServerPlayerEntity player) {
+    public void preLogout(ServerPlayer player) {
         // NO-OP
     }
 

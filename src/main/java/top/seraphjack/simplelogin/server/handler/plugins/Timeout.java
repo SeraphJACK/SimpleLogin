@@ -1,7 +1,7 @@
 package top.seraphjack.simplelogin.server.handler.plugins;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
 import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.server.handler.HandlerPlugin;
 import top.seraphjack.simplelogin.server.handler.Login;
@@ -23,9 +23,9 @@ public final class Timeout implements HandlerPlugin {
     }
 
     @Override
-    public void preLogin(ServerPlayerEntity player, Login login) {
+    public void preLogin(ServerPlayer player, Login login) {
         ScheduledFuture<?> future = executor.schedule(() -> {
-            player.connection.disconnect(new StringTextComponent("Login timeout"));
+            player.connection.disconnect(new TextComponent("Login timeout"));
         }, SLConfig.SERVER.secs.get(), TimeUnit.SECONDS);
 
         Optional.ofNullable(futures.put(player.getGameProfile().getName(), future))
@@ -33,12 +33,12 @@ public final class Timeout implements HandlerPlugin {
     }
 
     @Override
-    public void postLogin(ServerPlayerEntity player, Login login) {
+    public void postLogin(ServerPlayer player, Login login) {
         Optional.ofNullable(futures.remove(login.name)).ifPresent(f -> f.cancel(true));
     }
 
     @Override
-    public void preLogout(ServerPlayerEntity player) {
+    public void preLogout(ServerPlayer player) {
         Optional.ofNullable(futures.remove(player.getGameProfile().getName()))
                 .ifPresent(f -> f.cancel(true));
     }

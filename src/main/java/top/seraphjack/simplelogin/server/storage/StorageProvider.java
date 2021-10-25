@@ -1,6 +1,6 @@
 package top.seraphjack.simplelogin.server.storage;
 
-import net.minecraft.world.GameType;
+import net.minecraft.world.level.GameType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -31,6 +31,7 @@ public interface StorageProvider {
 
     /**
      * Should be immutable
+     *
      * @return all registered username
      */
     Collection<String> getAllRegisteredUsername();

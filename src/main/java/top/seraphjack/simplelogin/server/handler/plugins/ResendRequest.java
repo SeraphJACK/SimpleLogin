@@ -1,7 +1,7 @@
 package top.seraphjack.simplelogin.server.handler.plugins;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import top.seraphjack.simplelogin.network.MessageRequestLogin;
 import top.seraphjack.simplelogin.network.NetworkLoader;
 import top.seraphjack.simplelogin.server.handler.HandlerPlugin;
@@ -25,7 +25,7 @@ public final class ResendRequest implements HandlerPlugin {
     }
 
     @Override
-    public void preLogin(ServerPlayerEntity player, Login login) {
+    public void preLogin(ServerPlayer player, Login login) {
         ScheduledFuture<?> future = executor.scheduleWithFixedDelay(() -> {
             NetworkLoader.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new MessageRequestLogin());
         }, 0, 5, TimeUnit.SECONDS);
@@ -33,12 +33,12 @@ public final class ResendRequest implements HandlerPlugin {
     }
 
     @Override
-    public void postLogin(ServerPlayerEntity player, Login login) {
+    public void postLogin(ServerPlayer player, Login login) {
         Optional.ofNullable(futures.remove(login.name)).ifPresent(f -> f.cancel(true));
     }
 
     @Override
-    public void preLogout(ServerPlayerEntity player) {
+    public void preLogout(ServerPlayer player) {
         Optional.ofNullable(futures.remove(player.getGameProfile().getName()))
                 .ifPresent(f -> f.cancel(true));
     }

@@ -1,6 +1,6 @@
 package top.seraphjack.simplelogin.server.storage;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import top.seraphjack.simplelogin.server.SLRegistries;

@@ -1,11 +1,11 @@
 package top.seraphjack.simplelogin.network;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.fmllegacy.network.NetworkDirection;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkRegistry;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 import top.seraphjack.simplelogin.SLConstants;
 
 import java.util.Optional;
@@ -52,8 +52,8 @@ public class NetworkLoader {
 
     private static int id = 0;
 
-    private static <MSG> void registerPacket(Class<MSG> msg, BiConsumer<MSG, PacketBuffer> encoder,
-                                             Function<PacketBuffer, MSG> decoder,
+    private static <MSG> void registerPacket(Class<MSG> msg, BiConsumer<MSG, FriendlyByteBuf> encoder,
+                                             Function<FriendlyByteBuf, MSG> decoder,
                                              BiConsumer<MSG, Supplier<NetworkEvent.Context>> handler,
                                              final NetworkDirection direction) {
         INSTANCE.registerMessage(id++, msg, encoder, decoder, handler, Optional.of(direction));

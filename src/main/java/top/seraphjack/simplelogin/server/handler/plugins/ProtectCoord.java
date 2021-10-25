@@ -1,8 +1,9 @@
 package top.seraphjack.simplelogin.server.handler.plugins;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.world.storage.IWorldInfo;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.server.capability.CapabilityLoader;
 import top.seraphjack.simplelogin.server.handler.HandlerPlugin;
@@ -14,33 +15,33 @@ import static top.seraphjack.simplelogin.server.capability.CapabilityLastPos.def
 
 public final class ProtectCoord implements HandlerPlugin {
     @Override
-    public void preLogin(ServerPlayerEntity player, Login login) {
+    public void preLogin(ServerPlayer player, Login login) {
         // NO-OP
     }
 
     @Override
-    public void postLogin(ServerPlayerEntity player, Login login) {
-        ServerLifecycleHooks.getCurrentServer().deferTask(() -> {
+    public void postLogin(ServerPlayer player, Login login) {
+        ServerLifecycleHooks.getCurrentServer().tell(new TickTask(1, () -> {
             Position lastPos = player.getCapability(CapabilityLoader.CAPABILITY_LAST_POS)
                     .orElseThrow(RuntimeException::new).getLastPos();
 
             if (lastPos.equals(defaultPosition)) {
-                player.setPositionAndUpdate(login.posX, login.posY, login.posZ);
+                player.setPos(login.posX, login.posY, login.posZ);
             } else {
-                player.setPositionAndUpdate(lastPos.getX(), lastPos.getY(), lastPos.getZ());
+                player.setPos(lastPos.getX(), lastPos.getY(), lastPos.getZ());
             }
-        });
+        }));
     }
 
     @Override
-    public void preLogout(ServerPlayerEntity player) {
+    public void preLogout(ServerPlayer player) {
         try {
             if (PlayerLoginHandler.instance().hasPlayerLoggedIn(player.getGameProfile().getName())) {
-                final Position pos = new Position(player.getPosX(), player.getPosY(), player.getPosZ());
+                final Position pos = new Position(player.getX(), player.getY(), player.getZ());
                 player.getCapability(CapabilityLoader.CAPABILITY_LAST_POS).ifPresent(c -> c.setLastPos(pos));
             }
-            IWorldInfo info = player.getServerWorld().getWorldInfo();
-            player.setPosition(info.getSpawnX(), info.getSpawnY(), info.getSpawnZ());
+            BlockPos spawnPoint = player.getLevel().getSharedSpawnPos();
+            player.setPos(spawnPoint.getX(), spawnPoint.getY(), spawnPoint.getZ());
         } catch (Exception ex) {
             SimpleLogin.logger.error("Fail to set player position to spawn point when logging out.", ex);
         }

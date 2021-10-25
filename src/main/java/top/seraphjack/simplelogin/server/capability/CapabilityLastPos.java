@@ -1,14 +1,13 @@
 package top.seraphjack.simplelogin.server.capability;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
-import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.server.storage.Position;
 
 import javax.annotation.Nonnull;
@@ -18,20 +17,7 @@ import javax.annotation.Nullable;
 public class CapabilityLastPos {
     public static final Position defaultPosition = new Position(0, 255, 0);
 
-    public static class Storage implements Capability.IStorage<ILastPos> {
-        @Nullable
-        @Override
-        public INBT writeNBT(Capability<ILastPos> capability, ILastPos instance, Direction side) {
-            return instance.getLastPos().toNBT();
-        }
-
-        @Override
-        public void readNBT(Capability<ILastPos> capability, ILastPos instance, Direction side, INBT nbt) {
-            instance.setLastPos(Position.fromNBT((CompoundNBT) nbt));
-        }
-    }
-
-    public static class Provider implements ICapabilitySerializable<INBT> {
+    public static class Provider implements ICapabilitySerializable<Tag> {
         private final ILastPos lastPos = new Implementation();
 
         @Override
@@ -44,13 +30,13 @@ public class CapabilityLastPos {
         }
 
         @Override
-        public INBT serializeNBT() {
-            return CapabilityLoader.CAPABILITY_LAST_POS.getStorage().writeNBT(CapabilityLoader.CAPABILITY_LAST_POS, lastPos, null);
+        public Tag serializeNBT() {
+            return lastPos.getLastPos().toNBT();
         }
 
         @Override
-        public void deserializeNBT(INBT nbt) {
-            CapabilityLoader.CAPABILITY_LAST_POS.getStorage().readNBT(CapabilityLoader.CAPABILITY_LAST_POS, lastPos, null, nbt);
+        public void deserializeNBT(Tag nbt) {
+            this.lastPos.setLastPos(Position.fromNBT((CompoundTag) nbt));
         }
     }
 

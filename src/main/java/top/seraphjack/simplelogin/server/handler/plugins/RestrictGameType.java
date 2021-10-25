@@ -1,30 +1,31 @@
 package top.seraphjack.simplelogin.server.handler.plugins;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.world.GameType;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.GameType;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 import top.seraphjack.simplelogin.server.handler.HandlerPlugin;
 import top.seraphjack.simplelogin.server.handler.Login;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
 
 public final class RestrictGameType implements HandlerPlugin {
     @Override
-    public void preLogin(ServerPlayerEntity player, Login login) {
-        ServerLifecycleHooks.getCurrentServer().deferTask(() -> {
-            player.setGameType(GameType.SPECTATOR);
-        });
+    public void preLogin(ServerPlayer player, Login login) {
+        ServerLifecycleHooks.getCurrentServer().tell(new TickTask(1, () -> {
+            player.setGameMode(GameType.SPECTATOR);
+        }));
     }
 
     @Override
-    public void postLogin(ServerPlayerEntity player, Login login) {
-        ServerLifecycleHooks.getCurrentServer().deferTask(() -> {
-            player.setGameType(SLStorage.instance().storageProvider.gameType(player.getGameProfile().getName()));
-        });
+    public void postLogin(ServerPlayer player, Login login) {
+        ServerLifecycleHooks.getCurrentServer().tell(new TickTask(1, () -> {
+            player.setGameMode(SLStorage.instance().storageProvider.gameType(player.getGameProfile().getName()));
+        }));
     }
 
     @Override
-    public void preLogout(ServerPlayerEntity player) {
-        player.setGameType(GameType.SPECTATOR);
+    public void preLogout(ServerPlayer player) {
+        player.setGameMode(GameType.SPECTATOR);
     }
 
     @Override

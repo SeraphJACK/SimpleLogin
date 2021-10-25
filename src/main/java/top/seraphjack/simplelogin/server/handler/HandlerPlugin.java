@@ -1,6 +1,6 @@
 package top.seraphjack.simplelogin.server.handler;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -17,21 +17,21 @@ public interface HandlerPlugin {
      *
      * @param player player joining in
      */
-    void preLogin(ServerPlayerEntity player, Login login);
+    void preLogin(ServerPlayer player, Login login);
 
     /**
      * Called only once when the player log in successfully
      *
      * @param player player logging in
      */
-    void postLogin(ServerPlayerEntity player, Login login);
+    void postLogin(ServerPlayer player, Login login);
 
     /**
      * Called only once before the player leaving server
      *
      * @param player player leaving server
      */
-    void preLogout(ServerPlayerEntity player);
+    void preLogout(ServerPlayer player);
 
     /**
      * Called only once when the plugin is disabled

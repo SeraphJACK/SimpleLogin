@@ -1,6 +1,6 @@
 package top.seraphjack.simplelogin.server.handler;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Objects;
 
@@ -10,14 +10,14 @@ public final class Login {
     public final double posX, posY, posZ;
     public final float yaw, pitch;
 
-    Login(ServerPlayerEntity player) {
+    Login(ServerPlayer player) {
         this.name = player.getGameProfile().getName().toLowerCase();
         this.time = System.currentTimeMillis();
-        this.posX = player.getPosX();
-        this.posY = player.getPosY();
-        this.posZ = player.getPosZ();
-        this.yaw = player.rotationYaw;
-        this.pitch = player.rotationPitch;
+        this.posX = player.getX();
+        this.posY = player.getY();
+        this.posZ = player.getZ();
+        this.yaw = player.getYRot();
+        this.pitch = player.getXRot();
     }
 
     @Override

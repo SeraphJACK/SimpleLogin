@@ -1,7 +1,7 @@
 package top.seraphjack.simplelogin.network;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import top.seraphjack.simplelogin.client.PasswordHolder;
 
 import java.util.function.Supplier;
@@ -17,11 +17,11 @@ public class MessageChangePasswordResponse {
         this.success = success;
     }
 
-    public static void encode(MessageChangePasswordResponse msg, PacketBuffer buf) {
+    public static void encode(MessageChangePasswordResponse msg, FriendlyByteBuf buf) {
         buf.writeBoolean(msg.success);
     }
 
-    public static MessageChangePasswordResponse decode(PacketBuffer buf) {
+    public static MessageChangePasswordResponse decode(FriendlyByteBuf buf) {
         return new MessageChangePasswordResponse(buf.readBoolean());
     }
 

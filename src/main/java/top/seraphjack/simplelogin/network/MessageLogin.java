@@ -1,14 +1,13 @@
 package top.seraphjack.simplelogin.network;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import top.seraphjack.simplelogin.server.handler.PlayerLoginHandler;
 import top.seraphjack.simplelogin.utils.SHA256;
 
+import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
-
-import static top.seraphjack.simplelogin.SLConstants.MAX_PASSWORD_LENGTH;
 
 public class MessageLogin {
     private final String pwd;
@@ -17,16 +16,18 @@ public class MessageLogin {
         this.pwd = SHA256.getSHA256(pwd);
     }
 
-    public static void encode(MessageLogin packet, PacketBuffer buf) {
-        buf.writeString(packet.pwd, MAX_PASSWORD_LENGTH);
+    public static void encode(MessageLogin packet, FriendlyByteBuf buf) {
+        buf.writeInt(packet.pwd.length());
+        buf.writeCharSequence(packet.pwd, StandardCharsets.UTF_8);
     }
 
-    public static MessageLogin decode(PacketBuffer buffer) {
-        return new MessageLogin(buffer.readString(MAX_PASSWORD_LENGTH));
+    public static MessageLogin decode(FriendlyByteBuf buffer) {
+        int len = buffer.readInt();
+        return new MessageLogin(buffer.readCharSequence(len, StandardCharsets.UTF_8).toString());
     }
 
     public static void handle(MessageLogin message, Supplier<NetworkEvent.Context> ctx) {
-        ServerPlayerEntity player = ctx.get().getSender();
+        ServerPlayer player = ctx.get().getSender();
         if (player != null) {
             PlayerLoginHandler.instance().login(player.getGameProfile().getName(), message.pwd);
         }

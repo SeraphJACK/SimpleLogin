@@ -1,7 +1,7 @@
 package top.seraphjack.simplelogin.server;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.server.handler.HandlerPlugin;
 import top.seraphjack.simplelogin.server.handler.plugins.*;
@@ -51,7 +51,7 @@ public class SLRegistries<S> {
 
         // Default storage providers
         STORAGE_PROVIDERS.register(new ResourceLocation("simplelogin", "file"),
-                () -> mustCall(() -> new StorageProviderFile(ServerLifecycleHooks.getCurrentServer().func_240776_a_(SLConstants.SL_ENTRY))));
+                () -> mustCall(() -> new StorageProviderFile(ServerLifecycleHooks.getCurrentServer().getWorldPath(SLConstants.SL_ENTRY))));
         STORAGE_PROVIDERS.register(new ResourceLocation("simplelogin", "sqlite"),
                 () -> mustCall((Callable<StorageProvider>) StorageProviderSQLite::new));
     }

@@ -2,7 +2,7 @@ package top.seraphjack.simplelogin.server.storage;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
-import net.minecraft.world.GameType;
+import net.minecraft.world.level.GameType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.mindrot.jbcrypt.BCrypt;
@@ -78,7 +78,8 @@ public class StorageProviderFile implements StorageProvider {
     @Override
     public synchronized void save() throws IOException {
         try {
-            Files.write(path, gson.toJson(entries.values().toArray()).getBytes(StandardCharsets.UTF_8), StandardOpenOption.TRUNCATE_EXISTING);
+            Files.write(path, gson.toJson(entries.values().toArray()).getBytes(StandardCharsets.UTF_8),
+                    StandardOpenOption.TRUNCATE_EXISTING);
             dirty = false;
         } catch (IOException ex) {
             SimpleLogin.logger.error("Unable to save entries", ex);
@@ -88,14 +89,14 @@ public class StorageProviderFile implements StorageProvider {
 
     @Override
     public GameType gameType(String username) {
-        return GameType.getByID(entries.get(username).gameType);
+        return GameType.byId(entries.get(username).gameType);
     }
 
     @Override
     public void setGameType(String username, GameType gameType) {
         if (entries.containsKey(username)) {
             dirty = true;
-            entries.get(username).gameType = gameType.getID();
+            entries.get(username).gameType = gameType.getId();
         }
     }
 

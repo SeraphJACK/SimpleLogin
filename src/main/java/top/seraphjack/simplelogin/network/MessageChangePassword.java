@@ -1,18 +1,16 @@
 package top.seraphjack.simplelogin.network;
 
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
 import top.seraphjack.simplelogin.utils.SHA256;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.function.Supplier;
-
-import static top.seraphjack.simplelogin.SLConstants.MAX_PASSWORD_LENGTH;
 
 public class MessageChangePassword {
     private final String original, to;
@@ -22,13 +20,17 @@ public class MessageChangePassword {
         this.to = SHA256.getSHA256(to);
     }
 
-    public static void encode(MessageChangePassword msg, PacketBuffer buf) {
-        buf.writeString(msg.original, MAX_PASSWORD_LENGTH);
-        buf.writeString(msg.to, MAX_PASSWORD_LENGTH);
+    public static void encode(MessageChangePassword msg, FriendlyByteBuf buf) {
+        buf.writeInt(msg.original.length());
+        buf.writeCharSequence(msg.original, StandardCharsets.UTF_8);
+        buf.writeInt(msg.to.length());
+        buf.writeCharSequence(msg.to, StandardCharsets.UTF_8);
     }
 
-    public static MessageChangePassword decode(PacketBuffer buf) {
-        return new MessageChangePassword(buf.readString(MAX_PASSWORD_LENGTH), buf.readString(MAX_PASSWORD_LENGTH));
+    public static MessageChangePassword decode(FriendlyByteBuf buf) {
+        String original = buf.readCharSequence(buf.readInt(), StandardCharsets.UTF_8).toString();
+        String to = buf.readCharSequence(buf.readInt(), StandardCharsets.UTF_8).toString();
+        return new MessageChangePassword(original, to);
     }
 
     public static void handle(MessageChangePassword msg, Supplier<NetworkEvent.Context> ctx) {
@@ -37,13 +39,13 @@ public class MessageChangePassword {
         String username = Objects.requireNonNull(ctx.get().getSender()).getGameProfile().getName();
         if (SLStorage.instance().storageProvider.checkPassword(username, msg.original)) {
             SLStorage.instance().storageProvider.changePassword(username, msg.to);
-            context.getSender().sendStatusMessage(new TranslationTextComponent(
+            context.getSender().displayClientMessage(new TranslatableComponent(
                     "simplelogin.info.password_change_successful"), false);
             NetworkLoader.INSTANCE.send(PacketDistributor.PLAYER.with(context::getSender),
                     new MessageChangePasswordResponse(true));
         } else {
             // Should never happen though
-            context.getSender().sendStatusMessage(new StringTextComponent(
+            context.getSender().displayClientMessage(new TranslatableComponent(
                     "simplelogin.info.password_change_fail"), false);
             NetworkLoader.INSTANCE.send(PacketDistributor.PLAYER.with(context::getSender),
                     new MessageChangePasswordResponse(false));

@@ -1,7 +1,8 @@
 package top.seraphjack.simplelogin.server.handler.plugins;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.server.TickTask;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 import top.seraphjack.simplelogin.server.handler.HandlerPlugin;
 import top.seraphjack.simplelogin.server.handler.Login;
 
@@ -22,22 +23,22 @@ public final class RestrictMovement implements HandlerPlugin {
     }
 
     @Override
-    public void preLogin(ServerPlayerEntity player, Login login) {
+    public void preLogin(ServerPlayer player, Login login) {
         ScheduledFuture<?> future = executor.scheduleWithFixedDelay(() -> {
-            ServerLifecycleHooks.getCurrentServer().deferTask(() -> {
-                player.setPositionAndUpdate(login.posX, login.posY, login.posZ);
-            });
+            ServerLifecycleHooks.getCurrentServer().tell(new TickTask(1, () -> {
+                player.setPos(login.posX, login.posY, login.posZ);
+            }));
         }, 0, 100, TimeUnit.MILLISECONDS);
         Optional.ofNullable(futures.put(login.name, future)).ifPresent(f -> f.cancel(true));
     }
 
     @Override
-    public void postLogin(ServerPlayerEntity player, Login login) {
+    public void postLogin(ServerPlayer player, Login login) {
         Optional.ofNullable(futures.remove(login.name)).ifPresent(f -> f.cancel(true));
     }
 
     @Override
-    public void preLogout(ServerPlayerEntity player) {
+    public void preLogout(ServerPlayer player) {
         Optional.ofNullable(futures.remove(player.getGameProfile().getName()))
                 .ifPresent(f -> f.cancel(true));
     }

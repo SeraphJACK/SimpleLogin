@@ -5,12 +5,12 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.GameType;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.GameType;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
 import top.seraphjack.simplelogin.SLConstants;
@@ -25,18 +25,18 @@ import java.util.Collection;
 
 public class SLCommand {
 
-    public static void register(CommandDispatcher<CommandSource> dispatcher) {
-        LiteralArgumentBuilder<CommandSource> command = Commands.literal("simplelogin")
-                .then(Commands.literal("save").requires((c) -> c.hasPermissionLevel(3))
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+        LiteralArgumentBuilder<CommandSourceStack> command = Commands.literal("simplelogin")
+                .then(Commands.literal("save").requires((c) -> c.hasPermission(3))
                         .executes(SLCommand::save))
-                .then(Commands.literal("unregister").requires((c) -> c.hasPermissionLevel(3))
+                .then(Commands.literal("unregister").requires((c) -> c.hasPermission(3))
                         .then(Commands.argument("entry", ArgumentTypeEntryName.entryName())
                                 .executes(SLCommand::unregister)))
-                .then(Commands.literal("setDefaultGameType").requires((c) -> c.hasPermissionLevel(3))
+                .then(Commands.literal("setDefaultGameType").requires((c) -> c.hasPermission(3))
                         .then(Commands.argument("entry", ArgumentTypeEntryName.entryName())
                                 .then(Commands.argument("mode", IntegerArgumentType.integer(0, 3))
                                         .executes(SLCommand::setDefaultGamemode))))
-                .then(Commands.literal("plugin").requires((c) -> c.hasPermissionLevel(3))
+                .then(Commands.literal("plugin").requires((c) -> c.hasPermission(3))
                         .then(Commands.literal("load")
                                 .then(Commands.argument("plugin", ArgumentTypeHandlerPlugin.unloadedPlugins())
                                         .executes(SLCommand::loadPlugin)))
@@ -51,55 +51,55 @@ public class SLCommand {
         dispatcher.register(command);
     }
 
-    private static int save(CommandContext<CommandSource> ctx) {
+    private static int save(CommandContext<CommandSourceStack> ctx) {
         try {
             long start = System.currentTimeMillis();
             SLStorage.instance().storageProvider.save();
             long cost = System.currentTimeMillis() - start;
-            ctx.getSource().sendFeedback(new StringTextComponent("Done. Took " + cost + " ms."), true);
+            ctx.getSource().sendSuccess(new TextComponent("Done. Took " + cost + " ms."), true);
         } catch (IOException e) {
-            ctx.getSource().sendFeedback(new StringTextComponent("Error during saving entries, see log for details"), false);
+            ctx.getSource().sendSuccess(new TextComponent("Error during saving entries, see log for details"), false);
         }
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int unregister(CommandContext<CommandSource> ctx) {
+    private static int unregister(CommandContext<CommandSourceStack> ctx) {
         SLStorage.instance().storageProvider.unregister(ArgumentTypeEntryName.getEntryName(ctx, "entry"));
-        ctx.getSource().sendFeedback(new StringTextComponent("Successfully unregistered."), false);
+        ctx.getSource().sendSuccess(new TextComponent("Successfully unregistered."), false);
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int setDefaultGamemode(CommandContext<CommandSource> ctx) {
+    private static int setDefaultGamemode(CommandContext<CommandSourceStack> ctx) {
         GameType gameType = GameType.values()[ctx.getArgument("mode", Integer.class) + 1];
         SLStorage.instance().storageProvider.setGameType(ArgumentTypeEntryName.getEntryName(ctx, "entry"), gameType);
-        ctx.getSource().sendFeedback(new StringTextComponent("Successfully set entry default game type to " + gameType.getName() + "."), false);
+        ctx.getSource().sendSuccess(new TextComponent("Successfully set entry default game type to " + gameType.getName() + "."), false);
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int about(CommandContext<CommandSource> ctx) {
+    private static int about(CommandContext<CommandSourceStack> ctx) {
         @SuppressWarnings("OptionalGetWithoutIsPresent")
         ModInfo info = FMLLoader.getLoadingModList().getMods().stream()
                 .filter(modInfo -> modInfo.getModId().equals(SLConstants.MODID))
                 .findAny().get();
-        ctx.getSource().sendFeedback(
-                new TranslationTextComponent("simplelogin.command.about.info", info.getVersion().toString()),
+        ctx.getSource().sendSuccess(
+                new TranslatableComponent("simplelogin.command.about.info", info.getVersion().toString()),
                 false
         );
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int loadPlugin(CommandContext<CommandSource> ctx) {
+    private static int loadPlugin(CommandContext<CommandSourceStack> ctx) {
         ResourceLocation plugin = ArgumentTypeHandlerPlugin.getPlugin(ctx, "plugin");
         if (!SLRegistries.PLUGINS.get(plugin).isPresent()) {
-            ctx.getSource().sendFeedback(
-                    new TranslationTextComponent("simplelogin.command.plugin.not_found", plugin.toString()),
+            ctx.getSource().sendSuccess(
+                    new TranslatableComponent("simplelogin.command.plugin.not_found", plugin.toString()),
                     true
             );
             return Command.SINGLE_SUCCESS;
         }
         if (PlayerLoginHandler.instance().listPlugins().contains(plugin)) {
-            ctx.getSource().sendFeedback(
-                    new TranslationTextComponent("simplelogin.command.plugin.already_loaded", plugin.toString()),
+            ctx.getSource().sendSuccess(
+                    new TranslatableComponent("simplelogin.command.plugin.already_loaded", plugin.toString()),
                     true
             );
             return Command.SINGLE_SUCCESS;
@@ -107,64 +107,64 @@ public class SLCommand {
 
         PlayerLoginHandler.instance().loadPlugin(plugin);
 
-        ctx.getSource().sendFeedback(
-                new TranslationTextComponent("simplelogin.command.plugin.load_success", plugin.toString()),
+        ctx.getSource().sendSuccess(
+                new TranslatableComponent("simplelogin.command.plugin.load_success", plugin.toString()),
                 true
         );
 
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int unloadPlugin(CommandContext<CommandSource> ctx) {
+    private static int unloadPlugin(CommandContext<CommandSourceStack> ctx) {
         ResourceLocation plugin = ArgumentTypeHandlerPlugin.getPlugin(ctx, "plugin");
         if (!SLRegistries.PLUGINS.get(plugin).isPresent()) {
-            ctx.getSource().sendFeedback(
-                    new TranslationTextComponent("simplelogin.command.plugin.not_found", plugin.toString()),
+            ctx.getSource().sendSuccess(
+                    new TranslatableComponent("simplelogin.command.plugin.not_found", plugin.toString()),
                     true
             );
             return Command.SINGLE_SUCCESS;
         }
         if (!PlayerLoginHandler.instance().listPlugins().contains(plugin)) {
-            ctx.getSource().sendFeedback(
-                    new TranslationTextComponent("simplelogin.command.plugin.not_loaded", plugin.toString()),
+            ctx.getSource().sendSuccess(
+                    new TranslatableComponent("simplelogin.command.plugin.not_loaded", plugin.toString()),
                     true
             );
             return Command.SINGLE_SUCCESS;
         }
 
         PlayerLoginHandler.instance().unloadPlugin(plugin);
-        ctx.getSource().sendFeedback(
-                new TranslationTextComponent("simplelogin.command.plugin.unload_success", plugin.toString()),
+        ctx.getSource().sendSuccess(
+                new TranslatableComponent("simplelogin.command.plugin.unload_success", plugin.toString()),
                 true
         );
 
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int listAvailablePlugins(CommandContext<CommandSource> ctx) {
+    private static int listAvailablePlugins(CommandContext<CommandSourceStack> ctx) {
         Collection<ResourceLocation> plugins = SLRegistries.PLUGINS.list();
-        ctx.getSource().sendFeedback(
-                new TranslationTextComponent("simplelogin.command.plugin.available_plugin_header"),
+        ctx.getSource().sendSuccess(
+                new TranslatableComponent("simplelogin.command.plugin.available_plugin_header"),
                 false
         );
         for (ResourceLocation plugin : plugins) {
-            ctx.getSource().sendFeedback(
-                    new TranslationTextComponent("simplelogin.command.plugin.list_member", plugin.toString()),
+            ctx.getSource().sendSuccess(
+                    new TranslatableComponent("simplelogin.command.plugin.list_member", plugin.toString()),
                     false
             );
         }
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int listLoadedPlugins(CommandContext<CommandSource> ctx) {
+    private static int listLoadedPlugins(CommandContext<CommandSourceStack> ctx) {
         Collection<ResourceLocation> plugins = PlayerLoginHandler.instance().listPlugins();
-        ctx.getSource().sendFeedback(
-                new TranslationTextComponent("simplelogin.command.plugin.loaded_plugin_header"),
+        ctx.getSource().sendSuccess(
+                new TranslatableComponent("simplelogin.command.plugin.loaded_plugin_header"),
                 false
         );
         for (ResourceLocation plugin : plugins) {
-            ctx.getSource().sendFeedback(
-                    new TranslationTextComponent("simplelogin.command.plugin.list_member", plugin.toString()),
+            ctx.getSource().sendSuccess(
+                    new TranslatableComponent("simplelogin.command.plugin.list_member", plugin.toString()),
                     false
             );
         }

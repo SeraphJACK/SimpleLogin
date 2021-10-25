@@ -1,6 +1,6 @@
 package top.seraphjack.simplelogin.command.arguments;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public final class HandlerPluginInput {
     private final ResourceLocation input;
