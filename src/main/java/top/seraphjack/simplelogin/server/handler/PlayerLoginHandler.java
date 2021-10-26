@@ -84,6 +84,8 @@ public final class PlayerLoginHandler {
             return;
         }
 
+        loginList.remove(login);
+
         if (!SLStorage.instance().storageProvider.registered(id)) {
             SLStorage.instance().storageProvider.register(id, pwd);
             SimpleLogin.logger.info("Player " + id + " has successfully registered.");
@@ -95,8 +97,6 @@ public final class PlayerLoginHandler {
             SimpleLogin.logger.warn("Player " + id + " tried to login with a wrong password.");
             player.connection.disconnect(new TextComponent("Wrong Password."));
         }
-
-        loginList.remove(login);
     }
 
     public void playerJoin(final ServerPlayer player) {
