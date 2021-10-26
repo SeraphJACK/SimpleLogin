@@ -5,7 +5,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import top.seraphjack.simplelogin.SimpleLogin;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,7 +36,7 @@ public final class PasswordHolder {
 
     private void read() {
         try {
-            password = new String(Files.readAllBytes(PASSWORD_FILE_PATH), StandardCharsets.UTF_8);
+            password = Files.readString(PASSWORD_FILE_PATH);
         } catch (IOException e) {
             SimpleLogin.logger.error("Failed to load password", e);
         }
@@ -45,7 +44,7 @@ public final class PasswordHolder {
 
     private void save() {
         try {
-            Files.write(PASSWORD_FILE_PATH, password.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+            Files.writeString(PASSWORD_FILE_PATH, password, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         } catch (IOException e) {
             SimpleLogin.logger.error("Failed to save password", e);
         }
