@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 public class SLRegistries<S> {
     private final Map<ResourceLocation, Supplier<? extends S>> plugins = new HashMap<>();
 
-    public void register(ResourceLocation rl, Supplier<? extends S> plugin) {
+    public synchronized void register(ResourceLocation rl, Supplier<? extends S> plugin) {
         if (plugins.containsKey(rl)) {
             throw new IllegalArgumentException("Resource location " + rl.toString() + " already exists.");
         }

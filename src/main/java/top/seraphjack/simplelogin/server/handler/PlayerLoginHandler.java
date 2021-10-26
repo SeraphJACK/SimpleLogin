@@ -21,6 +21,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 @OnlyIn(Dist.DEDICATED_SERVER)
 public final class PlayerLoginHandler {
@@ -32,7 +34,7 @@ public final class PlayerLoginHandler {
             .build());
     private final Map<ResourceLocation, HandlerPlugin> plugins = new ConcurrentHashMap<>();
 
-    private PlayerLoginHandler(Collection<ResourceLocation> plugins) {
+    private PlayerLoginHandler(Stream<ResourceLocation> plugins) {
         // Load plugins
         plugins.forEach(this::loadPlugin);
     }
@@ -60,7 +62,7 @@ public final class PlayerLoginHandler {
         return new ImmutableSet.Builder<ResourceLocation>().addAll(this.plugins.keySet()).build();
     }
 
-    public static void initLoginHandler(Collection<ResourceLocation> pluginList) {
+    public static void initLoginHandler(Stream<ResourceLocation> pluginList) {
         if (INSTANCE != null) throw new IllegalStateException();
         INSTANCE = new PlayerLoginHandler(pluginList);
     }
@@ -122,6 +124,13 @@ public final class PlayerLoginHandler {
         this.plugins.values().forEach(HandlerPlugin::disable);
         this.plugins.clear();
         executor.shutdown();
+        try {
+            if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
+                SimpleLogin.logger.error("Timed out waiting player login handler to terminate.");
+            }
+        } catch (InterruptedException ignore) {
+            SimpleLogin.logger.error("Interrupted when waiting player login handler to terminate.");
+        }
     }
 
     @Nullable

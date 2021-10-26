@@ -6,7 +6,7 @@ import top.seraphjack.simplelogin.client.PasswordHolder;
 
 import java.util.function.Supplier;
 
-@SuppressWarnings("InstantiationOfUtilityClass")
+@SuppressWarnings({"InstantiationOfUtilityClass", "unused"})
 public class MessageRequestLogin {
 
     public MessageRequestLogin() {

@@ -18,8 +18,11 @@ import java.util.concurrent.CompletableFuture;
 
 public final class ArgumentTypeHandlerPlugin implements ArgumentType<HandlerPluginInput> {
     /**
-     * true to suggest loaded plugins
-     * false to suggest unloaded plugins
+     * 0 to suggest loaded plugins
+     * 1 to suggest unloaded plugins
+     * 2 to suggest all plugins
+     * Since suggestion is done on server-side, there's no need to serialize this,
+     * so we're using empty argument serializer.
      */
     private final int type;
 
