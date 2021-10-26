@@ -29,6 +29,7 @@ public final class ProtectCoord implements HandlerPlugin {
                 player.setPos(login.posX, login.posY, login.posZ);
             } else {
                 player.setPos(lastPos.getX(), lastPos.getY(), lastPos.getZ());
+                player.connection.teleport(lastPos.getX(), lastPos.getY(), lastPos.getZ(), login.rotY, login.rotX);
             }
         }));
     }
