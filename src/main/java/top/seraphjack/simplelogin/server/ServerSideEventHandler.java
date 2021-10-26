@@ -1,5 +1,6 @@
 package top.seraphjack.simplelogin.server;
 
+import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -8,6 +9,7 @@ import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SLConstants;
@@ -15,6 +17,8 @@ import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.network.MessageRequestLogin;
 import top.seraphjack.simplelogin.network.NetworkLoader;
 import top.seraphjack.simplelogin.server.handler.PlayerLoginHandler;
+
+import java.lang.reflect.Field;
 
 @OnlyIn(Dist.DEDICATED_SERVER)
 @Mod.EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = SLConstants.MODID)
@@ -37,11 +41,11 @@ public class ServerSideEventHandler {
         String command = event.getParseResults().getReader().getString();
         if (command.startsWith("/")) command = command.substring(1);
         SimpleLogin.logger.debug("Checking command '{}'", command);
-        CommandSourceStack source = event.getParseResults().getContext().getSource();
-        if (source == null) {
+        CommandSource realSource = getRealSource(event.getParseResults().getContext().getSource());
+        if (realSource == null) {
             return;
         }
-        if (!(source.getEntity() instanceof ServerPlayer cast)) {
+        if (!(realSource instanceof ServerPlayer cast)) {
             return;
         }
         if (PlayerLoginHandler.instance().hasPlayerLoggedIn(cast.getScoreboardName())) {
@@ -50,8 +54,32 @@ public class ServerSideEventHandler {
         if (SLConfig.SERVER.whitelistCommands.get().contains(command)) {
             return;
         }
-        SimpleLogin.logger.debug("Denied {} to execute command '{}' before login",
+        SimpleLogin.logger.warn("Denied {} to execute command '{}' before login",
                 event.getParseResults().getContext().getSource().getTextName(), command);
         event.setCanceled(true);
+    }
+
+    private static final Field COMMAND_SOURCE_FIELD;
+
+    static {
+        Field f;
+        try {
+            f = ObfuscationReflectionHelper.findField(CommandSourceStack.class, "f_81288_");
+            f.setAccessible(true);
+        } catch (Exception ex) {
+            SimpleLogin.logger.error("Failed to get command source field", ex);
+            f = null;
+        }
+        COMMAND_SOURCE_FIELD = f;
+    }
+
+    private static CommandSource getRealSource(CommandSourceStack sourceStack) {
+        if (COMMAND_SOURCE_FIELD == null) return null;
+        try {
+            return (CommandSource) COMMAND_SOURCE_FIELD.get(sourceStack);
+        } catch (IllegalAccessException e) {
+            SimpleLogin.logger.error("Failed to get real command source", e);
+            return null;
+        }
     }
 }

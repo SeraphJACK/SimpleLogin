@@ -27,6 +27,7 @@ public final class RestrictMovement implements HandlerPlugin {
         ScheduledFuture<?> future = executor.scheduleWithFixedDelay(() -> {
             ServerLifecycleHooks.getCurrentServer().tell(new TickTask(1, () -> {
                 player.setPos(login.posX, login.posY, login.posZ);
+                player.connection.teleport(login.posX, login.posY, login.posZ, login.rotY, login.rotX);
             }));
         }, 0, 100, TimeUnit.MILLISECONDS);
         Optional.ofNullable(futures.put(login.name, future)).ifPresent(f -> f.cancel(true));
