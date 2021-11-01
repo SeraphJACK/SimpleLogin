@@ -17,24 +17,21 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @ThreadSafe
 @OnlyIn(Dist.DEDICATED_SERVER)
 public class StorageProviderFile implements StorageProvider {
-    private final Gson gson;
+    private final Gson gson = new Gson();
     private final Path path;
-    private final Map<String, POJOUserEntry> entries;
+    private final Map<String, POJOUserEntry> entries = new ConcurrentHashMap<>();
     private boolean dirty = false;
 
     public StorageProviderFile(Path path) throws IOException {
         this.path = path;
-        this.gson = new Gson();
 
         if (Files.exists(path)) {
-            entries = new ConcurrentHashMap<>();
             POJOUserEntry[] buf = gson.fromJson(Files.newBufferedReader(path, StandardCharsets.UTF_8), POJOUserEntry[].class);
             if (buf != null) {
                 Arrays.stream(buf).peek(e -> e.username = e.username.toLowerCase()).forEach(e -> entries.put(e.username, e));
@@ -43,7 +40,6 @@ public class StorageProviderFile implements StorageProvider {
             if (!Files.exists(path.getParent())) {
                 Files.createDirectories(path.getParent());
             }
-            entries = new HashMap<>();
             Files.createFile(path);
         }
     }
