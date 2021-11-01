@@ -18,7 +18,7 @@ public final class RestrictGameType implements HandlerPlugin {
     @Override
     public void postLogin(ServerPlayerEntity player, Login login) {
         ServerLifecycleHooks.getCurrentServer().deferTask(() -> {
-            player.setGameType(SLStorage.instance().storageProvider.gameType(player.getGameProfile().getName()));
+            player.setGameType(SLStorage.instance().storageProvider.gameType(player.getGameProfile().getName().toLowerCase()));
         });
     }
 

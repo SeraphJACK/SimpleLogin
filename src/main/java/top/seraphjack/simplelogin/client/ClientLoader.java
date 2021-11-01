@@ -14,7 +14,8 @@ public final class ClientLoader {
 
     @SubscribeEvent
     public static void joinServer(ClientPlayerNetworkEvent.LoggedInEvent event) {
-        SimpleLogin.logger.debug("Sending login packet to the server...");
+        if (event.getNetworkManager() == null || event.getNetworkManager().isLocalChannel()) return;
+        SimpleLogin.logger.info("Sending login packet to the server...");
         NetworkLoader.INSTANCE.sendToServer(new MessageLogin(PasswordHolder.instance().password()));
     }
 }
