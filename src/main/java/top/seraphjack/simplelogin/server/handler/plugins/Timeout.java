@@ -28,7 +28,7 @@ public final class Timeout implements HandlerPlugin {
             player.connection.disconnect(new TextComponent("Login timeout"));
         }, SLConfig.SERVER.secs.get(), TimeUnit.SECONDS);
 
-        Optional.ofNullable(futures.put(player.getGameProfile().getName(), future))
+        Optional.ofNullable(futures.put(login.name, future))
                 .ifPresent(f -> f.cancel(true));
     }
 
@@ -39,7 +39,7 @@ public final class Timeout implements HandlerPlugin {
 
     @Override
     public void preLogout(ServerPlayer player) {
-        Optional.ofNullable(futures.remove(player.getGameProfile().getName()))
+        Optional.ofNullable(futures.remove(player.getGameProfile().getName().toLowerCase()))
                 .ifPresent(f -> f.cancel(true));
     }
 
