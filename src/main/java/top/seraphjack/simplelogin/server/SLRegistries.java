@@ -1,7 +1,7 @@
 package top.seraphjack.simplelogin.server;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.server.handler.HandlerPlugin;
 import top.seraphjack.simplelogin.server.handler.plugins.*;

@@ -1,7 +1,7 @@
 package top.seraphjack.simplelogin.network;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 import top.seraphjack.simplelogin.client.PasswordHolder;
 
 import java.util.function.Supplier;

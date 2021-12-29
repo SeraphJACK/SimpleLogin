@@ -14,7 +14,7 @@ public final class ClientLoader {
 
     @SubscribeEvent
     public static void joinServer(ClientPlayerNetworkEvent.LoggedInEvent event) {
-        if (event.getNetworkManager() == null || event.getNetworkManager().isMemoryConnection()) return;
+        if (event.getConnection() == null || event.getConnection().isMemoryConnection()) return;
         SimpleLogin.logger.debug("Sending login packet to the server...");
         NetworkLoader.INSTANCE.sendToServer(new MessageLogin(PasswordHolder.instance().password()));
     }

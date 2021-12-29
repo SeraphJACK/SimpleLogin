@@ -1,6 +1,6 @@
 package top.seraphjack.simplelogin.server.storage;
 
-import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import top.seraphjack.simplelogin.SLConstants;
 
 import java.sql.DriverManager;

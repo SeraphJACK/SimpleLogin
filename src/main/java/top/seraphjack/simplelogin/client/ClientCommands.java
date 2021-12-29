@@ -16,7 +16,7 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientChatEvent;
-import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import top.seraphjack.simplelogin.SLConstants;
@@ -40,10 +40,10 @@ public final class ClientCommands {
     private static boolean active = false;
 
     @SubscribeEvent
-    public static void openGui(GuiScreenEvent.InitGuiEvent event) {
+    public static void openGui(ScreenEvent.InitScreenEvent event) {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
-        if (event.getGui() instanceof ChatScreen && !active) {
+        if (event.getScreen() instanceof ChatScreen && !active) {
             active = true;
             player.connection.getCommands().register(commandChangePassword);
         }

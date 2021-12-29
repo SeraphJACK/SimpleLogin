@@ -2,11 +2,11 @@ package top.seraphjack.simplelogin.server;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLDedicatedServerSetupEvent;
-import net.minecraftforge.fmlserverevents.FMLServerStartingEvent;
-import net.minecraftforge.fmlserverevents.FMLServerStoppedEvent;
 import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.SimpleLogin;
@@ -23,14 +23,14 @@ public final class ServerLoader {
     }
 
     @SubscribeEvent
-    public static void serverStarting(FMLServerStartingEvent e) throws RuntimeException {
+    public static void serverStarting(ServerStartingEvent e) throws RuntimeException {
         SLStorage.initialize(SLConfig.SERVER.storageProvider.get());
 
         PlayerLoginHandler.initLoginHandler(SLConfig.SERVER.plugins.get().stream().map(ResourceLocation::new));
     }
 
     @SubscribeEvent
-    public static void serverStopped(FMLServerStoppedEvent e) throws IOException {
+    public static void serverStopped(ServerStoppedEvent e) throws IOException {
         PlayerLoginHandler.instance().stop();
 
         SimpleLogin.logger.info("Saving all entries");

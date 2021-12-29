@@ -2,7 +2,7 @@ package top.seraphjack.simplelogin.network;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.network.NetworkEvent;
 import top.seraphjack.simplelogin.server.handler.PlayerLoginHandler;
 import top.seraphjack.simplelogin.utils.SHA256;
 
