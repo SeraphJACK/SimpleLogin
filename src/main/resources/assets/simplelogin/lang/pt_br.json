@@ -1,0 +1,15 @@
+{
+  "simplelogin.command.error.entry_not_found": "Não existe um registro para o jogador %s",
+  "simplelogin.command.about.info": "SimpleLogin versão %s para Minecraft 1.18.*",
+  "simplelogin.command.plugin.not_found": "Plugin não encontrado: %s",
+  "simplelogin.command.plugin.already_loaded": "O plugin já está carregado: %s",
+  "simplelogin.command.plugin.load_success": "Plugin carregado com sucesso: %s",
+  "simplelogin.command.plugin.not_loaded": "O plugin não está carregado: %s",
+  "simplelogin.command.plugin.unload_success": "Plugin desativado com sucesso: %s",
+  "simplelogin.command.plugin.available_plugin_header": "Lista dos plugins disponíveis:",
+  "simplelogin.command.plugin.loaded_plugin_header": "Listas dos plugins carregados:",
+  "simplelogin.command.plugin.list_member": " - %s",
+  "simplelogin.info.password_change_successful": "A senha foi alterada com sucesso.",
+  "simplelogin.info.password_change_fail": "A alteração de senha falhou.",
+  "simplelogin.password.title": "Configuração de senha do SimpleLogin"
+}
