@@ -20,8 +20,8 @@ Put the `simplelogin-xxx.jar` into the `mods` directory on **both server-side an
 
 **You don't need to configure anything if you don't care much.**
 
-Players' password does not need to be inputted manually, instead, the client would generate a random UUID as the password
-and save it in `.minecraft/.sl_password`, and send it to the server when joining.
+Players' password does not need to be inputted manually, instead, the client would ask for a password when opening Multiplayer
+for the first time and save it in `.minecraft/.sl_password`, then send it to the server when joining.
 
 The server will remember the player's password when he joins for the first time, and when he joins later the server will
 check if the password matches the first one.
@@ -36,7 +36,7 @@ copy `.minecraft/.sl_password` file when sharing your client with others.
 
 _What should I do if I want to change the client?_
 
-You should backup your `minecraft/.sl_entry` file and copy it to your new client.
+You should backup your `minecraft/.sl_password` file and copy it to your new client.
 
 ## Storage providers
 
