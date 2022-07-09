@@ -44,7 +44,7 @@ public final class ArgumentTypeEntryName implements ArgumentType<EntryNameInput>
             return SharedSuggestionProvider.suggest(SLStorage.instance().storageProvider.getAllRegisteredUsername(), builder);
         } else if (context.getSource() instanceof SharedSuggestionProvider) {
             CommandContext<SharedSuggestionProvider> ctx = (CommandContext<SharedSuggestionProvider>) context;
-            return ((SharedSuggestionProvider) context.getSource()).customSuggestion(ctx, builder);
+            return ((SharedSuggestionProvider) context.getSource()).customSuggestion(ctx);
         }
         return Suggestions.empty();
     }

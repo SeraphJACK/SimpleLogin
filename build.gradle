@@ -9,14 +9,14 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle'
 
-version = '1.0.1'
+version = '1.0.0'
 group = 'top.seraphjack'
 archivesBaseName = 'SimpleLogin-1.18'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
-    mappings channel: 'official', version: '1.18.1'
+    mappings channel: 'official', version: '1.18.2'
     runs {
         client {
             workingDirectory project.file('run')
@@ -71,7 +71,7 @@ configurations {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.1-39.0.9'
+    minecraft 'net.minecraftforge:forge:1.18.2-40.1.25'
 
     shade 'org.mindrot:jbcrypt:0.4'
 }

@@ -67,7 +67,7 @@ public final class ArgumentTypeHandlerPlugin implements ArgumentType<HandlerPlug
             return SharedSuggestionProvider.suggest(plugins.stream().map(ResourceLocation::toString), builder);
         } else if (context.getSource() instanceof SharedSuggestionProvider) {
             CommandContext<SharedSuggestionProvider> ctx = (CommandContext<SharedSuggestionProvider>) context;
-            return ((SharedSuggestionProvider) context.getSource()).customSuggestion(ctx, builder);
+            return ((SharedSuggestionProvider) context.getSource()).customSuggestion(ctx);
         }
         return Suggestions.empty();
     }
