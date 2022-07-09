@@ -1,7 +1,7 @@
 package top.seraphjack.simplelogin.command;
 
-import net.minecraft.commands.synchronization.ArgumentTypes;
-import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
+import net.minecraft.commands.synchronization.ArgumentTypeInfos;
+import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -14,10 +14,10 @@ import top.seraphjack.simplelogin.command.arguments.ArgumentTypeHandlerPlugin;
 public final class CommandLoader {
 
     public static void commonSetup(@SuppressWarnings("unused") FMLCommonSetupEvent event) {
-        ArgumentTypes.register("simplelogin:entry", ArgumentTypeEntryName.class,
-                new EmptyArgumentSerializer<>(ArgumentTypeEntryName::entryName));
-        ArgumentTypes.register("simplelogin:plugin", ArgumentTypeHandlerPlugin.class,
-                new EmptyArgumentSerializer<>(ArgumentTypeHandlerPlugin::allPlugins));
+        ArgumentTypeInfos.registerByClass(ArgumentTypeEntryName.class,
+                SingletonArgumentInfo.contextFree(ArgumentTypeEntryName::entryName));
+        ArgumentTypeInfos.registerByClass(ArgumentTypeHandlerPlugin.class,
+                SingletonArgumentInfo.contextFree(ArgumentTypeHandlerPlugin::allPlugins));
     }
 
     @SubscribeEvent

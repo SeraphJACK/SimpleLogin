@@ -13,7 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ScreenEvent;
@@ -40,7 +40,7 @@ public final class ClientCommands {
     private static boolean active = false;
 
     @SubscribeEvent
-    public static void openGui(ScreenEvent.InitScreenEvent event) {
+    public static void openGui(ScreenEvent.Init event) {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
         if (event.getScreen() instanceof ChatScreen && !active) {
@@ -63,7 +63,7 @@ public final class ClientCommands {
             try {
                 dispatcher.execute(sr, cs);
             } catch (CommandSyntaxException e) {
-                player.displayClientMessage(new TranslatableComponent(e.getLocalizedMessage()), false);
+                player.displayClientMessage(Component.translatable(e.getLocalizedMessage()), false);
                 SimpleLogin.logger.error("Error syntax command", e);
             }
         }

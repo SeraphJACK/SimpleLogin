@@ -1,6 +1,6 @@
 package top.seraphjack.simplelogin.server.handler.plugins;
 
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import top.seraphjack.simplelogin.SLConfig;
 import top.seraphjack.simplelogin.server.handler.HandlerPlugin;
@@ -25,7 +25,7 @@ public final class Timeout implements HandlerPlugin {
     @Override
     public void preLogin(ServerPlayer player, Login login) {
         ScheduledFuture<?> future = executor.schedule(() -> {
-            player.connection.disconnect(new TextComponent("Login timeout"));
+            player.connection.disconnect(Component.literal("Login timeout"));
         }, SLConfig.SERVER.secs.get(), TimeUnit.SECONDS);
 
         Optional.ofNullable(futures.put(login.name, future))

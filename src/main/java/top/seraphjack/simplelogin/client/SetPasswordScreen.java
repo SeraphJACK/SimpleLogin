@@ -6,8 +6,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import top.seraphjack.simplelogin.SLConstants;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -22,7 +21,7 @@ public final class SetPasswordScreen extends Screen {
     private Button buttonComplete;
 
     SetPasswordScreen(Screen parent) {
-        super(new TranslatableComponent("simplelogin.password.title"));
+        super(Component.translatable("simplelogin.password.title"));
         this.parentScreen = parent;
     }
 
@@ -30,7 +29,7 @@ public final class SetPasswordScreen extends Screen {
     protected void init() {
         this.password = new EditBox(this.font,
                 this.width / 2 - 100, this.height / 2, 170, 20,
-                new TranslatableComponent("simplelogin.password"));
+                Component.translatable("simplelogin.password"));
         this.password.setBordered(true);
         this.password.setEditable(true);
         this.password.setMaxLength(SLConstants.MAX_PASSWORD_LENGTH);
@@ -40,7 +39,7 @@ public final class SetPasswordScreen extends Screen {
         });
 
         this.buttonRandom = this.addWidget(new Button(this.width / 2 + 80, this.height / 2, 20, 20,
-                new TextComponent("R"), (btn) -> {
+                Component.literal("R"), (btn) -> {
             this.password.setValue(UUID.randomUUID().toString());
         }));
         this.buttonComplete = this.addWidget(new Button(this.width / 2 - 100, this.height / 2 + 40, 200, 20,
@@ -74,7 +73,7 @@ public final class SetPasswordScreen extends Screen {
         renderBackground(poseStack);
 
         int middle = width / 2;
-        drawCenteredString(poseStack, font, new TranslatableComponent("simplelogin.password.title"),
+        drawCenteredString(poseStack, font, Component.translatable("simplelogin.password.title"),
                 middle, height / 4, 0xFFFFFF);
 
         this.password.render(poseStack, mouseX, mouseY, partialTicks);

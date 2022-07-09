@@ -1,6 +1,6 @@
 {
   "simplelogin.command.error.entry_not_found": "Não existe um registro para o jogador %s",
-  "simplelogin.command.about.info": "SimpleLogin versão %s para Minecraft 1.18.*",
+  "simplelogin.command.about.info": "SimpleLogin versão %s para Minecraft 1.19.*",
   "simplelogin.command.plugin.not_found": "Plugin não encontrado: %s",
   "simplelogin.command.plugin.already_loaded": "O plugin já está carregado: %s",
   "simplelogin.command.plugin.load_success": "Plugin carregado com sucesso: %s",

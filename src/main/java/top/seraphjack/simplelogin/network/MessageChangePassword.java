@@ -1,7 +1,7 @@
 package top.seraphjack.simplelogin.network;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 import top.seraphjack.simplelogin.SimpleLogin;
@@ -39,14 +39,18 @@ public class MessageChangePassword {
         String username = Objects.requireNonNull(ctx.get().getSender()).getGameProfile().getName();
         if (SLStorage.instance().storageProvider.checkPassword(username, msg.original)) {
             SLStorage.instance().storageProvider.changePassword(username, msg.to);
-            context.getSender().displayClientMessage(new TranslatableComponent(
-                    "simplelogin.info.password_change_successful"), false);
+            context.getSender().displayClientMessage(
+                    Component.translatable("simplelogin.info.password_change_successful"),
+                    false
+            );
             NetworkLoader.INSTANCE.send(PacketDistributor.PLAYER.with(context::getSender),
                     new MessageChangePasswordResponse(true));
         } else {
             // Should never happen though
-            context.getSender().displayClientMessage(new TranslatableComponent(
-                    "simplelogin.info.password_change_fail"), false);
+            context.getSender().displayClientMessage(
+                    Component.translatable("simplelogin.info.password_change_fail"),
+                    false
+            );
             NetworkLoader.INSTANCE.send(PacketDistributor.PLAYER.with(context::getSender),
                     new MessageChangePasswordResponse(false));
             SimpleLogin.logger.warn("Player " + username + " tried to change password with a wrong password.");

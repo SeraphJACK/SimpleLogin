@@ -2,7 +2,7 @@ package top.seraphjack.simplelogin.server.handler;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -95,7 +95,7 @@ public final class PlayerLoginHandler {
             postLogin(player, login);
         } else {
             SimpleLogin.logger.warn("Player " + id + " tried to login with a wrong password.");
-            player.connection.disconnect(new TextComponent("Wrong Password."));
+            player.connection.disconnect(Component.literal("Wrong Password."));
         }
     }
 

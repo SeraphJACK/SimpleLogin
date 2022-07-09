@@ -9,7 +9,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.forgespi.Environment;
 import top.seraphjack.simplelogin.server.storage.SLStorage;
@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 
 public final class ArgumentTypeEntryName implements ArgumentType<EntryNameInput> {
 
-    private static final DynamicCommandExceptionType ENTRY_NOT_EXIST = new DynamicCommandExceptionType((o -> new TranslatableComponent("simplelogin.command.error.entry_not_found", o)));
+    private static final DynamicCommandExceptionType ENTRY_NOT_EXIST = new DynamicCommandExceptionType((o -> Component.translatable("simplelogin.command.error.entry_not_found")));
 
     private ArgumentTypeEntryName() {
     }
