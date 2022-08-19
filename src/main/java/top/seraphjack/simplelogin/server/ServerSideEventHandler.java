@@ -25,9 +25,9 @@ import java.lang.reflect.Field;
 public class ServerSideEventHandler {
     @SubscribeEvent
     public static void playerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        PlayerLoginHandler.instance().playerJoin((ServerPlayer) event.getPlayer());
+        PlayerLoginHandler.instance().playerJoin((ServerPlayer) event.getEntity());
         // noinspection InstantiationOfUtilityClass
-        NetworkLoader.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) event.getPlayer()), new MessageRequestLogin());
+        NetworkLoader.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) event.getEntity()), new MessageRequestLogin());
     }
 
     @SubscribeEvent

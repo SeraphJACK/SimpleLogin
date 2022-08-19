@@ -45,10 +45,10 @@ public class CapabilityLoader {
     public static void onPlayerClone(net.minecraftforge.event.entity.player.PlayerEvent.Clone event) throws Throwable {
         Capability[] capabilities = new Capability[]{CAPABILITY_LAST_POS};
         for (Capability capability : capabilities) {
-            if (event.getOriginal().getCapability(capability, null).isPresent() && event.getPlayer().getCapability(capability, null).isPresent()) {
+            if (event.getOriginal().getCapability(capability, null).isPresent() && event.getEntity().getCapability(capability, null).isPresent()) {
                 Tag nbt = ((ILastPos) event.getOriginal().getCapability(capability, null)
                         .orElseThrow(RuntimeException::new)).getLastPos().toNBT();
-                ((ILastPos) event.getPlayer().getCapability(capability, null).orElseThrow(RuntimeException::new))
+                ((ILastPos) event.getEntity().getCapability(capability, null).orElseThrow(RuntimeException::new))
                         .setLastPos(Position.fromNBT((CompoundTag) nbt));
             }
         }
