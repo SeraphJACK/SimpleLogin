@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
@@ -38,13 +39,11 @@ public final class ArgumentTypeEntryName implements ArgumentType<EntryNameInput>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
         if (context.getSource() instanceof CommandSourceStack) {
             return SharedSuggestionProvider.suggest(SLStorage.instance().storageProvider.getAllRegisteredUsername(), builder);
-        } else if (context.getSource() instanceof SharedSuggestionProvider) {
-            CommandContext<SharedSuggestionProvider> ctx = (CommandContext<SharedSuggestionProvider>) context;
-            return ((SharedSuggestionProvider) context.getSource()).customSuggestion(ctx);
+        } else if (context.getSource() instanceof ClientSuggestionProvider src) {
+            return src.customSuggestion(context);
         }
         return Suggestions.empty();
     }

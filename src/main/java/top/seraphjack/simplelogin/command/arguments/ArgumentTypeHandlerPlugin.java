@@ -6,6 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -51,7 +52,6 @@ public final class ArgumentTypeHandlerPlugin implements ArgumentType<HandlerPlug
         return HandlerPluginInput.of(ResourceLocation.read(reader));
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
         if (context.getSource() instanceof CommandSourceStack) {
@@ -65,9 +65,8 @@ public final class ArgumentTypeHandlerPlugin implements ArgumentType<HandlerPlug
                 plugins.addAll(SLRegistries.PLUGINS.list());
             }
             return SharedSuggestionProvider.suggest(plugins.stream().map(ResourceLocation::toString), builder);
-        } else if (context.getSource() instanceof SharedSuggestionProvider) {
-            CommandContext<SharedSuggestionProvider> ctx = (CommandContext<SharedSuggestionProvider>) context;
-            return ((SharedSuggestionProvider) context.getSource()).customSuggestion(ctx);
+        } else if (context.getSource() instanceof ClientSuggestionProvider src) {
+            return src.customSuggestion(context);
         }
         return Suggestions.empty();
     }
