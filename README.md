@@ -166,7 +166,7 @@ All commands have auto-complete support.
 - `/simplelogin plugin unload <ResourceLocation>`
     - Unload the specified plugin
 
-- `/sl_change_password <NewPassword>`
+- `/simplelogin change_password <NewPassword>`
     - Change password to NewPassword
     - This command is implemented on client-side for security reasons
 
