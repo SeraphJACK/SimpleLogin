@@ -21,7 +21,9 @@ public class MessageRequestLogin {
     }
 
     public static void handle(MessageRequestLogin message, Supplier<NetworkEvent.Context> ctx) {
-        NetworkLoader.INSTANCE.sendToServer(new MessageLogin(PasswordHolder.instance().password()));
+        ctx.get().enqueueWork(() -> {
+            NetworkLoader.INSTANCE.sendToServer(new MessageLogin(PasswordHolder.instance().password()));
+        });
         ctx.get().setPacketHandled(true);
     }
 }
