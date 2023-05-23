@@ -9,11 +9,13 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle'
 
-version = '1.0.1'
+version = '1.0.2'
 group = 'top.seraphjack'
 archivesBaseName = 'SimpleLogin-1.19.2'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+jarJar.enable()
 
 minecraft {
     mappings channel: 'official', version: '1.19.2'
@@ -66,14 +68,13 @@ minecraft {
 }
 
 configurations {
-    shade
-    compileOnly.extendsFrom shade
+    compileOnly.extendsFrom(jarJar)
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.2-43.1.1'
+    minecraft 'net.minecraftforge:forge:1.19.2-43.2.0'
 
-    shade 'org.mindrot:jbcrypt:0.4'
+    jarJar 'org.mindrot:jbcrypt:[0.4,0.5)'
 }
 
 allprojects {
@@ -108,11 +109,5 @@ jar {
                 "Implementation-Vendor"   : "",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
-    }
-
-    from(configurations.shade.collect {
-        it.isDirectory() ? it : zipTree(it)
-    }) {
-        exclude 'META-INF/**'
     }
 }
