@@ -1,7 +1,7 @@
 package top.seraphjack.simplelogin.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
@@ -34,22 +34,21 @@ public final class SetPasswordScreen extends Screen {
         this.password.setEditable(true);
         this.password.setMaxLength(SLConstants.MAX_PASSWORD_LENGTH);
         this.password.setFilter((p) -> p.length() <= SLConstants.MAX_PASSWORD_LENGTH);
-        this.password.setResponder((p) -> {
-            buttonComplete.active = !p.isEmpty();
-        });
+        this.password.setResponder((p) -> buttonComplete.active = !p.isEmpty());
 
-        this.buttonRandom = this.addWidget(new Button(this.width / 2 + 80, this.height / 2, 20, 20,
-                Component.literal("R"), (btn) -> {
-            this.password.setValue(UUID.randomUUID().toString());
-        }));
-        this.buttonComplete = this.addWidget(new Button(this.width / 2 - 100, this.height / 2 + 40, 200, 20,
-                CommonComponents.GUI_DONE, (btn) -> {
+        this.buttonRandom = this.addWidget(Button.builder(Component.literal("R"), btn ->
+                this.password.setValue(UUID.randomUUID().toString()))
+                .bounds(this.width / 2 + 80, this.height / 2, 20, 20)
+                .build());
+
+        this.buttonComplete = this.addWidget(Button.builder(CommonComponents.GUI_DONE, btn -> {
             String password = this.password.getValue();
             if (!password.isEmpty()) {
                 PasswordHolder.instance().initialize(password);
-                onClose();
+                Minecraft.getInstance().setScreen(parentScreen);
             }
-        }));
+        }).bounds(this.width / 2 - 100, this.height / 2 + 40, 200, 20).build());
+
         this.buttonComplete.active = false;
         this.setInitialFocus(this.password);
     }
@@ -66,19 +65,18 @@ public final class SetPasswordScreen extends Screen {
         this.password.setValue(pwd);
     }
 
-    @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics gui, int mouseX, int mouseY, float partialTicks) {
         this.setFocused(this.password);
-        this.password.setFocus(true);
-        renderBackground(poseStack);
+        this.password.setFocused(true);
+        renderBackground(gui);
 
         int middle = width / 2;
-        drawCenteredString(poseStack, font, Component.translatable("simplelogin.password.title"),
+        gui.drawCenteredString(font, Component.translatable("simplelogin.password.title"),
                 middle, height / 4, 0xFFFFFF);
 
-        this.password.render(poseStack, mouseX, mouseY, partialTicks);
-        this.buttonRandom.render(poseStack, mouseX, mouseY, partialTicks);
-        this.buttonComplete.render(poseStack, mouseX, mouseY, partialTicks);
+        this.password.render(gui, mouseX, mouseY, partialTicks);
+        this.buttonRandom.render(gui, mouseX, mouseY, partialTicks);
+        this.buttonComplete.render(gui, mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -91,6 +89,6 @@ public final class SetPasswordScreen extends Screen {
             }
         }
         assert this.minecraft != null;
-        this.minecraft.setScreen(this.parentScreen);
+        Minecraft.getInstance().setScreen(parentScreen);
     }
 }
