@@ -13,7 +13,7 @@ public final class EventHandler {
 
     @SubscribeEvent
     public static void onGuiOpen(ScreenEvent.Opening event) {
-        if (!(event.getScreen() instanceof SetPasswordScreen) && !PasswordHolder.instance().initialized() && event.getScreen() instanceof JoinMultiplayerScreen) {
+        if (!(event.getScreen() instanceof SetPasswordScreen) && !PasswordHolder.instance().initialized()) {
             Screen prev = event.getScreen();
             event.setNewScreen(new SetPasswordScreen(prev));
         }
