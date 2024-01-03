@@ -11,14 +11,14 @@ apply plugin: 'net.minecraftforge.gradle'
 
 version = '1.0.2'
 group = 'top.seraphjack'
-archivesBaseName = 'SimpleLogin-1.20.1'
+archivesBaseName = 'SimpleLogin-1.20.2'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 jarJar.enable()
 
 minecraft {
-    mappings channel: 'official', version: '1.20.1'
+    mappings channel: 'official', version: '1.20.2'
     runs {
         client {
             workingDirectory project.file('run')
@@ -72,7 +72,7 @@ configurations {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.20.1-47.1.46'
+    minecraft 'net.minecraftforge:forge:1.20.2-48.1.0'
 
     jarJar 'org.mindrot:jbcrypt:[0.4,0.5)'
 }

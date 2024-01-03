@@ -7,6 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.network.PacketDistributor;
 import top.seraphjack.simplelogin.network.MessageChangePassword;
 import top.seraphjack.simplelogin.network.NetworkLoader;
 
@@ -27,7 +28,7 @@ public final class ChangePasswordCommand {
         final var to = StringArgumentType.getString(context, "passwd");
         var msg = new MessageChangePassword(PasswordHolder.instance().password(), to);
         PasswordHolder.instance().setPendingPassword(to);
-        NetworkLoader.INSTANCE.sendToServer(msg);
+        NetworkLoader.INSTANCE.send(msg, PacketDistributor.SERVER.noArg());
         return Command.SINGLE_SUCCESS;
     }
 }
