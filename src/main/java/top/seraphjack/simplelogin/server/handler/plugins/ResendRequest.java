@@ -27,7 +27,7 @@ public final class ResendRequest implements HandlerPlugin {
     @Override
     public void preLogin(ServerPlayer player, Login login) {
         ScheduledFuture<?> future = executor.scheduleWithFixedDelay(() -> {
-            NetworkLoader.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new MessageRequestLogin());
+            NetworkLoader.INSTANCE.send(new MessageRequestLogin(), PacketDistributor.PLAYER.with(player));
         }, 0, 5, TimeUnit.SECONDS);
         Optional.ofNullable(futures.put(login.name, future)).ifPresent(f -> f.cancel(true));
     }

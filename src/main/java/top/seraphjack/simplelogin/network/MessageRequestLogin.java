@@ -1,10 +1,9 @@
 package top.seraphjack.simplelogin.network;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.minecraftforge.network.PacketDistributor;
 import top.seraphjack.simplelogin.client.PasswordHolder;
-
-import java.util.function.Supplier;
 
 @SuppressWarnings({"InstantiationOfUtilityClass", "unused"})
 public class MessageRequestLogin {
@@ -20,10 +19,10 @@ public class MessageRequestLogin {
         return new MessageRequestLogin();
     }
 
-    public static void handle(MessageRequestLogin message, Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
-            NetworkLoader.INSTANCE.sendToServer(new MessageLogin(PasswordHolder.instance().password()));
+    public static void handle(MessageRequestLogin message, CustomPayloadEvent.Context ctx) {
+        ctx.enqueueWork(() -> {
+            NetworkLoader.INSTANCE.send(new MessageLogin(PasswordHolder.instance().password()), PacketDistributor.SERVER.noArg());
         });
-        ctx.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 }

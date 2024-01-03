@@ -3,25 +3,19 @@ package top.seraphjack.simplelogin.network;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.minecraftforge.network.SimpleChannel;
+import net.minecraftforge.network.*;
 import top.seraphjack.simplelogin.SLConstants;
 
-import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class NetworkLoader {
-    private static final String PROTOCOL_VERSION = "1.1";
+    private static final int PROTOCOL_VERSION = 1001000;
 
-    public static SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation(SLConstants.MODID, "main"),
-            () -> PROTOCOL_VERSION,
-            PROTOCOL_VERSION::equals,
-            PROTOCOL_VERSION::equals
-    );
+    public static SimpleChannel INSTANCE = ChannelBuilder.named(
+            new ResourceLocation(SLConstants.MODID, "main")).networkProtocolVersion(PROTOCOL_VERSION).acceptedVersions(Channel.VersionTest.exact(PROTOCOL_VERSION).or(Channel.VersionTest.ACCEPT_MISSING)).clientAcceptedVersions(Channel.VersionTest.exact(PROTOCOL_VERSION).or(Channel.VersionTest.ACCEPT_MISSING)).simpleChannel();
 
     private NetworkLoader() {
         throw new UnsupportedOperationException("No instance");
@@ -54,8 +48,9 @@ public class NetworkLoader {
 
     private static <MSG> void registerPacket(Class<MSG> msg, BiConsumer<MSG, FriendlyByteBuf> encoder,
                                              Function<FriendlyByteBuf, MSG> decoder,
-                                             BiConsumer<MSG, Supplier<NetworkEvent.Context>> handler,
+                                             BiConsumer<MSG, CustomPayloadEvent.Context> handler,
                                              final NetworkDirection direction) {
-        INSTANCE.registerMessage(id++, msg, encoder, decoder, handler, Optional.of(direction));
+        INSTANCE.messageBuilder(msg, id++, direction).consumerNetworkThread(handler).decoder(decoder).encoder(encoder).add();
+        //INSTANCE.registerMessage(id++, msg, encoder, decoder, handler, Optional.of(direction));
     }
 }

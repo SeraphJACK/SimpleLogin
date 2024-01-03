@@ -5,6 +5,7 @@ import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.network.PacketDistributor;
 import top.seraphjack.simplelogin.SLConstants;
 import top.seraphjack.simplelogin.SimpleLogin;
 import top.seraphjack.simplelogin.network.MessageLogin;
@@ -17,7 +18,7 @@ public final class ClientLoader {
     public static void joinServer(ClientPlayerNetworkEvent.LoggingIn event) {
         if (event.getConnection().isMemoryConnection()) return;
         SimpleLogin.logger.debug("Sending login packet to the server...");
-        NetworkLoader.INSTANCE.sendToServer(new MessageLogin(PasswordHolder.instance().password()));
+        NetworkLoader.INSTANCE.send(new MessageLogin(PasswordHolder.instance().password()), PacketDistributor.SERVER.noArg());
     }
 
     @SubscribeEvent

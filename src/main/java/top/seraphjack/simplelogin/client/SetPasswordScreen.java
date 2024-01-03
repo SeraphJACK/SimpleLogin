@@ -55,7 +55,7 @@ public final class SetPasswordScreen extends Screen {
 
     @Override
     public void tick() {
-        this.password.tick();
+        super.tick();
     }
 
     @Override
@@ -68,7 +68,7 @@ public final class SetPasswordScreen extends Screen {
     public void render(GuiGraphics gui, int mouseX, int mouseY, float partialTicks) {
         this.setFocused(this.password);
         this.password.setFocused(true);
-        renderBackground(gui);
+        renderTransparentBackground(gui);
 
         int middle = width / 2;
         gui.drawCenteredString(font, Component.translatable("simplelogin.password.title"),
