@@ -54,11 +54,6 @@ public final class SetPasswordScreen extends Screen {
     }
 
     @Override
-    public void tick() {
-        super.tick();
-    }
-
-    @Override
     public void resize(Minecraft minecraft, int width, int height) {
         String pwd = password.getValue();
         this.init(minecraft, width, height);
