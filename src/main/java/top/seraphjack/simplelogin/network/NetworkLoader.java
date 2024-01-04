@@ -15,7 +15,7 @@ public class NetworkLoader {
     private static final int PROTOCOL_VERSION = 1001000;
 
     public static SimpleChannel INSTANCE = ChannelBuilder.named(
-            new ResourceLocation(SLConstants.MODID, "main")).networkProtocolVersion(PROTOCOL_VERSION).acceptedVersions(Channel.VersionTest.exact(PROTOCOL_VERSION).or(Channel.VersionTest.ACCEPT_MISSING)).clientAcceptedVersions(Channel.VersionTest.exact(PROTOCOL_VERSION).or(Channel.VersionTest.ACCEPT_MISSING)).simpleChannel();
+            new ResourceLocation(SLConstants.MODID, "main")).networkProtocolVersion(PROTOCOL_VERSION).acceptedVersions(Channel.VersionTest.exact(PROTOCOL_VERSION)).clientAcceptedVersions(Channel.VersionTest.exact(PROTOCOL_VERSION)).simpleChannel();
 
     private NetworkLoader() {
         throw new UnsupportedOperationException("No instance");
