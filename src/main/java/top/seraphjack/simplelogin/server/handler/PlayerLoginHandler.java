@@ -83,18 +83,18 @@ public final class PlayerLoginHandler {
         if (login == null || player == null) {
             return;
         }
-
+        String IP = player.getIpAddress();
         loginList.remove(login);
 
         if (!SLStorage.instance().storageProvider.registered(id)) {
             SLStorage.instance().storageProvider.register(id, pwd);
-            SimpleLogin.logger.info("Player " + id + " has successfully registered.");
+            SimpleLogin.logger.info("Player " + id + " (" + IP + ") has successfully registered.");
             postLogin(player, login);
         } else if (SLStorage.instance().storageProvider.checkPassword(id, pwd)) {
-            SimpleLogin.logger.info("Player " + id + " has successfully logged in.");
+            SimpleLogin.logger.info("Player " + id + " (" + IP + ") has successfully logged in.");
             postLogin(player, login);
         } else {
-            SimpleLogin.logger.warn("Player " + id + " tried to login with a wrong password.");
+            SimpleLogin.logger.warn("Player " + id + " (" + IP + ") tried to login with a wrong password.");
             player.connection.disconnect(Component.literal("Wrong Password."));
         }
     }
