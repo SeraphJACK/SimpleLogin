@@ -1,4 +1,4 @@
-name: Build JavaFX Project
+name: Build Forge Mod
 
 on:
   push:
@@ -20,25 +20,14 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Download and unzip JavaFX
-      run: |
-        wget https://download2.gluonhq.com/openjfx/21.0.2/openjfx-21.0.2_linux-x64_bin-sdk.zip
-        unzip openjfx-21.0.2_linux-x64_bin-sdk.zip
-        echo "JAVA_FX=$(pwd)/javafx-sdk-21.0.2/lib" >> $GITHUB_ENV
+    - name: Grant execute permission for Gradlew
+      run: chmod +x ./gradlew
 
-    - name: Compile the JavaFX app
-      run: |
-        mkdir -p out
-        javac --module-path $JAVA_FX --add-modules javafx.controls,javafx.fxml \
-          -d out $(find src -name "*.java")
+    - name: Build with Gradle
+      run: ./gradlew build
 
-    - name: Package into JAR
-      run: |
-        cd out
-        jar cfe SimpleLogin.jar com.wasbanned.simplelogin.Main *
-
-    - name: Upload JAR Artifact
+    - name: Upload mod JAR
       uses: actions/upload-artifact@v3
       with:
-        name: SimpleLogin
-        path: out/SimpleLogin.jar
+        name: simplelogin-mod
+        path: build/libs/*.jar
