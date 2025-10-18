@@ -2,6 +2,8 @@
 
 SimpleLogin is a forge mod aimed to protect servers in offline mode.
 
+# NO LONGER MAINTAINED, CHECKOUT [nedologin](https://github.com/Ariss-Interactive/nedologin)
+
 ## Introduction
 
 SimpleLogin is similar to some auth plugins in bukkit like AuthMe: the mod will check player's password when they log
